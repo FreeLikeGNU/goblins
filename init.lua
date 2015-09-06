@@ -6,48 +6,42 @@ mobs.goblin_drops = {
 	"default:shovel_steel", "farming:bread", "bucket:bucket_water"
 }
 
-local debugging_goblins = false
+local debugging_goblins = true
 
-search_replace = function(pos, search_rate, search_rate_above,
-	search_rate_below, search_offset, search_offset_above,
-	search_offset_below, replace_rate, replace_what, replace_with)
+local search_replace = function(pos, search_rate, replace_rate, replace_what, replace_with)
 
 	if math.random(1, search_rate) == 1 then
+
+		pos = vector.round(pos)
+		pos.y = pos.y - 1
+
+		local p1 = vector.subtract(pos, 1)
+		local p2 = vector.add(pos, 1)
+
+		if debugging_goblins then
+			print ("Goblin at "
+			.. minetest.pos_to_string(pos)
+			.. " searching between "
+			.. minetest.pos_to_string(p1)
+			.. " and "
+			.. minetest.pos_to_string(p2)
+		)
+		end
+
 		--look for nodes
-		local pos1, pos2 = pos, pos
-		-- if we are looking, will we look below and by how much?
-		if math.random(1, search_rate_below) == 1 then
-			pos1.y = pos1.y - search_offset_below
-		end
-		-- if we are looking, will we look above and by how much?
-		if math.random(1, search_rate_above) == 1 then
-			pos2.y = pos2.y + search_offset_above
-		end
-		pos1.x = pos1.x - search_offset
-		pos1.z = pos1.z - search_offset
-		pos2.x = pos2.x + search_offset
-		pos2.z = pos2.z + search_offset
-		if debugging_goblins == true then
-			print (self.name)
-			print ("at                  " .. pos.x, pos.y, pos.z)
-			print ("is searching between" .. pos1.x, pos1.y, pos1.z)
-			print ("and                 " .. pos2.x, pos2.y, pos2.z)
-		end
-		local nodelist = minetest.find_nodes_in_area(pos1, pos2, replace_what)
-		if replace_what
-		and #nodelist > 0 then
+		local nodelist = minetest.find_nodes_in_area(
+			p1, p2, replace_what)
+
+		if #nodelist > 0 then
 			for key,value in pairs(nodelist) do 
-				-- ok we see some nodes around us, are we going to replace them?
+				-- ok we see some nodes around us,
+				-- are we going to replace them?
 				if math.random(1, replace_rate) == 1 then
-					if debugging_goblins == true then
-						print(replace_with.." placed")
-					end
 					minetest.set_node(value, {name = replace_with})
 				end
 			end
 		end
 	end
-
 end
 
 mobs:register_mob("goblins:goblin_cobble", {
@@ -94,18 +88,7 @@ mobs:register_mob("goblins:goblin_cobble", {
 	light_damage = 0,
 	lifetimer = 360,
 	follow = {"default:diamond"},
--- updated node searching!
-	search_rate = 10,
-	search_rate_above = 1,
-	search_rate_below = 1,
-	search_offset = 2,
-	search_offset_below = 2,
-	search_offset_above = 2,
-	replace_rate = 5,
-	replace_what = {"default:stone","default:desert_stone","default:torch"},
-	replace_with = "default:mossycobble",
-
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -170,12 +153,12 @@ mobs:register_mob("goblins:goblin_cobble", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 1, 1, 2, 2, 2, 5,
+		search_replace(self.object:getpos(), 2, 5,
 		{"default:stone","default:desert_stone","default:torch"},
 		"default:mossycobble")
 	end,
 })
+mobs:register_egg("goblins:goblin_cobble", "Goblin Egg (cobble)", "default_mossycobble.png", 1)
 
 mobs:register_mob("goblins:goblin_digger", {
 	description = "Digger Goblin",
@@ -192,7 +175,7 @@ mobs:register_mob("goblins:goblin_digger", {
 	mesh = "goblins_goblin.b3d",
 	drawtype = "front",
 		textures = {
-			{"goblins_goblin_cobble2.png"},
+			{"goblins_goblin_digger.png"},
 		},
 	makes_footstep_sound = true,
 	sounds = {
@@ -219,7 +202,7 @@ mobs:register_mob("goblins:goblin_digger", {
 	light_damage = 0,
 	lifetimer = 360,
 	follow = {"default:diamond"},
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -284,13 +267,12 @@ mobs:register_mob("goblins:goblin_digger", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 10, 20, 1, 1, 1, 4,
+		search_replace(self.object:getpos(), 2, 5,
 		{"default:dirt","default:gravel","default:stone", "default:desert_stone", "default:torch"},
 		"air")
 	end,
-
 })
+mobs:register_egg("goblins:goblin_digger", "Goblin Egg (digger)", "default_mossycobble.png", 1)
 
 mobs:register_mob("goblins:goblin_coal", {
 	description = "Coal Goblin",
@@ -334,7 +316,7 @@ mobs:register_mob("goblins:goblin_coal", {
 	lava_damage = 2,
 	light_damage = 0,
 	follow = {"default:diamond"},
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -399,13 +381,14 @@ mobs:register_mob("goblins:goblin_coal", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 1, 20, 2, 1, 2, 5,
-		{"default:torch","default:stone_with_coal", "default:stone"},
+		search_replace(self.object:getpos(), 10, 5,
+		{"default:torch", "default:stone_with_coal", "default:stone"},
 		"air")
 	end,
 
 })
+mobs:register_egg("goblins:goblin_coal", "Goblin Egg (coal)", "default_mossycobble.png", 1)
+
 mobs:register_mob("goblins:goblin_iron", {
 	description = "Iron Goblin",
 	type = "monster",
@@ -448,7 +431,7 @@ mobs:register_mob("goblins:goblin_iron", {
 	lava_damage = 2,
 	light_damage = 0,
 	follow = "default:diamond",
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -513,13 +496,13 @@ mobs:register_mob("goblins:goblin_iron", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 1, 20, 2, 1, 2, 5,
+		search_replace(self.object:getpos(), 10, 5,
 		{"default:torch","default:stone_with_iron", "default:stone"},
 		"air")
 	end,
-
 })
+mobs:register_egg("goblins:goblin_iron", "Goblin Egg (iron)", "default_mossycobble.png", 1)
+
 mobs:register_mob("goblins:goblin_gold", {
 	description = "Gold Goblin",
 	type = "monster",
@@ -534,10 +517,10 @@ mobs:register_mob("goblins:goblin_gold", {
 	visual = "mesh",
 	mesh = "goblins_goblin.b3d",
 	drawtype = "front",
-		textures = {
-			{"goblins_goblin_gold1.png"},
-			{"goblins_goblin_gold2.png"},		
-		},
+	textures = {
+		{"goblins_goblin_gold1.png"},
+		{"goblins_goblin_gold2.png"},
+	},
 	makes_footstep_sound = true,
 	sounds = {
 		random = "goblins_goblin_ambient",
@@ -562,7 +545,7 @@ mobs:register_mob("goblins:goblin_gold", {
 	lava_damage = 2,
 	light_damage = 0,
 	follow = "default:diamond",
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -627,13 +610,13 @@ mobs:register_mob("goblins:goblin_gold", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 1, 20, 2, 1, 2, 5,
+		search_replace(self.object:getpos(), 10, 5,
 		{"default:torch","default:stone_with_gold", "default:stone"},
 		"air")
 	end,
-
 })
+mobs:register_egg("goblins:goblin_gold", "Goblin Egg (gold)", "default_mossycobble.png", 1)
+
 mobs:register_mob("goblins:goblin_diamond", {
 	description = "Diamond Goblin",
 	type = "monster",
@@ -676,7 +659,7 @@ mobs:register_mob("goblins:goblin_diamond", {
 	lava_damage = 2,
 	light_damage = 0,
 	follow = "default:diamond",
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -741,13 +724,14 @@ mobs:register_mob("goblins:goblin_diamond", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 1, 20, 2, 1, 2, 5,
+		search_replace(self.object:getpos(), 10, 5,
 		{"default:torch","default:stone_with_diamond", "default:stone"},
 		"air")
 	end,
 
 })
+mobs:register_egg("goblins:goblin_diamond", "Goblin Egg (diamond)", "default_mossycobble.png", 1)
+
 mobs:register_mob("goblins:goblin_king", {
 	description = "Goblin King",
 	type = "monster",
@@ -789,7 +773,7 @@ mobs:register_mob("goblins:goblin_king", {
 	lava_damage = 2,
 	light_damage = 0,
 	follow = "default:diamond",
-	view_range = 15,
+	view_range = 10,
 	owner = "",
 	order = "follow",
 	animation = {
@@ -854,14 +838,13 @@ mobs:register_mob("goblins:goblin_king", {
 	end,
 
 	do_custom = function(self)
-		local pos = self.object:getpos()
-		search_replace(pos, 10, 1, 20, 2, 1, 2, 5,
+		search_replace(self.object:getpos(), 10, 5,
 		{"default:torch", "default:stone"},
 		"default:mossycobble")
 	end,
-
-
 })
+mobs:register_egg("goblins:goblin_king", "Goblin King Egg", "default_mossycobble.png", 1)
+
 -- spawn at or below 0 near ore and dungeons and goblin lairs (areas of mossy cobble), except diggers that will dig out caves from stone and cobble goblins who create goblin lairs near stone.
 --function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height)
 
@@ -872,7 +855,6 @@ mobs:register_spawn("goblins:goblin_iron", {"default:stone_with_iron"}, 100, 0, 
 mobs:register_spawn("goblins:goblin_gold", {"default:stone_with_gold" }, 100, 0, 1, 2, 0)
 mobs:register_spawn("goblins:goblin_diamond", {"default:stone_with_diamond" }, 100, 0, 1, 2, 0)
 mobs:register_spawn("goblins:goblin_king", {"default:stone_with_mese","default:mossycobble", }, 100, 0, 2, 1, 0)
-mobs:register_egg("goblins:goblin_cobble", "goblin egg", "default_mossycobble.png", 1)
 
 --[[ function mobs:spawn_specific(name,                  nodes, neighbors,  min_light, max_light, interval, chance, active_object_count, min_height, max_height)
 mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air", 0, 50, 1, 10, 3, -10000 , 0)
