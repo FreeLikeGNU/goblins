@@ -36,9 +36,12 @@ local search_replace2 = function(
 
 	if math.random(1, search_rate) == 1 then
 		-- look for nodes
-		local pos  = vector.round(self.object:getpos())
-		local pos1 = vector.round(self.object:getpos())
-		local pos2 = vector.round(self.object:getpos())
+		local pos  = self.object:getpos() --
+		local pos1 = self.object:getpos()
+		local pos2 = self.object:getpos()
+		--local pos  = vector.round(self.object:getpos())  --will have to investigate these further
+		--local pos1 = vector.round(self.object:getpos())
+		--local pos2 = vector.round(self.object:getpos())
 
 		-- if we are looking, will we look below and by how much?
 		if math.random(1, search_rate_below) == 1 then
@@ -56,19 +59,18 @@ local search_replace2 = function(
 		pos2.z = pos2.z + search_offset
 
 		if debugging_goblins then
-			print (self.name:split(":")[2]
-			.. " at "
-			.. minetest.pos_to_string(pos)
-			.. " is searching between "
-			.. minetest.pos_to_string(pos1)
-			.. " and "
+			print (self.name:split(":")[2] .. " at\n "
+			.. minetest.pos_to_string(pos) .. " is searching between\n "
+			.. minetest.pos_to_string(pos1) .. " and\n "
 			.. minetest.pos_to_string(pos2))
 		end
 
 		local nodelist = minetest.find_nodes_in_area(pos1, pos2, replace_what)
 		if #nodelist > 0 then
-			--print (#nodelist.." nodes found by "..self.description.." !!!")
-			--for k,v in pairs(nodelist) do print(minetest.get_node(v).name.. " found!!") end
+			if debugging_goblins == true then
+				print(#nodelist.." nodes found by " .. self.name:split(":")[2]..":")
+				for k,v in pairs(nodelist) do print(minetest.get_node(v).name:split(":")[2].. " found.") end
+			end
 			for key,value in pairs(nodelist) do 
 				-- ok we see some nodes around us, are we going to replace them?
 				if math.random(1, replace_rate) == 1 then
@@ -76,12 +78,12 @@ local search_replace2 = function(
 					math.random(1, replace_rate_secondary) == 1 then
 						minetest.set_node(value, {name = replace_with_secondary})
 						if debugging_goblins == true then
-							print(replace_with_secondary.." placed")
+							print(replace_with_secondary.." secondary node placed by" .. self.name:split(":")[2])
 						end
 					else
 						minetest.set_node(value, {name = replace_with})
 						if debugging_goblins == true then
-							print(replace_with.." placed")
+							print(replace_with.." placed by " .. self.name:split(":")[2])
 						end
 					end
 					minetest.sound_play(self.sounds.replace, {
@@ -212,6 +214,7 @@ mobs:register_mob("goblins:goblin_digger", {
 	walk_velocity = 2,
 	run_velocity = 3,
 	jump = true,
+	jump_height = 5,
 	drops = {
 		{name = "default:mossycobble",
 		chance = 1, min = 1, max = 3},
@@ -266,12 +269,12 @@ mobs:register_mob("goblins:goblin_digger", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		5, --search_rate
+		4, --search_rate
 		20, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
 		1, --search_offset_above
-		1.1, --search_offset_below
+		1.5, --search_offset_below
 		4, --replace_rate
 		{	"group:soil",
 			"group:sand",
