@@ -78,7 +78,7 @@ local search_replace2 = function(
 					math.random(1, replace_rate_secondary) == 1 then
 						minetest.set_node(value, {name = replace_with_secondary})
 						if debugging_goblins == true then
-							print(replace_with_secondary.." secondary node placed by" .. self.name:split(":")[2])
+							print(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
 						end
 					else
 						minetest.set_node(value, {name = replace_with})
@@ -174,7 +174,7 @@ mobs:register_mob("goblins:goblin_cobble", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		20, --search_rate
+		10, --search_rate
 		1, --search_rate_above
 		1, --search_rate_below
 		1, --search_offset
