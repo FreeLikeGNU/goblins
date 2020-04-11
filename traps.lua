@@ -318,7 +318,7 @@ if setting == true then
 else
 	print("enable_tnt ~= true")
 end
-if (not singleplayer and setting ~= true) or (singleplayer and setting == false) then
+if ( minetest.is_singleplayer() ~= true and setting ~= true) or (minetest.is_singleplayer() == true and setting == false) then
 	-- wimpier trap for non-tnt settings
 	minetest.register_abm({
 		nodenames = {"goblins:stone_with_diamond_trap"},
