@@ -18,8 +18,17 @@ local goblin_sounds = {
 }
 
 local debugging_goblins = false
-
+local announce_spawning_goblins = true
 -- local routine for do_custom so that api doesn't need changed
+
+local announce_goblin_spawn = function(self)
+    if announce_spawning_goblins == true then    
+    local pos = vector.round(self.object:getpos())
+    if not pos then return end
+        print( self.name:split(":")[2].. ":" .. minetest.pos_to_string(pos))
+    end                    
+end
+    
 local search_replace2 = function(
 	self,
 	search_rate,
@@ -99,10 +108,11 @@ end
 mobs:register_mob("goblins:goblin_cobble", {
 	description = "Cobble Goblin",
 	type = "npc",
-	passive = true,
+	passive = false,
 	damage = 1,
 	attack_type = "dogfight",
 	attack_monsters = true,
+    attack_npcs = false,
     runaway = true,
 	hp_min = 5,
 	hp_max = 10,
@@ -149,7 +159,9 @@ mobs:register_mob("goblins:goblin_cobble", {
 		punch_start = 200,
 		punch_end = 219,
 	},
-
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
 		if not mobs:feed_tame(self, clicker, 8, false, false) then
@@ -196,7 +208,8 @@ mobs:register_egg("goblins:goblin_cobble", "Goblin Egg (cobble)", "default_mossy
 mobs:register_mob("goblins:goblin_digger", {
 	description = "Digger Goblin",
 	type = "npc",
-	passive = true,
+    attack_npcs = false,  
+	passive = false,
 	damage = 1,
 	attack_type = "dogfight",
 	attack_monsters = true,
@@ -246,6 +259,10 @@ mobs:register_mob("goblins:goblin_digger", {
 		punch_end = 219,
 	},
 
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
+        
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
 		if not mobs:feed_tame(self, clicker, 8, false, false) then
@@ -295,10 +312,11 @@ mobs:register_egg("goblins:goblin_digger", "Goblin Egg (digger)", "default_mossy
 mobs:register_mob("goblins:goblin_coal", {
 	description = "Coal Goblin",
 	type = "npc",
-	passive = true,
+	passive = false,
 	damage = 1,
 	attack_type = "dogfight",
 	attack_monsters = true,
+    attack_npcs = false,
 	hp_min = 5,
 	hp_max = 10,
 	armor = 100,
@@ -342,7 +360,11 @@ mobs:register_mob("goblins:goblin_coal", {
 		punch_start = 200,
 		punch_end = 219,
 	},
-
+        
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
+        
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
 		if not mobs:feed_tame(self, clicker, 8, false, false) then
@@ -390,10 +412,11 @@ mobs:register_egg("goblins:goblin_coal", "Goblin Egg (coal)", "default_mossycobb
 mobs:register_mob("goblins:goblin_iron", {
 	description = "Iron Goblin",
 	type = "npc",
-	passive = true,
+	passive = false,
 	damage = 2,
 	attack_type = "dogfight",
 	attack_monsters = true,
+    attack_npcs = false,
     group_attack = true,
 	hp_min = 10,
 	hp_max = 20,
@@ -438,6 +461,10 @@ mobs:register_mob("goblins:goblin_iron", {
 		punch_start = 200,
 		punch_end = 219,
 	},
+
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
 
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
@@ -486,10 +513,11 @@ mobs:register_egg("goblins:goblin_iron", "Goblin Egg (iron)", "default_mossycobb
 mobs:register_mob("goblins:goblin_copper", {
 	description = "Copper Goblin",
 	type = "npc",
-	passive = true,
+	passive = false,
 	damage = 2,
 	attack_type = "dogfight",
 	attack_monsters = true,
+    attack_npcs = false,
     group_attack = true,
 	hp_min = 10,
 	hp_max = 20,
@@ -534,6 +562,10 @@ mobs:register_mob("goblins:goblin_copper", {
 		punch_start = 200,
 		punch_end = 219,
 	},
+
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
 
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
@@ -586,6 +618,7 @@ mobs:register_mob("goblins:goblin_gold", {
 	damage = 3,
 	attack_type = "dogfight",
 	attack_monsters = true,
+    attack_npcs = false,
 	hp_min = 10,
 	hp_max = 30,
 	armor = 100,
@@ -630,6 +663,10 @@ mobs:register_mob("goblins:goblin_gold", {
 		punch_end = 219,
 	},
 
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
+            
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
 		if not mobs:feed_tame(self, clicker, 8, false, false) then
@@ -682,6 +719,7 @@ mobs:register_mob("goblins:goblin_diamond", {
 	attack_type = "dogfight",
     attack_players = true,
 	attack_monsters = true,
+    attack_npcs = false,
 	hp_min = 20,
 	hp_max = 30,
 	armor = 100,
@@ -726,6 +764,10 @@ mobs:register_mob("goblins:goblin_diamond", {
 		punch_end = 219,
 	},
 
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
+        
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
 		if not mobs:feed_tame(self, clicker, 8, false, false) then
@@ -779,6 +821,7 @@ mobs:register_mob("goblins:goblin_king", {
 	attack_type = "dogfight",
 	attack_monsters = true,
     attack_players = true,
+    attack_npcs = false,
 	hp_min = 20,
 	hp_max = 40,
 	armor = 100,
@@ -822,6 +865,10 @@ mobs:register_mob("goblins:goblin_king", {
 		punch_end = 219,
 	},
 
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
+        
 	on_rightclick = function(self, clicker)
 		-- feed to heal goblin (breed and tame set to false)
 		if not mobs:feed_tame(self, clicker, 8, false, false) then
@@ -888,13 +935,13 @@ active_object_count,
 min_height, 
 max_height)
 ]]
-mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air", 0, 50, 1, 5, 3, -30000 , -10)
-mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air", 0, 50, 1, 5, 3, -30000 , -10)
-mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",0, 50, 1, 2, 3, -30000, -20)
-mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air", 0, 50, 1, 2, 3, -30000, -30)
-mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air", 0, 50, 1, 2, 3, -30000, -40)
-mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",0, 50, 1, 2, 2, -30000, -50)
-mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air", 0, 50, 1,2, 3, -30000, -80)
-mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air", 0, 50, 1, 10, 3, -30000, -100)
+mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air", 0, 50, 30, 1000, 3, -30000 , -10)
+mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air", 0, 50, 30, 1000, 4, -30000 , -10)
+mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",0, 50, 30, 1000, 3, -30000, -20)
+mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air", 0, 50, 30, 1500, 3, -30000, -30)
+mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air", 0, 50, 30, 3000, 2, -30000, -50)
+mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",0, 50, 30, 5000, 2, -30000, -100)
+mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air", 0, 50, 90, 15000, 2, -30000, -200)
+mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air", 0, 50, 90, 15000, 1, -30000, -300)
 
 print ("[MOD] goblins 20200411 is loadids!")

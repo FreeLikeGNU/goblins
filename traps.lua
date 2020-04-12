@@ -13,7 +13,7 @@ minetest.register_node("goblins:mossycobble_trap", {
 })
 
 minetest.register_node("goblins:stone_with_coal_trap", {
-	description = "Coal Trap",
+	description = "Foul Coal",
 	tiles = {"default_cobble.png^default_mineral_coal.png"},
 	groups = {cracky = 1, level = 2},
 	drop = 'default:coal_lump',
@@ -52,7 +52,7 @@ minetest.register_node("goblins:stone_with_iron_trap", {
 	end,
 })
 minetest.register_node("goblins:stone_with_copper_trap", {
-	description = "Copper Gore",
+	description = "Gobber Ore",
 	tiles = {"default_cobble.png^default_mineral_copper.png"},
 	groups = {cracky = 1, level = 2},
 	drop = 'default:copper_lump',
@@ -70,7 +70,7 @@ minetest.register_node("goblins:stone_with_copper_trap", {
 	end,
 })
 minetest.register_node("goblins:stone_with_gold_trap", {
-	description = "Gold Gore",
+	description = "Gold Shinies",
 	tiles = {"default_cobble.png^default_mineral_gold.png"},
 	groups = {cracky = 1,level = 2},
 	drop = 'default:gold_lump',
@@ -88,7 +88,7 @@ minetest.register_node("goblins:stone_with_gold_trap", {
 	end,
 })
 minetest.register_node("goblins:stone_with_diamond_trap", {
-	description = "Diamond Gore",
+	description = "Pretty Diamonds",
 	tiles = {"default_cobble.png^default_mineral_diamond.png"},
 	groups = {cracky = 1, level = 3},
 	drop = 'default:diamond',
