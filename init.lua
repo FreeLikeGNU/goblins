@@ -1,6 +1,7 @@
 dofile(minetest.get_modpath("goblins").."/traps.lua")
 
 -- Npc by TenPlus1 converted for FLG Goblins :D
+
 minetest.log("action", "[MOD] goblins 20200411 is lowdings....")
 local goblin_drops = {
 	"default:pick_steel",  "default:sword_steel",
@@ -28,7 +29,7 @@ local announce_goblin_spawn = function(self)
         print( self.name:split(":")[2].. ":" .. minetest.pos_to_string(pos))
     end                    
 end
-    
+
 local search_replace2 = function(
 	self,
 	search_rate,
@@ -113,7 +114,7 @@ mobs:register_mob("goblins:goblin_cobble", {
 	attack_type = "dogfight",
 	attack_monsters = true,
     attack_npcs = false,
-    runaway = true,
+runaway = false,
 	hp_min = 5,
 	hp_max = 10,
 	armor = 100,
@@ -170,7 +171,7 @@ mobs:register_mob("goblins:goblin_cobble", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -193,12 +194,11 @@ mobs:register_mob("goblins:goblin_cobble", {
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
-		{	"default:stone",
-			"default:desert_stone",
+		2, --replace_rate
+		{	"group:stone",
 			"default:torch"}, --replace_what
 		"default:mossycobble", --replace_with
-		1, --replace_rate_secondary
+		30, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
 		)
 	end,
@@ -271,7 +271,7 @@ mobs:register_mob("goblins:goblin_digger", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -373,7 +373,7 @@ mobs:register_mob("goblins:goblin_coal", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -397,11 +397,11 @@ mobs:register_mob("goblins:goblin_coal", {
 		2, --search_offset_above
 		1, --search_offset_below
 		5, --replace_rate
-		{	"default:stone",
+		{	"default:mossycobble",
 			"default:stone_with_coal",
 			"default:torch"}, --replace_what
-		"air", --replace_with
-		1, --replace_rate_secondary
+		"default:mossycobble", --replace_with
+		50, --replace_rate_secondary
 		"goblins:stone_with_coal_trap" --replace_with_secondary
 		)
 	end,
@@ -416,6 +416,7 @@ mobs:register_mob("goblins:goblin_iron", {
 	damage = 2,
 	attack_type = "dogfight",
 	attack_monsters = true,
+    attack_player = true,    
     attack_npcs = false,
     group_attack = true,
 	hp_min = 10,
@@ -474,7 +475,7 @@ mobs:register_mob("goblins:goblin_iron", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -498,12 +499,11 @@ mobs:register_mob("goblins:goblin_iron", {
 		2, --search_offset_above
 		1, --search_offset_below
 		5, --replace_rate
-		{	"default:stone",
-			"default:desert_stone",
+		{	"default:mossycobble",
 			"default:stone_with_iron",
 			"default:torch"}, --replace_what
-		"air", --replace_with
-		1, --replace_rate_secondary
+		"default:mossycobble", --replace_with
+		50, --replace_rate_secondary
 		"goblins:stone_with_iron_trap" --replace_with_secondary
 		)
 	end,
@@ -575,7 +575,7 @@ mobs:register_mob("goblins:goblin_copper", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -599,12 +599,11 @@ mobs:register_mob("goblins:goblin_copper", {
 		2, --search_offset_above
 		1, --search_offset_below
 		5, --replace_rate
-		{	"default:stone",
-			"default:desert_stone",
+		{	"default:mossycobble",
 			"default:stone_with_copper",
 			"default:torch"}, --replace_what
-		"air", --replace_with
-		1, --replace_rate_secondary
+		"default:mossycobble", --replace_with
+		50, --replace_rate_secondary
 		"goblins:stone_with_copper_trap" --replace_with_secondary
 		)
 	end,
@@ -675,7 +674,7 @@ mobs:register_mob("goblins:goblin_gold", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -704,7 +703,7 @@ mobs:register_mob("goblins:goblin_gold", {
 			"default:stone_with_gold",
 			"default:torch"}, --replace_what
 		"air", --replace_with
-		1, --replace_rate_secondary
+		30, --replace_rate_secondary
 		"goblins:stone_with_gold_trap" --replace_with_secondary
 		)
 	end,
@@ -776,7 +775,7 @@ mobs:register_mob("goblins:goblin_diamond", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -800,12 +799,11 @@ mobs:register_mob("goblins:goblin_diamond", {
 		2, --search_offset_above
 		1, --search_offset_below
 		5, --replace_rate
-		{	"default:stone",
-			"default:desert_stone",
+		{	"default:mossycobble",
 			"default:stone_with_diamond",
 			"default:torch"}, --replace_what
-		"air", --replace_with
-		1, --replace_rate_secondary
+		"default:mossycobble", --replace_with
+		30, --replace_rate_secondary
 		"goblins:stone_with_diamond_trap" --replace_with_secondary
 		)
 	end,
@@ -877,7 +875,7 @@ mobs:register_mob("goblins:goblin_king", {
 
 			-- right clicking with gold lump drops random item from mobs.npc_drops
 			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
+				if not minetest.settings:get_bool("creative_mode") then
 					item:take_item()
 					clicker:set_wielded_item(item)
 				end
@@ -935,13 +933,13 @@ active_object_count,
 min_height, 
 max_height)
 ]]
-mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air", 0, 50, 30, 1000, 3, -30000 , -10)
-mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air", 0, 50, 30, 1000, 4, -30000 , -10)
-mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",0, 50, 30, 1000, 3, -30000, -20)
-mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air", 0, 50, 30, 1500, 3, -30000, -30)
-mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air", 0, 50, 30, 3000, 2, -30000, -50)
-mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",0, 50, 30, 5000, 2, -30000, -100)
-mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air", 0, 50, 90, 15000, 2, -30000, -200)
-mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air", 0, 50, 90, 15000, 1, -30000, -300)
+mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air",                                            0, 50, 30, 1000, 3, -30000 , -10)
+mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air",                                           0, 50, 30, 1000, 4, -30000 , -15)
+mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",           0, 50, 20, 500, 3, -30000, -20)
+mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air",           0, 50, 20, 500, 3, -30000, -30)
+mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air",       0, 50, 30, 500, 2, -30000, -50)
+mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",           0, 50, 30, 500, 2, -30000, -100)
+mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air",    0, 50, 60, 1000, 2, -30000, -200)
+mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air",                                      0, 50, 90, 2000, 1, -30000, -300)
 
-print ("[MOD] goblins 20200411 is loadids!")
+minetest.log("action", "[MOD] goblins 20200411 is lodids!")

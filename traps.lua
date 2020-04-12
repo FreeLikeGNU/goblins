@@ -1,4 +1,5 @@
 --[[some nasty things goblins can do]]
+-- Many thanks for AntumDeluge https://github.com/AntumDeluge for replacing the depcrecated methods!
 --Super thanks to duane-r for his work: https://github.com/duane-r/mobs_goblins/blob/work/goblin_traps.lua
 
 
@@ -51,6 +52,7 @@ minetest.register_node("goblins:stone_with_iron_trap", {
 		end
 	end,
 })
+
 minetest.register_node("goblins:stone_with_copper_trap", {
 	description = "Gobber Ore",
 	tiles = {"default_cobble.png^default_mineral_copper.png"},
@@ -69,6 +71,7 @@ minetest.register_node("goblins:stone_with_copper_trap", {
 		end
 	end,
 })
+
 minetest.register_node("goblins:stone_with_gold_trap", {
 	description = "Gold Shinies",
 	tiles = {"default_cobble.png^default_mineral_gold.png"},
@@ -87,6 +90,7 @@ minetest.register_node("goblins:stone_with_gold_trap", {
 		end
 	end,
 })
+
 minetest.register_node("goblins:stone_with_diamond_trap", {
 	description = "Pretty Diamonds",
 	tiles = {"default_cobble.png^default_mineral_diamond.png"},
@@ -210,7 +214,7 @@ minetest.register_abm({
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 0.95)) do -- IDKWTF this is but it works
+		for _,object in ipairs(minetest.get_objects_inside_radius(pos, 0.95)) do -- IDKWTF this is but it works
 				if object:is_player() then
 					object:set_physics_override({speed = 0.1})
 					minetest.after(1, function() -- this effect is temporary
@@ -225,7 +229,7 @@ minetest.register_abm({
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 3)) do
+		for _,object in ipairs(minetest.get_objects_inside_radius(pos, 3)) do
 			if object:is_player() then
 				minetest.set_node(pos, {name="fire:basic_flame"})
 				if object:get_hp() > 0 then
@@ -247,7 +251,7 @@ minetest.register_abm({
 	interval = 2,
 	chance = 2, --this may be a dud
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 2)) do
+		for _,object in ipairs(minetest.get_objects_inside_radius(pos, 2)) do
 			if object:is_player() then
 				if object:get_hp() > 0 then
 					object:set_hp(object:get_hp()-1)
@@ -281,7 +285,7 @@ minetest.register_abm({
 	interval = 1,
 	chance = 2,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 3)) do
+		for _,object in ipairs(minetest.get_objects_inside_radius(pos, 3)) do
 			if object:is_player() then
 				if object:get_hp() > 0 then
 					object:set_hp(object:get_hp()-1)
@@ -298,7 +302,7 @@ minetest.register_abm({
 	interval = 1,
 	chance = 2,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 2)) do
+		for _,object in ipairs(minetest.get_objects_inside_radius(pos, 2)) do
 			if object:is_player() then
 				minetest.set_node(pos, {name="goblins:molten_gold_source"})
 				if object:get_hp() > 0 then
@@ -312,7 +316,7 @@ minetest.register_abm({
 		end
 	end})
 
-local setting = minetest.setting_getbool("enable_tnt")
+local setting = minetest.settings:get_bool("enable_tnt")
 if setting == true then
 	print("enable_tnt = true")
 else
@@ -325,7 +329,7 @@ if ( minetest.is_singleplayer() ~= true and setting ~= true) or (minetest.is_sin
 		interval = 1,
 		chance = 1,
 		action = function(pos, node, active_object_count, active_object_count_wider)
-			for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 3)) do
+			for _,object in ipairs(minetest.get_objects_inside_radius(pos, 3)) do
 				if object:is_player() then
 					minetest.set_node(pos, {name="default:lava_source"})
 					if object:get_hp() > 0 then
@@ -345,7 +349,7 @@ else
 		interval = 1,
 		chance = 1,
 		action = function(pos, node, active_object_count, active_object_count_wider)
-			for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 3)) do
+			for _,object in ipairs(minetest.get_objects_inside_radius(pos, 3)) do
 				if object:is_player() then
 					minetest.set_node(pos, {name="tnt:tnt_burning"})
 					minetest.get_node_timer(pos):start(5)
