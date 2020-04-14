@@ -1,8 +1,10 @@
 dofile(minetest.get_modpath("goblins").."/traps.lua")
+dofile(minetest.get_modpath("goblins").."/nodes.lua")
+dofile(minetest.get_modpath("goblins").."/items.lua")
 
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
-minetest.log("action", "[MOD] goblins 20200411 is lowdings....")
+minetest.log("action", "[MOD] goblins 20200413 is lowdings....")
 local goblin_drops = {
 	"default:pick_steel",  "default:sword_steel",
 	"default:shovel_steel", "farming:bread", "bucket:bucket_water"
@@ -133,12 +135,17 @@ runaway = false,
 	run_velocity = 3,
 	jump = true,
 	drops = {
+		{name = "goblins:mushroom_goblin",
+		chance = 2, min = 1, max = 5},
 		{name = "default:mossycobble",
-		chance = 1, min = 1, max = 3},
-		{name = "default:apple",
-		chance = 2, min = 1, max = 2},
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
 		{name = "default:torch",
-		chance = 3, min = 1, max = 10},
+		chance = 4, min = 1, max = 10},
+        {name = "goblins:pick_mossycobble",
+        chance = 3, min = 1, max = 1},    
+            
 	},
 	water_damage = 0,
 	lava_damage = 2,
@@ -198,12 +205,115 @@ runaway = false,
 		{	"group:stone",
 			"default:torch"}, --replace_what
 		"default:mossycobble", --replace_with
-		30, --replace_rate_secondary
+		50, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
 		)
 	end,
 })
 mobs:register_egg("goblins:goblin_cobble", "Goblin Egg (cobble)", "default_mossycobble.png", 1)
+
+mobs:register_mob("goblins:goblin_fungiler", {
+	description = "Goblin Fungiler",
+	type = "npc",
+	passive = false,
+	damage = 1,
+	attack_type = "dogfight",
+	attack_monsters = true,
+    attack_npcs = false,
+    runaway = false,
+	hp_min = 5,
+	hp_max = 10,
+	armor = 100,
+	collisionbox = {-0.35,-1,-0.35, 0.35,-.1,0.35},
+	visual = "mesh",
+	mesh = "goblins_goblin.b3d",
+	drawtype = "front",
+		textures = {
+			{"goblins_goblin_cobble1.png"},
+			{"goblins_goblin_cobble2.png"},
+			
+		},
+	makes_footstep_sound = true,
+	sounds = goblin_sounds,
+	walk_velocity = 2,
+	run_velocity = 3,
+	jump = true,
+	drops = {
+		{name = "goblins:mushroom_goblin",
+		chance = 1, min = 1, max = 5},
+		{name = "default:mossycobble",
+		chance = 10, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 10, min = 1, max = 2},
+		{name = "default:torch",
+		chance = 20, min = 1, max = 5},
+        {name = "goblins:pick_mossycobble",
+        chance = 10, min = 1, max = 1},    
+            
+	},
+	water_damage = 0,
+	lava_damage = 2,
+	light_damage = 0,
+	lifetimer = 360,
+	follow = {"default:diamond", "default:apple", "farming:bread"},
+	view_range = 10,
+	owner = "",
+	order = "follow",
+	animation = {
+		speed_normal = 30,
+		speed_run = 30,
+		stand_start = 0,
+		stand_end = 79,
+		walk_start = 168,
+		walk_end = 187,
+		run_start = 168,
+		run_end = 187,
+		punch_start = 200,
+		punch_end = 219,
+	},
+    on_spawn = function(self)
+       announce_goblin_spawn(self)          
+       end,
+	on_rightclick = function(self, clicker)
+		-- feed to heal goblin (breed and tame set to false)
+		if not mobs:feed_tame(self, clicker, 8, false, false) then
+			local item = clicker:get_wielded_item()
+			local name = clicker:get_player_name()
+
+			-- right clicking with gold lump drops random item from mobs.npc_drops
+			if item:get_name() == "default:gold_lump" then
+				if not minetest.settings:get_bool("creative_mode") then
+					item:take_item()
+					clicker:set_wielded_item(item)
+				end
+				local pos = self.object:getpos()
+				pos.y = pos.y + 0.5
+				minetest.add_item(pos, {
+					name = goblin_drops[math.random(1, #goblin_drops)]
+				})
+				return
+			end
+		end
+	end,
+
+	do_custom = function(self)
+		search_replace2(
+		self,
+		10, --search_rate
+		1, --search_rate_above
+		1, --search_rate_below
+		1, --search_offset
+		2, --search_offset_above
+		1, --search_offset_below
+		50, --replace_rate
+		{	"default:mossycobble",
+			"default:torch"}, --replace_what
+		"goblins:mushroom_goblin", --replace_with
+		50, --replace_rate_secondary
+		"default:mossycobble" --replace_with_secondary
+		)
+	end,
+})
 
 mobs:register_mob("goblins:goblin_digger", {
 	description = "Digger Goblin",
@@ -231,12 +341,16 @@ mobs:register_mob("goblins:goblin_digger", {
 	jump = true,
 	jump_height = 5,
 	drops = {
+		{name = "goblins:mushroom_goblin",
+		chance = 2, min = 1, max = 5},
 		{name = "default:mossycobble",
-		chance = 1, min = 1, max = 3},
-		{name = "default:apple",
-		chance = 2, min = 1, max = 2},
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
 		{name = "default:torch",
-		chance = 3, min = 1, max = 10},
+		chance = 4, min = 1, max = 10},
+        {name = "goblins:pick_mossycobble",
+        chance = 3, min = 1, max = 1},    
 	},
 	water_damage = 0,
 	lava_damage = 2,
@@ -336,10 +450,16 @@ mobs:register_mob("goblins:goblin_coal", {
 	drops = {
 		{name = "default:coal_lump",
 		chance = 1, min = 1, max = 3},
-		{name = "default:apple",
-		chance = 2, min = 1, max = 2},
+		{name = "goblins:mushroom_goblin",
+		chance = 2, min = 1, max = 5},
+		{name = "default:mossycobble",
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
 		{name = "default:torch",
-		chance = 3, min = 1, max = 10},
+		chance = 4, min = 1, max = 10},
+        {name = "default:pick_bronze",
+        chance = 5, min = 1, max = 1},    
 	},
 	water_damage = 0,
 	lava_damage = 2,
@@ -438,8 +558,16 @@ mobs:register_mob("goblins:goblin_iron", {
 	drops = {
 		{name = "default:iron_lump",
 		chance = 1, min = 1, max = 3},
-		{name = "default:apple",
-		chance = 2, min = 1, max = 2},
+		{name = "goblins:mushroom_goblin",
+		chance = 2, min = 1, max = 5},
+		{name = "default:mossycobble",
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
+		{name = "default:torch",
+		chance = 4, min = 1, max = 10},
+        {name = "default:pick_bronze",
+        chance = 5, min = 1, max = 1},    
 		{name = "default:pick_steel",
 		chance = 5, min = 1, max = 1},
 	},
@@ -538,8 +666,16 @@ mobs:register_mob("goblins:goblin_copper", {
 	drops = {
 		{name = "default:copper_lump",
 		chance = 1, min = 1, max = 3},
-		{name = "default:apple",
-		chance = 2, min = 1, max = 2},
+		{name = "goblins:mushroom_goblin",
+		chance = 2, min = 1, max = 5},
+		{name = "default:mossycobble",
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
+		{name = "default:torch",
+		chance = 4, min = 1, max = 10},
+        {name = "default:pick_bronze",
+        chance = 5, min = 1, max = 1},    
 		{name = "default:pick_steel",
 		chance = 5, min = 1, max = 1},
 	},
@@ -638,7 +774,15 @@ mobs:register_mob("goblins:goblin_gold", {
 		{name = "default:gold_lump",
 		chance = 1, min = 1, max = 3},
 		{name = "default:apple",
-		chance = 2, min = 1, max = 2},
+		chance = 2, min = 1, max = 5},
+		{name = "default:mossycobble",
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
+		{name = "default:torch",
+		chance = 4, min = 1, max = 10},
+        {name = "default:pick_bronze",
+        chance = 5, min = 1, max = 1},    
 		{name = "default:gold_ingot",
 		chance = 5, min = 1, max = 1},
 	},
@@ -738,7 +882,7 @@ mobs:register_mob("goblins:goblin_diamond", {
 	drops = {
 		{name = "default:pick_diamond",
 		chance = 1, min = 1, max = 1},
-		{name = "default:apple",
+		{name = "goblins:mushroom_goblin",
 		chance = 2, min = 1, max = 10},
 		{name = "default:diamond",
 		chance = 5, min = 1, max = 1},
@@ -838,8 +982,16 @@ mobs:register_mob("goblins:goblin_king", {
 	drops = {
 		{name = "default:pick_mese",
 		chance = 1, min = 1, max = 1},
-		{name = "default:apple",
-		chance = 2, min = 1, max = 10},
+		{name = "goblins:mushroom_goblin",
+		chance = 2, min = 1, max = 5},
+		{name = "default:mossycobble",
+		chance = 2, min = 1, max = 3},
+		{name = "default:flint",
+		chance = 3, min = 1, max = 2},
+		{name = "default:torch",
+		chance = 4, min = 1, max = 10},
+        {name = "default:pick_bronze",
+        chance = 5, min = 1, max = 1},    
 		{name = "default:mese_crystal",
 		chance = 5, min = 1, max = 1},
 	},
@@ -909,19 +1061,10 @@ mobs:register_mob("goblins:goblin_king", {
 })
 mobs:register_egg("goblins:goblin_king", "Goblin King Egg", "default_mossycobble.png", 1)
 
--- spawn at or below 0 near ore and dungeons and goblin lairs (areas of mossy cobble), except diggers that will dig out caves from stone and cobble goblins who create goblin lairs near stone.
---function mobs_goblins:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height)
---[[
-mobs:register_spawn("goblins:goblin_cobble", {"group:stone"}, 100, 0, 20, 4, 0)
-mobs:register_spawn("goblins:goblin_digger", {"group:stone"}, 100, 0, 20, 4, 0)
-mobs:register_spawn("goblins:goblin_coal", {"default:stone_with_coal"}, 100, 0, 1, 3, 0)
-mobs:register_spawn("goblins:goblin_iron", {"default:stone_with_iron"}, 100, 0, 1, 3, -20)
-mobs:register_spawn("goblins:goblin_copper", {"default:stone_with_copper","default:mossycobble"}, 100, 0, 1, 3, -30)
-mobs:register_spawn("goblins:goblin_gold", {"default:stone_with_gold" }, 100, 0, 1, 2, -40)
-mobs:register_spawn("goblins:goblin_diamond", {"default:stone_with_diamond"}, 100, 0, 1, 2, -60)
-mobs:register_spawn("goblins:goblin_king", {"default:stone_with_mese","default:mossycobble", }, 100, 0, 2, 1, -100)
-]]
---[[ function mobs_goblins:spawn_specific(
+-- spawn at or below 10 near ore and dungeons and goblin lairs (areas of mossy cobble), except diggers that will dig out caves from stone and cobble goblins who create goblin lairs near stone.
+--function mobs:spawn_specific:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height)
+
+--[[ function mobs:spawn_specific:spawn_specific(
 name,
 nodes, 
 neighbors, 
@@ -934,6 +1077,7 @@ min_height,
 max_height)
 ]]
 mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air",                                            0, 50, 30, 1000, 3, -30000 , -10)
+mobs:spawn_specific("goblins:goblin_fungiler", {"default:mossycobble"}, "air",                                  0, 50, 30, 1500, 1, -30000 , -10)
 mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air",                                           0, 50, 30, 1000, 4, -30000 , -15)
 mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",           0, 50, 20, 500, 3, -30000, -20)
 mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air",           0, 50, 20, 500, 3, -30000, -30)
@@ -942,4 +1086,4 @@ mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:
 mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air",    0, 50, 60, 1000, 2, -30000, -200)
 mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air",                                      0, 50, 90, 2000, 1, -30000, -300)
 
-minetest.log("action", "[MOD] goblins 20200411 is lodids!")
+minetest.log("action", "[MOD] goblins 20200413 is lodids!")
