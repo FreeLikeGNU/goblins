@@ -1,3 +1,5 @@
+--set namespace for goblins functions
+goblins = {}
 
 minetest.register_node(":default:mossycobble", {
 	description = "Mossy Cobblestone",
@@ -8,9 +10,6 @@ minetest.register_node(":default:mossycobble", {
 	paramtype = "light",
 	light_source = 2,
 })
-
-
-
 
 minetest.register_node("goblins:mushroom_goblin", {
 	description = "gobble mushroom",
@@ -32,3 +31,33 @@ minetest.register_node("goblins:mushroom_goblin", {
 	}
 })
 
+function goblins.mushroom_spread(pos, node)
+	if minetest.get_node_light(pos, 0.5) > 6 then
+		if minetest.get_node_light(pos, nil) == 15 then
+			minetest.remove_node(pos)
+		end
+		return
+	end
+	local positions = minetest.find_nodes_in_area_under_air(
+		{x = pos.x - 1, y = pos.y - 2, z = pos.z - 1},
+		{x = pos.x + 1, y = pos.y + 1, z = pos.z + 1},
+		{"default:mossycobble"})
+	if #positions == 0 then
+		return
+	end
+	local pos2 = positions[math.random(#positions)]
+	pos2.y = pos2.y + 1
+	if minetest.get_node_light(pos2, 0.5) <= 5 then
+		minetest.set_node(pos2, {name = node.name})
+	end
+end
+
+minetest.register_abm({
+	label = "Mushroom spread",
+	nodenames = {"goblins:mushroom_goblin"},
+	interval = 11,
+	chance = 100,
+	action = function(...)
+		goblins.mushroom_spread(...)
+	end,
+})

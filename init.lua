@@ -2,6 +2,8 @@ dofile(minetest.get_modpath("goblins").."/traps.lua")
 dofile(minetest.get_modpath("goblins").."/nodes.lua")
 dofile(minetest.get_modpath("goblins").."/items.lua")
 
+
+
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
 minetest.log("action", "[MOD] goblins 20200413 is lowdings....")
@@ -203,7 +205,7 @@ runaway = false,
 		1, --search_offset_below
 		2, --replace_rate
 		{	"group:stone",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"default:mossycobble", --replace_with
 		50, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
@@ -307,7 +309,7 @@ mobs:register_mob("goblins:goblin_fungiler", {
 		1, --search_offset_below
 		50, --replace_rate
 		{	"default:mossycobble",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"goblins:mushroom_goblin", --replace_with
 		50, --replace_rate_secondary
 		"default:mossycobble" --replace_with_secondary
@@ -406,7 +408,7 @@ mobs:register_mob("goblins:goblin_digger", {
 		20, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
-		1, --search_offset_above
+		2, --search_offset_above
 		1.5, --search_offset_below
 		4, --replace_rate
 		{	"group:soil",
@@ -414,7 +416,7 @@ mobs:register_mob("goblins:goblin_digger", {
 			"default:gravel",
 			"default:stone",
 			"default:desert_stone",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"air", --replace_with
 		nil, --replace_rate_secondary
 		nil --replace_with_secondary
@@ -519,7 +521,7 @@ mobs:register_mob("goblins:goblin_coal", {
 		5, --replace_rate
 		{	"default:mossycobble",
 			"default:stone_with_coal",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"default:mossycobble", --replace_with
 		50, --replace_rate_secondary
 		"goblins:stone_with_coal_trap" --replace_with_secondary
@@ -629,7 +631,7 @@ mobs:register_mob("goblins:goblin_iron", {
 		5, --replace_rate
 		{	"default:mossycobble",
 			"default:stone_with_iron",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"default:mossycobble", --replace_with
 		50, --replace_rate_secondary
 		"goblins:stone_with_iron_trap" --replace_with_secondary
@@ -737,7 +739,7 @@ mobs:register_mob("goblins:goblin_copper", {
 		5, --replace_rate
 		{	"default:mossycobble",
 			"default:stone_with_copper",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"default:mossycobble", --replace_with
 		50, --replace_rate_secondary
 		"goblins:stone_with_copper_trap" --replace_with_secondary
@@ -845,7 +847,7 @@ mobs:register_mob("goblins:goblin_gold", {
 		{	"default:stone",
 			"default:desert_stone",
 			"default:stone_with_gold",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"air", --replace_with
 		30, --replace_rate_secondary
 		"goblins:stone_with_gold_trap" --replace_with_secondary
@@ -945,7 +947,7 @@ mobs:register_mob("goblins:goblin_diamond", {
 		5, --replace_rate
 		{	"default:mossycobble",
 			"default:stone_with_diamond",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"default:mossycobble", --replace_with
 		30, --replace_rate_secondary
 		"goblins:stone_with_diamond_trap" --replace_with_secondary
@@ -1052,7 +1054,7 @@ mobs:register_mob("goblins:goblin_king", {
 		1, --search_offset_below
 		5, --replace_rate
 		{	"group:stone",
-			"default:torch"}, --replace_what
+			"group:torch"}, --replace_what
 		"default:mossycobble", --replace_with
 		3, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
