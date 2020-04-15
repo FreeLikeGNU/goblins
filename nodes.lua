@@ -16,7 +16,7 @@ minetest.register_node("goblins:mushroom_goblin", {
 	tiles = {"goblins_mushroom_brown.png"},
 	inventory_image = "goblins_mushroom_brown.png",
 	wield_image = "goblins_mushroom_brown.png",
-	drawtype = "plantlike",
+	drawtype = "firelike",
 	paramtype = "light",
     light_source = 2,
 	sunlight_propagates = true,

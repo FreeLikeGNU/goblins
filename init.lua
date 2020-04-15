@@ -4,7 +4,7 @@ dofile(minetest.get_modpath("goblins").."/items.lua")
 
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
-minetest.log("action", "[MOD] goblins 20200414 is lowdings....")
+minetest.log("action", "[MOD] goblins 20200415 is lowdings....")
 
 local debugging_goblins = false
 local announce_spawning_goblins = true
@@ -156,7 +156,7 @@ local give_goblin = function(self,clicker)
     if not mobs:feed_tame(self, clicker, 8, false, false) then
         local item = clicker:get_wielded_item()
         local name = clicker:get_player_name()
-        print(dump({item, name}))
+        --print(dump({item, name}))
         -- right clicking with gold lump drops random item from mobs.npc_drops
             if item:get_name() == "default:gold_lump" then
             if not minetest.settings:get_bool("creative_mode") then
@@ -167,7 +167,7 @@ local give_goblin = function(self,clicker)
             local pos = self.object:getpos()          
                 pos.y = pos.y + 0.5
                 minetest.add_item(pos, {
-                name = goblin_drops[math.random(1, #goblin_drops)]
+                name = goblins.defaults.drops[math.random(1, #goblins.defaults.drops)]
                 })
             return
         end
@@ -227,6 +227,7 @@ mobs:register_mob("goblins:goblin_snuffer", {
        end,
         
     on_rightclick = function(self,clicker) 
+        --print(dump(clicker).. "gives" ..dump(self))
         give_goblin(self,clicker)
        end,
              
@@ -247,6 +248,7 @@ mobs:register_mob("goblins:goblin_snuffer", {
 		)
 	end,
 })
+
 mobs:register_egg("goblins:goblin_snuffer", "Goblin Egg (snuffer)", "default_mossycobble.png", 1)
 
 mobs:register_mob("goblins:goblin_digger", {
@@ -980,4 +982,4 @@ mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:
 mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air",    0, 50, 60, 1000, 2, -30000, -200)
 mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air",                                      0, 50, 90, 2000, 1, -30000, -300)
 
-minetest.log("action", "[MOD] goblins 20200414 is lodids!")
+minetest.log("action", "[MOD] goblins 20200415 is lodids!")
