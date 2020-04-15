@@ -3,11 +3,10 @@
 https://forum.minetest.net/viewtopic.php?f=9&t=13004
 https://github.com/FreeLikeGNU/goblins
 
-
 This mod adds several Goblins to Minetest that should spawn near ore deposits or lairs underground.
 
 * Goblins dig caves, destroy torches, create lairs, set traps, cultivate mushrooms and some are aggressive.
-* Additional mushrooms to be found in lairs and dungeons
+
 * tested with Mintest 5.30(dev)
 * Required: Mobs Redo by TenPlus1 API as of version 20200411: to run
  	https://forum.minetest.net/viewtopic.php?f=9&t=9917
