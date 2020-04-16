@@ -30,7 +30,10 @@ Additional source and content credits:
 * goblin mushrooms from "flowers" mod source code:
 	Originally by Ironzorg (MIT) and VanessaE (MIT)
 	Various Minetest developers and contributors (MIT)
-* goblins_mushroom_brown.png by Gambit (CC BY-SA 3.0)
+
+* mushrooms.xcf Copyright Francisco Athens (CC BY-SA 3.0) 2020
+* goblins_mushroom_brown.png, goblins_mushroom_brown2.png goblins_mushroom_brown3.png goblins_mushroom_brown4.png Copyright Francisco Athens (CC BY-SA 3.0) 2020
+
 
 * Sound files by:
  * artisticdude http://opengameart.org/content/goblins-sound-pack (CC0-license)

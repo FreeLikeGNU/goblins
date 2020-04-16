@@ -87,7 +87,8 @@ local search_replace2 = function(
 	replace_what,
 	replace_with,
 	replace_rate_secondary,
-	replace_with_secondary)
+	replace_with_secondary,
+	decorate)
 
 	if math.random(1, search_rate) == 1 then
 		-- look for nodes
@@ -131,12 +132,22 @@ local search_replace2 = function(
 				if math.random(1, replace_rate) == 1 then
 					if replace_rate_secondary and
 					math.random(1, replace_rate_secondary) == 1 then
+					  if decorate then
+					     value = minetest.find_node_near(value, 2, "air")
+					  end   
+            if value ~= nil then
 						minetest.set_node(value, {name = replace_with_secondary})
+						end
 						if debugging_goblins == true then
 							print(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
 						end
 					else
+					  if decorate then
+               value = minetest.find_node_near(value, 2, "air")
+            end   
+            if value ~= nil then
 						minetest.set_node(value, {name = replace_with})
+						end
 						if debugging_goblins == true then
 							print(replace_with.." placed by " .. self.name:split(":")[2])
 						end
@@ -242,7 +253,7 @@ mobs:register_mob("goblins:goblin_snuffer", {
 		1, --search_offset_below
 		2, --replace_rate
 		{"group:torch"}, --replace_what
-		"default:mossycobble", --replace_with
+		"air", --replace_with
 		50, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
 		)
@@ -469,11 +480,11 @@ mobs:register_mob("goblins:goblin_fungiler", {
 		2, --search_offset_above
 		1, --search_offset_below
 		50, --replace_rate
-		{	"default:mossycobble",
-			"group:torch"}, --replace_what
+		"default:mossycobble", --replace_what
 		"goblins:mushroom_goblin", --replace_with
-		50, --replace_rate_secondary
-		"default:mossycobble" --replace_with_secondary
+		100, --replace_rate_secondary
+		"goblins:mushroom_goblin2", --replace_with_secondary
+		true
 		)
 	end,
 })

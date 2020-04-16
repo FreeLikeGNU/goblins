@@ -20,8 +20,10 @@ minetest.register_node("goblins:mushroom_goblin", {
 	paramtype = "light",
     light_source = 2,
 	sunlight_propagates = true,
-	walkable = true,
+	walkable = false,
 	buildable_to = true,
+	climbable = true,
+	 floodable = true,
 	groups = {mushroom = 1, food_mushroom = 1, snappy = 3, attached_node = 1, flammable = 1},
 	sounds = default.node_sound_leaves_defaults(),
 	on_use = minetest.item_eat(2),
@@ -29,6 +31,71 @@ minetest.register_node("goblins:mushroom_goblin", {
 		type = "fixed",
 		fixed = {-3 / 16, -0.5, -3 / 16, 3 / 16, -2 / 16, 3 / 16},
 	}
+})
+
+minetest.register_node("goblins:mushroom_goblin2", {
+  description = "gobble mushroom",
+  tiles = {"goblins_mushroom_brown2.png"},
+  inventory_image = "goblins_mushroom_brown2.png",
+  wield_image = "goblins_mushroom_brown.png",
+  drawtype = "firelike",
+  paramtype = "light",
+    light_source = 2,
+  sunlight_propagates = true,
+  walkable = false,
+  buildable_to = true,
+  climbable = true,
+  floodable = true,
+  groups = {mushroom = 1, food_mushroom = 1, snappy = 3, attached_node = 1, flammable = 1},
+  sounds = default.node_sound_leaves_defaults(),
+  on_use = minetest.item_eat(4),
+  selection_box = {
+    type = "fixed",
+    fixed = {-3 / 16, -0.5, -3 / 16, 3 / 16, -2 / 16, 3 / 16},
+  }
+})
+
+minetest.register_node("goblins:mushroom_goblin3", {
+  description = "gobble mushroom",
+  tiles = {"goblins_mushroom_brown3.png"},
+  inventory_image = "goblins_mushroom_brown3.png",
+  wield_image = "goblins_mushroom_brown.png",
+  drawtype = "firelike",
+  paramtype = "light",
+    light_source = 2,
+  sunlight_propagates = true,
+  walkable = false,
+  buildable_to = true,
+  climbable = true,
+  floodable = true,
+  groups = {mushroom = 1, food_mushroom = 1, snappy = 3, attached_node = 1, flammable = 1},
+  sounds = default.node_sound_leaves_defaults(),
+  on_use = minetest.item_eat(5),
+  selection_box = {
+    type = "fixed",
+    fixed = {-3 / 16, -0.5, -3 / 16, 3 / 16, -2 / 16, 3 / 16},
+  }
+})
+minetest.register_node("goblins:mushroom_goblin4", {
+  description = "gobble mushroom",
+  tiles = {"goblins_mushroom_brown4.png"},
+  inventory_image = "goblins_mushroom_brown4.png",
+  wield_image = "goblins_mushroom_brown.png",
+  drawtype = "firelike",
+  paramtype = "light",
+    light_source = 2,
+  sunlight_propagates = true,
+  walkable = false,
+  buildable_to = true,
+  climbable = true,
+  floodable = true,
+  groups = {mushroom = 1, food_mushroom = 1, snappy = 3, attached_node = 1, flammable = 1},
+  sounds = default.node_sound_leaves_defaults(),
+  on_use = minetest.item_eat(6),
+  selection_box = {
+    type = "fixed",
+    fixed = {-3 / 16, -0.5, -3 / 16, 3 / 16, -2 / 16, 3 / 16},
+  }
 })
 
 function goblins.mushroom_spread(pos, node)
@@ -54,7 +121,7 @@ end
 
 minetest.register_abm({
 	label = "Mushroom spread",
-	nodenames = {"goblins:mushroom_goblin"},
+	nodenames = {"goblins:mushroom_goblin","goblins:mushroom_goblin2","goblins:mushroom_goblin3","goblins:mushroom_goblin4"},
 	interval = 11,
 	chance = 100,
 	action = function(...)
