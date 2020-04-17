@@ -34,11 +34,16 @@ Additional source and content credits:
 * mushrooms.xcf Copyright Francisco Athens (CC BY-SA 3.0) 2020
 * goblins_mushroom_brown.png, goblins_mushroom_brown2.png goblins_mushroom_brown3.png goblins_mushroom_brown4.png Copyright Francisco Athens (CC BY-SA 3.0) 2020
 
-
 * Sound files by:
  * artisticdude http://opengameart.org/content/goblins-sound-pack (CC0-license)
  * Ogrebane http://opengameart.org/content/monster-sound-pack-volume-1 (CC0-license)
-
+ * goblins_ambient_underground: 232685__julius-galla__atmosphere-cave-loop (CC-BY-SA)
+	https://freesound.org/people/julius_galla/sounds/232685/
+ * goblins_goblin_trap: LittleRobotSoundFactory  (CC-BY-SA)
+	https://freesound.org/people/LittleRobotSoundFactory/
+ * goblins_goblin_breathing: spookymodem 
+	https://freesound.org/people/spookymodem/ (CC-0)
+	
 * Super thanks to duane-r for his work on nasty traps!  https://github.com/duane-r 
 
 * Thanks to Napiophelios for the goblin king skin

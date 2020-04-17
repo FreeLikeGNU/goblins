@@ -25,7 +25,7 @@ minetest.register_node("goblins:stone_with_coal_trap", {
 				if math.random(0,100) < 10 then -- chance player will get hurt mining this
 					if puncher:get_hp() > 0 then
 						puncher:set_hp(puncher:get_hp()-1)
-						minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+						minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					 end
 				end
 		end
@@ -45,7 +45,7 @@ minetest.register_node("goblins:stone_with_iron_trap", {
 				if math.random(0,100) < 25 then -- chance player will get hurt mining this
 					if puncher:get_hp() > 0 then
 						puncher:set_hp(puncher:get_hp()-1)
-						minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+						minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					 end
 				end
 			
@@ -65,7 +65,7 @@ minetest.register_node("goblins:stone_with_copper_trap", {
 				if math.random(0,100) < 50 then -- chance player will get hurt mining this
 					if puncher:get_hp() > 0 then
 						puncher:set_hp(puncher:get_hp()-1)
-						minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+						minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					 end
 				end
 		end
@@ -84,7 +84,7 @@ minetest.register_node("goblins:stone_with_gold_trap", {
 				if math.random(0,100) < 50 then -- chance player will get hurt mining this
 					if puncher:get_hp() > 0 then
 						puncher:set_hp(puncher:get_hp()-1)
-						minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+						minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					 end
 				end
 		end
@@ -103,7 +103,7 @@ minetest.register_node("goblins:stone_with_diamond_trap", {
 				if math.random(0,100) < 75 then -- chance player will get hurt mining this
 					if puncher:get_hp() > 0 then
 						puncher:set_hp(puncher:get_hp()-1)
-						minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+						minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					 end
 				end
 		end
@@ -255,7 +255,7 @@ minetest.register_abm({
 			if object:is_player() then
 				if object:get_hp() > 0 then
 					object:set_hp(object:get_hp()-1)
-					minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+					minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 				 end
 			end
 		end
@@ -291,7 +291,7 @@ minetest.register_abm({
 					object:set_hp(object:get_hp()-1)
 					-- sprite
 					lightning_effects(pos, 3)
-					minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
+					minetest.sound_play("goblins_goblin_trap", {pos = pos, gain = 0.5, max_hear_distance = 10})
 				 end
 			end
 		end
