@@ -2,11 +2,11 @@ dofile(minetest.get_modpath("goblins").."/traps.lua")
 dofile(minetest.get_modpath("goblins").."/nodes.lua")
 dofile(minetest.get_modpath("goblins").."/items.lua")
 dofile(minetest.get_modpath("goblins").."/soundsets.lua")
+dofile(minetest.get_modpath("goblins").."/behaviors.lua")
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
-minetest.log("action", "[MOD] goblins 20200417 is lowdings....")
+minetest.log("action", "[MOD] goblins 20200418 is lowdings....")
 
-local debugging_goblins = false
 local announce_spawning_goblins = true
 
 goblins.defaults = {  --your average goblin, 
@@ -80,92 +80,6 @@ local announce_goblin_spawn = function(self)
 end
 
 -- local routine for do_custom so that api doesn't need to be changed
-local search_replace2 = function(
-  self,
-  search_rate,
-  search_rate_above,
-  search_rate_below,
-  search_offset,
-  search_offset_above,
-  search_offset_below,
-  replace_rate,
-  replace_what,
-  replace_with,
-  replace_rate_secondary,
-  replace_with_secondary,
-  decorate) --this is for placing attached nodes like goblin mushrooms and torches
-
-  if math.random(1, search_rate) == 1 then
-    -- look for nodes
-    local pos  = self.object:getpos() --
-    local pos1 = self.object:getpos()
-    local pos2 = self.object:getpos()
-    --local pos  = vector.round(self.object:getpos())  --will have to investigate these further
-    --local pos1 = vector.round(self.object:getpos())
-    --local pos2 = vector.round(self.object:getpos())
-
-    -- if we are looking, will we look below and by how much?
-    if math.random(1, search_rate_below) == 1 then
-      pos1.y = pos1.y - search_offset_below
-    end
-
-    -- if we are looking, will we look above and by how much?
-    if math.random(1, search_rate_above) == 1 then
-      pos2.y = pos2.y + search_offset_above
-    end
-
-    pos1.x = pos1.x - search_offset
-    pos1.z = pos1.z - search_offset
-    pos2.x = pos2.x + search_offset
-    pos2.z = pos2.z + search_offset
-
-    if debugging_goblins then
-      print (self.name:split(":")[2] .. " at\n "
-        .. minetest.pos_to_string(pos) .. " is searching between\n "
-        .. minetest.pos_to_string(pos1) .. " and\n "
-        .. minetest.pos_to_string(pos2))
-    end
-
-    local nodelist = minetest.find_nodes_in_area(pos1, pos2, replace_what)
-    if #nodelist > 0 then
-      if debugging_goblins == true then
-        print(#nodelist.." nodes found by " .. self.name:split(":")[2]..":")
-        for k,v in pairs(nodelist) do print(minetest.get_node(v).name:split(":")[2].. " found.") end
-      end
-      for key,value in pairs(nodelist) do 
-        -- ok we see some nodes around us, are we going to replace them?
-        if math.random(1, replace_rate) == 1 then
-          if replace_rate_secondary and
-            math.random(1, replace_rate_secondary) == 1 then
-            if decorate then
-              value = minetest.find_node_near(value, 2, "air")
-            end   
-            if value ~= nil then
-              minetest.set_node(value, {name = replace_with_secondary})
-            end
-            if debugging_goblins == true then
-              print(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
-            end
-          else
-            if decorate then
-              value = minetest.find_node_near(value, 2, "air")
-            end   
-            if value ~= nil then
-              minetest.set_node(value, {name = replace_with})
-            end
-            if debugging_goblins == true then
-              print(replace_with.." placed by " .. self.name:split(":")[2])
-            end
-          end
-          minetest.sound_play(self.sounds.replace, {
-            object = self.object,
-            max_hear_distance = self.sounds.distance
-          })
-        end
-      end
-    end
-  end
-end
 
 local give_goblin = function(self,clicker)        
   -- feed to heal goblin (breed and tame set to false)
@@ -192,6 +106,7 @@ end
 
 mobs:register_mob("goblins:goblin_snuffer", {
   description = "Goblin Snuffer",
+  lore = "the snuffer likes to put out pesky torches and steal them, collecting the fuel for trap makers",
   type = "npc",
   passive = false,
   damage = 1,
@@ -253,7 +168,7 @@ mobs:register_mob("goblins:goblin_snuffer", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       5, --search_rate
       10, --search_rate_above
@@ -274,6 +189,7 @@ mobs:register_egg("goblins:goblin_snuffer", "Goblin Egg (snuffer)", "default_mos
 
 mobs:register_mob("goblins:goblin_digger", {
   description = "Digger Goblin",
+  lore = "The digger burrows though stone to carve out the bowels of a goblin warren",
   type = "npc",
   attack_npcs = false,  
   passive = false,
@@ -330,8 +246,10 @@ mobs:register_mob("goblins:goblin_digger", {
     give_goblin(self,clicker)
   end,
 
-  do_custom = function(self)
-    search_replace2(
+--dig a rough patch rarely, otherwise use a more sopisticated tunnel/room mode...
+ do_custom = function(self)
+    if math.random() < 0.00006 then
+    goblins.search_replace(
       self,
       4, --search_rate
       20, --search_rate_above
@@ -348,14 +266,22 @@ mobs:register_mob("goblins:goblin_digger", {
         "group:torch"}, --replace_what
       "air", --replace_with
       nil, --replace_rate_secondary
-      nil --replace_with_secondary
-    )
-  end,
+      nil, --replace_with_secondary
+      nil, --decorate
+      true --debug_me if debugging also enabled in behaviors.lua
+    ) 
+    else
+      goblins.tunneling(self, "digger") 
+    end
+   end,
 })
+
+
 mobs:register_egg("goblins:goblin_digger", "Goblin Egg (digger)", "default_mossycobble.png", 1)
 
 mobs:register_mob("goblins:goblin_cobble", {
   description = "Cobble Goblin",
+  lore = "Cobbler crumbles walls infusing them with moss to collect moisture for a fetid, mushroom friendly habitat",
   type = "npc",
   passive = false,
   damage = 1,
@@ -414,7 +340,7 @@ mobs:register_mob("goblins:goblin_cobble", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -435,6 +361,7 @@ mobs:register_egg("goblins:goblin_cobble", "Goblin Egg (cobble)", "default_mossy
 
 mobs:register_mob("goblins:goblin_fungiler", {
   description = "Goblin Fungiler",
+  lore = "Fungilers keep the warren full of tasty mushrooms which are also fuel for pyromancy",
   type = "npc",
   passive = false,
   damage = 1,
@@ -490,7 +417,7 @@ mobs:register_mob("goblins:goblin_fungiler", {
     give_goblin(self, clicker)
   end,
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -571,7 +498,7 @@ mobs:register_mob("goblins:goblin_coal", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -657,7 +584,7 @@ mobs:register_mob("goblins:goblin_iron", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -740,7 +667,7 @@ mobs:register_mob("goblins:goblin_copper", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -823,7 +750,7 @@ mobs:register_mob("goblins:goblin_gold", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -900,7 +827,7 @@ mobs:register_mob("goblins:goblin_diamond", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -985,7 +912,7 @@ mobs:register_mob("goblins:goblin_king", {
   end,
 
   do_custom = function(self)
-    search_replace2(
+    goblins.search_replace(
       self,
       10, --search_rate
       1, --search_rate_above
@@ -1030,4 +957,4 @@ mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:
 mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air",    0, 50, 60, 1000, 2, -30000, -200)
 mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air",                                      0, 50, 90, 2000, 1, -30000, -300)
 
-minetest.log("action", "[MOD] goblins 20200415 is lodids!")
+minetest.log("action", "[MOD] goblins 20200418 is lodids!")
