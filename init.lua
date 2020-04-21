@@ -3,6 +3,7 @@ dofile(minetest.get_modpath("goblins").."/nodes.lua")
 dofile(minetest.get_modpath("goblins").."/items.lua")
 dofile(minetest.get_modpath("goblins").."/soundsets.lua")
 dofile(minetest.get_modpath("goblins").."/behaviors.lua")
+dofile(minetest.get_modpath("goblins").."/animals.lua")
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
 minetest.log("action", "[MOD] goblins 20200418 is lowdings....")
@@ -54,20 +55,23 @@ goblins.defaults = {  --your average goblin,
   owner = "",
   order = "follow",
   animation = {
-    speed_normal = 30,
-    speed_run = 30,
+    
+    stand_speed = 30,
     stand_start = 0,
     stand_end = 79,
+    walk_speed = 30,
     walk_start = 168,
     walk_end = 187,
+    run_speed = 45,
     run_start = 168,
     run_end = 187,
+    punch_speed = 30,
     punch_start = 200,
     punch_end = 219,
   },
   drops = {
     "default:pick_steel",  "default:sword_steel",
-    "default:shovel_steel", "farming:bread", "bucket:bucket_water"
+    "default:shovel_steel", "farming:bread", "bucket:bucket_water","goblins:goblins_goblin_bone","goblins:goblins_goblin_bone_meaty"
   }
 }
 
@@ -153,9 +157,10 @@ mobs:register_mob("goblins:goblin_snuffer", {
       chance = 3, min = 1, max = 2},
     {name = "default:torch",
       chance = 4, min = 1, max = 10},
-    {name = "goblins:pick_mossycobble",
-      chance = 3, min = 1, max = 1},    
-
+    {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3}
   },
 
   on_spawn = function(self)
@@ -207,7 +212,14 @@ mobs:register_mob("goblins:goblin_digger", {
   collisionbox = goblins.defaults.collisionbox,
   drawtype = goblins.defaults.drawtype,	
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
-  sounds = goblins.defaults.sounds,
+  sounds = {
+    random = {"goblins_goblin_breathing",gain = 0.5},
+    warcry = "goblins_goblin_attack",
+    attack = "goblins_goblin_attack",
+    damage = "goblins_goblin_damage",
+    death = "goblins_goblin_death",
+    replace = {"goblins_goblin_cackle",gain = 0.8},
+    distance = 15},
   walk_velocity = goblins.defaults.walk_velocity,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
@@ -232,7 +244,15 @@ mobs:register_mob("goblins:goblin_digger", {
     {name = "default:torch",
       chance = 4, min = 1, max = 10},
     {name = "goblins:pick_mossycobble",
-      chance = 3, min = 1, max = 1},    
+      chance = 3, min = 1, max = 1},
+    {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3},
+     {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3}    
   },
   follow = {"default:diamond", "default:apple", "default:bread"},
   owner = "",
@@ -324,7 +344,11 @@ mobs:register_mob("goblins:goblin_cobble", {
     {name = "default:torch",
       chance = 4, min = 1, max = 10},
     {name = "goblins:pick_mossycobble",
-      chance = 3, min = 1, max = 1},    
+      chance = 3, min = 1, max = 1},
+    {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3}    
 
   },
 
@@ -653,6 +677,10 @@ mobs:register_mob("goblins:goblin_copper", {
       chance = 5, min = 1, max = 1},    
     {name = "default:pick_steel",
       chance = 5, min = 1, max = 1},
+    {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3}
   },
   follow = {"default:diamond", "default:apple", "default:bread"},
   owner = "",
@@ -735,6 +763,10 @@ mobs:register_mob("goblins:goblin_gold", {
       chance = 5, min = 1, max = 1},    
     {name = "default:gold_ingot",
       chance = 5, min = 1, max = 1},
+    {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3}
   },
   follow = {"default:diamond", "default:apple", "farming:bread"},
   owner = "",
@@ -897,6 +929,10 @@ mobs:register_mob("goblins:goblin_king", {
       chance = 5, min = 1, max = 1},    
     {name = "default:mese_crystal",
       chance = 5, min = 1, max = 1},
+    {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 1}, 
+    {name = "goblins:goblins_goblin_bone",
+     chance = 10, min = 1, max = 3}
   },
   follow = {"default:diamond", "default:apple", "farming:bread"},
   view_range = 10,
