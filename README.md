@@ -43,10 +43,11 @@ Additional source and content credits:
 	https://freesound.org/people/LittleRobotSoundFactory/
  * goblins_goblin_breathing: spookymodem 
 	https://freesound.org/people/spookymodem/ (CC-0)
- * goblins_goblin_dog_bark and _howl * delphidebrain Jazz the Dog Howl & Bark (CC-BY-SA)
-    https://freesound.org/people/delphidebrain/sounds/236027/
-* goblins_goblin_dog_growls Glitchedtones Dog Shih Tzu Growling 06.wav (CC-BY-SA)
-    https://freesound.org/people/Glitchedtones/sounds/372533/
+ * goblins_goblin_dog_ sounds:
+    delphidebrain Jazz the Dog Howl & Bark (CC-BY-SA)
+        https://freesound.org/people/delphidebrain/sounds/236027/
+    Glitchedtones Dog Shih Tzu Growling 06.wav (CC-BY-SA)
+        https://freesound.org/people/Glitchedtones/sounds/372533/
 
 * Super thanks to duane-r for his work on nasty traps and tunneling  https://github.com/duane-r 
 

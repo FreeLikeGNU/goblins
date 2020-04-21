@@ -6,7 +6,7 @@ dofile(minetest.get_modpath("goblins").."/behaviors.lua")
 dofile(minetest.get_modpath("goblins").."/animals.lua")
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
-minetest.log("action", "[MOD] goblins 20200418 is lowdings....")
+minetest.log("action", "[MOD] goblins 20200421 is lowdings....")
 
 local announce_spawning_goblins = true
 
@@ -993,4 +993,4 @@ mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:
 mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air",    0, 50, 60, 1000, 2, -30000, -200)
 mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air",                                      0, 50, 90, 2000, 1, -30000, -300)
 
-minetest.log("action", "[MOD] goblins 20200418 is lodids!")
+minetest.log("action", "[MOD] goblins 20200421 is lodids!")

@@ -38,6 +38,7 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
     attack = "goblins_goblin_dog_attack_cave",
     damage = "goblins_goblin_dog_damage_cave",
     death = "goblins_goblin_dog_death_cave",
+    replace = {"goblins_goblin_dog_ambient_cave",gain = 0.8},
   },
   walk_velocity = 2,
   run_velocity = 4,
@@ -87,12 +88,28 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
     })
     announce_goblin_spawn(self)
   end,
+  
   on_rightclick = function(self, clicker)
-
     if mobs:feed_tame(self, clicker, 8, true, true) then return end
     if mobs:protect(self, clicker) then return end
     if mobs:capture_mob(self, clicker, 0, 5, 50, false, nil) then return end
   end,
+
+  do_custom = function(self)
+    goblins.search_replace(
+      self,
+      5, --search_rate
+      20, --search_rate_above
+      20, --search_rate_below
+      1, --search_offset
+      1, --search_offset_above
+      1, --search_offset_below
+      1, --replace_rate
+      {"group:meat"}, --replace_what
+      "air" --replace_with
+      )
+  end,
+
 })
 
 mobs:register_egg("goblins:goblins_goblin_dog", "Goblin Gobdog Egg", "default_mossycobble.png", 1)
