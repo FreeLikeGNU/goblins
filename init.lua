@@ -31,16 +31,17 @@ goblins.defaults = {  --your average goblin,
     {"goblins_goblin_cobble2.png"},
 
   },
-  collisionbox = {-0.35,-1,-0.35, 0.35,-.1,0.35},
+ -- collisionbox = {-0.35,-1,-0.35, 0.35,-.1,0.35},
+  collisionbox = {-0.25, -1, -0.25, 0.25, .1, 0.25},
   drawtype = "front",	
   makes_footstep_sound = true,
   sounds = {
-    random = {"goblins_goblin_breathing",gain = 0.5},
-    warcry = "goblins_goblin_attack",
+    random = "goblins_goblin_breathing",
+    warcry = "goblins_goblin_warcry",
     attack = "goblins_goblin_attack",
     damage = "goblins_goblin_damage",
     death = "goblins_goblin_death",
-    replace = {"goblins_goblin_cackle",gain = 0.8},
+    replace = "goblins_goblin_cackle", gain = 0.05,
     distance = 15},
   walk_velocity = 2,
   run_velocity = 3,
@@ -79,7 +80,7 @@ local announce_goblin_spawn = function(self)
   if announce_spawning_goblins == true then    
     local pos = vector.round(self.object:getpos())
     if not pos then return end
-    print( self.name:split(":")[2].. ":" .. minetest.pos_to_string(pos))
+    print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
   end                    
 end
 
@@ -213,13 +214,15 @@ mobs:register_mob("goblins:goblin_digger", {
   drawtype = goblins.defaults.drawtype,	
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = {
-    random = {"goblins_goblin_breathing",gain = 0.5},
+    random = "goblins_goblin_breathing",
     warcry = "goblins_goblin_attack",
     attack = "goblins_goblin_attack",
     damage = "goblins_goblin_damage",
     death = "goblins_goblin_death",
-    replace = {"goblins_goblin_cackle",gain = 0.8},
-    distance = 15},
+    replace = "goblins_goblin_pick",
+    gain = .5,
+    distance = 15
+    },
   walk_velocity = goblins.defaults.walk_velocity,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
@@ -268,7 +271,7 @@ mobs:register_mob("goblins:goblin_digger", {
 
 --dig a rough patch rarely, otherwise use a more sopisticated tunnel/room mode...
  do_custom = function(self)
-    if math.random() < 0.00006 then
+    if math.random() < 0.5 then --lower values for more straight tunnels and room-like features that will ascend toward the surface.
     goblins.search_replace(
       self,
       4, --search_rate
@@ -278,7 +281,7 @@ mobs:register_mob("goblins:goblin_digger", {
       2, --search_offset_above
       1.5, --search_offset_below
       4, --replace_rate
-      {	"group:soil",
+      {"group:soil",
         "group:sand",
         "default:gravel",
         "default:stone",
@@ -319,7 +322,15 @@ mobs:register_mob("goblins:goblin_cobble", {
   collisionbox = goblins.defaults.collisionbox,
   drawtype = goblins.defaults.drawtype,	
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
-  sounds = goblins.defaults.sounds,
+  sounds = {
+    random = {"goblins_goblin_breathing",gain = 0.5},
+    warcry = "goblins_goblin_warcry",
+    attack = "goblins_goblin_attack",
+    damage = "goblins_goblin_damage",
+    death = "goblins_goblin_death",
+    replace = "default_place_node",gain = 0.8,
+    distance = 15
+  },
   walk_velocity = goblins.defaults.walk_velocity,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
@@ -403,7 +414,15 @@ mobs:register_mob("goblins:goblin_fungiler", {
   collisionbox = goblins.defaults.collisionbox,
   drawtype = goblins.defaults.drawtype,	
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
-  sounds = goblins.defaults.sounds,
+  sounds = {
+    random = "goblins_goblin_breathing",
+    warcry = "goblins_goblin_warcry",
+    attack = "goblins_goblin_attack",
+    damage = "goblins_goblin_damage",
+    death = "goblins_goblin_death",
+    replace = "default_place_node", gain = 0.8,
+    distance = 15
+  },
   walk_velocity = goblins.defaults.walk_velocity,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
@@ -443,9 +462,9 @@ mobs:register_mob("goblins:goblin_fungiler", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      1, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
@@ -524,13 +543,13 @@ mobs:register_mob("goblins:goblin_coal", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      20, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
-      20, --replace_rate
+      10, --replace_rate
       {	"default:mossycobble",
         "default:stone_with_coal",
         "group:torch"}, --replace_what
@@ -610,13 +629,13 @@ mobs:register_mob("goblins:goblin_iron", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      20, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
-      20, --replace_rate
+      10, --replace_rate
       {	"default:mossycobble",
         "default:stone_with_iron",
         "group:torch"}, --replace_what
@@ -697,13 +716,13 @@ mobs:register_mob("goblins:goblin_copper", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      20, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
-      20, --replace_rate
+      10, --replace_rate
       {	"default:mossycobble",
         "default:stone_with_copper",
         "group:torch"}, --replace_what
@@ -784,13 +803,13 @@ mobs:register_mob("goblins:goblin_gold", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      20, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
-      20, --replace_rate
+      10, --replace_rate
       {	"default:mossycobble",
         "default:stone_with_gold",
         "group:torch"}, --replace_what
@@ -861,13 +880,13 @@ mobs:register_mob("goblins:goblin_diamond", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      20, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
-      20, --replace_rate
+      10, --replace_rate
       {	"default:mossycobble",
         "default:stone_with_diamond",
         "group:torch"}, --replace_what
@@ -950,13 +969,13 @@ mobs:register_mob("goblins:goblin_king", {
   do_custom = function(self)
     goblins.search_replace(
       self,
-      10, --search_rate
-      1, --search_rate_above
-      20, --search_rate_below
+      100, --search_rate
+      100, --search_rate_above
+      100, --search_rate_below
       1, --search_offset
       2, --search_offset_above
       1, --search_offset_below
-      20, --replace_rate
+      10, --replace_rate
       {	"group:stone",
         "group:torch"}, --replace_what
       "default:mossycobble", --replace_with
@@ -991,6 +1010,7 @@ mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:
 mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air",       0, 50, 30, 500, 2, -30000, -50)
 mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",           0, 50, 30, 500, 2, -30000, -100)
 mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air",    0, 50, 60, 1000, 2, -30000, -200)
-mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air",                                      0, 50, 90, 2000, 1, -30000, -300)
-
+mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble","default:chest"},"air",                       0, 50, 90, 2000, 1, -30000, -300)
+--goblin kings may come near the surface of there is a chest near by
+mobs:spawn_specific("goblins:goblin_king", {"default:chest"},"air",                                             0, 50, 90, 2000, 1, -30000, -25) 
 minetest.log("action", "[MOD] goblins 20200421 is lodids!")

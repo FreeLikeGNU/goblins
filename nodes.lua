@@ -6,7 +6,9 @@ minetest.register_node(":default:mossycobble", {
   tiles = {"default_mossycobble.png"},
   is_ground_content = false,
   groups = {cracky = 3, stone = 1},
-  sounds = default.node_sound_stone_defaults(),
+  sounds = default.node_sound_stone_defaults({
+    footstep = {name = "goblins_mossycobble_footstep", gain = 0.4},
+  }),
   paramtype = "light",
   light_source = 2,
 })

@@ -5,6 +5,7 @@ local debugging_goblins_replace = false
 local debugging_goblins_replace2 = false
 local debugging_goblins_tunneling = false
 
+
 goblins.search_replace = function(
   self,
   search_rate,
@@ -66,7 +67,9 @@ goblins.search_replace = function(
             if decorate then
               value = minetest.find_node_near(value, 2, "air")
             end   
-            if value ~= nil then
+            if value ~= nil then 
+              self:set_velocity(0)
+              self:set_animation("stand")
               minetest.set_node(value, {name = replace_with_secondary})
             end
             if debugging_goblins_replace2 and debug_me then
@@ -77,6 +80,8 @@ goblins.search_replace = function(
               value = minetest.find_node_near(value, 2, "air")
             end   
             if value ~= nil then
+              self:set_velocity(0)
+              self:set_animation("stand")
               minetest.set_node(value, {name = replace_with})
             end
             if debugging_goblins_replace and debug_me then
@@ -84,7 +89,7 @@ goblins.search_replace = function(
             end
           end
           minetest.sound_play(self.sounds.replace, {
-            object = self.object,
+            object = self.object, gain = self.sounds.gain,
             max_hear_distance = self.sounds.distance
           })
         end
@@ -105,7 +110,7 @@ mine for me."
 --]]
 
 --the following is built from duane-r's goblin tunnel digging: 
-local diggable_nodes = {"group:stone", "group:sand", "group:soil", "group:cracky", "group:crumbly", "group:choppy", "group:plant"}
+local diggable_nodes = {"group:stone", "group:sand", "group:soil", "group:cracky", "group:crumbly"}
 -- This translates yaw into vectors.
 local cardinals = {{x=0,y=0,z=0.75}, {x=-0.75,y=0,z=0}, {x=0,y=0,z=-0.75}, {x=0.75,y=0,z=0}}
 
@@ -141,8 +146,12 @@ goblins.tunneling = function(self, type)
     if #np_list > 0 then
       -- Dig it.
       for _, np in pairs(np_list) do
-        if np.name ~= "default:cobble" then
+        if np.name ~= "default:mossycobble" and np.name ~= "default:chest" then
           minetest.remove_node(np)
+          minetest.sound_play(self.sounds.replace, {
+            object = self.object, gain = self.sounds.gain,
+            max_hear_distance = self.sounds.distance
+          }) 
         end
       end
     end
@@ -186,9 +195,13 @@ goblins.tunneling = function(self, type)
         break
       end
 
-      if #np_list > 0 then
-        -- Dig it.
+      if #np_list > 0 then -- dig it
+        
         minetest.remove_node(np_list[math.random(#np_list)])
+        minetest.sound_play(self.sounds.replace, {
+            object = self.object, gain = self.sounds.gain,
+            max_hear_distance = self.sounds.distance
+          })
         break
       end
     end
