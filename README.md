@@ -3,9 +3,10 @@
 https://forum.minetest.net/viewtopic.php?f=9&t=13004
 https://github.com/FreeLikeGNU/goblins
 
-This mod adds several Goblins to Minetest that should spawn near ore deposits or lairs underground.
+This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn near ore deposits or lairs underground.
 
 * Goblins dig caves, destroy torches, create lairs, set traps, cultivate mushrooms and some are aggressive.
+* Goblin Dogs (Gobdogs) will roam caves, bury bones and other items in soft terrain, eat meats.
 
 * tested with Mintest 5.30(dev)
 * Required: Mobs Redo by TenPlus1 API as of version 20200411: to run
@@ -23,9 +24,17 @@ http://creativecommons.org/licenses/by-sa/3.0/
 	https://github.com/minetest/minetest_game/blob/master/mods/default/README.txt#L71
 
 * goblins_goblins*.png files and goblins_goblin.xcf files
-	Copyright 2015 by Francisco "FreeLikeGNU" Athens  Creative Commons  Attribution-ShareAlike 3.0 Unported 		(CC BY-SA 3.0) 
+	Copyright 2015,2020 by Francisco "FreeLikeGNU" Athens  Creative Commons  Attribution-ShareAlike 3.0 Unported 		(CC BY-SA 3.0) 
 	http://creativecommons.org/licenses/by-sa/3.0/
 
+* goblins_goblin_dog.b3d and goblins_goblin_dog*.blend 
+Copyright 2016,2020 by Francisco "FreeLikeGNU" Athens Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
+http://creativecommons.org/licenses/by-sa/3.0/
+
+* goblins_goblin*.png files and goblins_goblin*_.xcf files
+    Copyright 2015 by Francisco "FreeLikeGNU" Athens  Creative Commons  Attribution-ShareAlike 3.0 Unported         (CC BY-SA 3.0) 
+    http://creativecommons.org/licenses/by-sa/3.0/
+    
 Additional source and content credits:
 * goblin mushrooms from "flowers" mod source code:
 	Originally by Ironzorg (MIT) and VanessaE (MIT)

@@ -6,7 +6,7 @@ dofile(minetest.get_modpath("goblins").."/behaviors.lua")
 dofile(minetest.get_modpath("goblins").."/animals.lua")
 -- Npc by TenPlus1 converted for FLG Goblins :D
 
-minetest.log("action", "[MOD] goblins 20200421 is lowdings....")
+minetest.log("action", "[MOD] goblins 20200423 is lowdings....")
 
 local announce_spawning_goblins = true
 
@@ -1013,4 +1013,4 @@ mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "de
 mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble","default:chest"},"air",                       0, 50, 90, 2000, 1, -30000, -300)
 --goblin kings may come near the surface of there is a chest near by
 mobs:spawn_specific("goblins:goblin_king", {"default:chest"},"air",                                             0, 50, 90, 2000, 1, -30000, -25) 
-minetest.log("action", "[MOD] goblins 20200421 is lodids!")
+minetest.log("action", "[MOD] goblins 20200423 is lodids!")
