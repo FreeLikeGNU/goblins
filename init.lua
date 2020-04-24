@@ -5,9 +5,21 @@ dofile(minetest.get_modpath("goblins").."/soundsets.lua")
 dofile(minetest.get_modpath("goblins").."/behaviors.lua")
 dofile(minetest.get_modpath("goblins").."/animals.lua")
 -- Npc by TenPlus1 converted for FLG Goblins :D
-
-minetest.log("action", "[MOD] goblins 20200423 is lowdings....")
-
+goblins.version="20200424"
+minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
+print("Please report issues at https://github.com/FreeLikeGNU/goblins/issues ")
+if mobs.version then
+  if tonumber(mobs.version) >= tonumber(20200412) then
+    print("Mobs Redo 20200412 or greater found!")
+  else 
+    print("You may need a more recent version of Mobs Redo!")
+    print("https://notabug.org/TenPlus1/mobs_redo")
+  end
+ else
+  print("This mod requires Mobs Redo 20200412 or greater!")
+  print("https://notabug.org/TenPlus1/mobs_redo")
+end
+ 
 local announce_spawning_goblins = true
 
 goblins.defaults = {  --your average goblin, 
@@ -27,12 +39,11 @@ goblins.defaults = {  --your average goblin,
   visual = "mesh",
   mesh = "goblins_goblin.b3d",
   textures = {
-    {"goblins_goblin_cobble1.png"},
-    {"goblins_goblin_cobble2.png"},
+    {"default_tool_stoneaxe.png","goblins_goblin_cobble1.png"},
+    {"default_tool_stoneshovel.png","goblins_goblin_cobble2.png"},
 
   },
- -- collisionbox = {-0.35,-1,-0.35, 0.35,-.1,0.35},
-  collisionbox = {-0.25, -1, -0.25, 0.25, .1, 0.25},
+  collisionbox = {-0.25, -.01, -0.25, 0.25, .9, 0.25},
   drawtype = "front",	
   makes_footstep_sound = true,
   sounds = {
@@ -46,6 +57,8 @@ goblins.defaults = {  --your average goblin,
   walk_velocity = 2,
   run_velocity = 3,
   jump = true,
+  jump_height = 5,
+  step_height = 1.5,
   fear_height = 4,
   water_damage = 0,
   lava_damage = 2,
@@ -56,7 +69,7 @@ goblins.defaults = {  --your average goblin,
   owner = "",
   order = "follow",
   animation = {
-    
+
     stand_speed = 30,
     stand_start = 0,
     stand_end = 79,
@@ -81,12 +94,12 @@ local announce_goblin_spawn = function(self)
     local pos = vector.round(self.object:getpos())
     if not pos then return end
     print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
-  end                    
+  end
 end
 
 -- local routine for do_custom so that api doesn't need to be changed
 
-local give_goblin = function(self,clicker)        
+local give_goblin = function(self,clicker)
   -- feed to heal goblin (breed and tame set to false)
   if not mobs:feed_tame(self, clicker, 8, false, false) then
     local item = clicker:get_wielded_item()
@@ -99,7 +112,7 @@ local give_goblin = function(self,clicker)
         clicker:set_wielded_item(item)
       end
       --print(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))             	
-      local pos = self.object:getpos()          
+      local pos = self.object:getpos()
       pos.y = pos.y + 0.5
       minetest.add_item(pos, {
         name = goblins.defaults.drops[math.random(1, #goblins.defaults.drops)]
@@ -126,7 +139,7 @@ mobs:register_mob("goblins:goblin_snuffer", {
   hp_max = 10,
   armor = goblins.defaults.armor,
   textures = {
-    "goblins_goblin_digger.png",
+    "default_stick.png", "goblins_goblin_digger.png",
   },
 
   visual = goblins.defaults.visual,
@@ -136,8 +149,10 @@ mobs:register_mob("goblins:goblin_snuffer", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -161,11 +176,11 @@ mobs:register_mob("goblins:goblin_snuffer", {
     {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3}
+      chance = 10, min = 1, max = 3}
   },
 
   on_spawn = function(self)
-    announce_goblin_spawn(self)          
+    announce_goblin_spawn(self)
   end,
 
   on_rightclick = function(self,clicker) 
@@ -222,10 +237,12 @@ mobs:register_mob("goblins:goblin_digger", {
     replace = "goblins_goblin_pick",
     gain = .5,
     distance = 15
-    },
+  },
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -234,7 +251,7 @@ mobs:register_mob("goblins:goblin_digger", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    "goblins_goblin_digger.png",
+    "default_tool_stonepick.png","goblins_goblin_digger.png"
   },
 
   drops = {
@@ -251,52 +268,53 @@ mobs:register_mob("goblins:goblin_digger", {
     {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3},
-     {name = "goblins:goblins_goblin_bone_meaty",
+      chance = 10, min = 1, max = 3},
+    {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3}    
+      chance = 10, min = 1, max = 3}    
   },
   follow = {"default:diamond", "default:apple", "default:bread"},
   owner = "",
   order = "follow",
 
   on_spawn = function(self)
-    announce_goblin_spawn(self)          
+    announce_goblin_spawn(self)
   end,
 
   on_rightclick = function(self,clicker) 
     give_goblin(self,clicker)
   end,
 
---dig a rough patch rarely, otherwise use a more sopisticated tunnel/room mode...
- do_custom = function(self)
-    if math.random() < 0.5 then --lower values for more straight tunnels and room-like features that will ascend toward the surface.
-    goblins.search_replace(
-      self,
-      4, --search_rate
-      20, --search_rate_above
-      20, --search_rate_below
-      1, --search_offset
-      2, --search_offset_above
-      1.5, --search_offset_below
-      4, --replace_rate
-      {"group:soil",
-        "group:sand",
-        "default:gravel",
-        "default:stone",
-        "default:desert_stone",
-        "group:torch"}, --replace_what
-      "air", --replace_with
-      nil, --replace_rate_secondary
-      nil, --replace_with_secondary
-      nil, --decorate
-      true --debug_me if debugging also enabled in behaviors.lua
-    ) 
-    else
-      goblins.tunneling(self, "digger") 
+  --dig a rough patch rarely, otherwise use a more sopisticated tunnel/room mode...
+  do_custom = function(self)
+    if math.random() < 0.05 then --higher values for more straight tunnels and room-like features 
+      goblins.tunneling(self, "digger")
+    elseif math.random() < 0.5 then
+      goblins.search_replace(
+        self,
+        15, --search_rate how often do we search?
+        10, --search_rate_above
+        10, --search_rate_below
+        .6,--search_offset
+        1.2, --search_offset_above
+        1, --search_offset_below
+        2, --replace_rate
+        {"group:soil",
+          "group:sand",
+          "default:gravel",
+          "default:stone",
+          "default:desert_stone",
+          "group:torch"}, --replace_what
+        "air", --replace_with
+        nil, --replace_rate_secondary
+        nil, --replace_with_secondary
+        nil, --decorate
+        true --debug_me if debugging also enabled in behaviors.lua
+      )
+    else  
     end
-   end,
+  end,
 })
 
 
@@ -332,8 +350,10 @@ mobs:register_mob("goblins:goblin_cobble", {
     distance = 15
   },
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -342,8 +362,8 @@ mobs:register_mob("goblins:goblin_cobble", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    "goblins_goblin_cobble1.png",
-    "goblins_goblin_cobble2.png",	
+    {"default_tool_stoneaxe.png","goblins_goblin_cobble1.png"},
+    {"default_tool_stoneaxe.png","goblins_goblin_cobble2.png"},	
   },
   drops = {
     {name = "goblins:mushroom_goblin",
@@ -359,7 +379,7 @@ mobs:register_mob("goblins:goblin_cobble", {
     {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3}    
+      chance = 10, min = 1, max = 3}    
 
   },
 
@@ -424,8 +444,10 @@ mobs:register_mob("goblins:goblin_fungiler", {
     distance = 15
   },
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -434,8 +456,8 @@ mobs:register_mob("goblins:goblin_fungiler", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    {"goblins_goblin_cobble1.png"},
-    {"goblins_goblin_cobble2.png"},	
+    {"goblins_mushroom_brown.png","goblins_goblin_cobble1.png"},
+    {"goblins_mushroom_brown.png","goblins_goblin_cobble2.png"},	
   },
   drops = {
     {name = "goblins:mushroom_goblin",
@@ -500,8 +522,10 @@ mobs:register_mob("goblins:goblin_coal", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -510,8 +534,8 @@ mobs:register_mob("goblins:goblin_coal", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    {"goblins_goblin_coal1.png"},
-    {"goblins_goblin_coal2.png"},
+    {"default_tool_stonepick.png","goblins_goblin_coal1.png"},
+    {"default_tool_stonepick.png","goblins_goblin_coal2.png"},
   },
   drops = {
     {name = "default:coal_lump",
@@ -584,8 +608,10 @@ mobs:register_mob("goblins:goblin_iron", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -594,8 +620,8 @@ mobs:register_mob("goblins:goblin_iron", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    {"goblins_goblin_iron1.png"},
-    {"goblins_goblin_iron2.png"},
+    {"default_tool_stonepick.png","goblins_goblin_iron1.png"},
+    {"default_tool_stonesword.png","goblins_goblin_iron2.png"},
   },
   drops = {
     {name = "default:iron_lump",
@@ -668,8 +694,10 @@ mobs:register_mob("goblins:goblin_copper", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -678,8 +706,8 @@ mobs:register_mob("goblins:goblin_copper", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    {"goblins_goblin_copper1.png"},
-    {"goblins_goblin_copper2.png"},
+    {"default_tool_bronzepick.png","goblins_goblin_copper1.png"},
+    {"default_tool_bronzesword.png","goblins_goblin_copper2.png"},
   },
   drops = {
     {name = "default:copper_lump",
@@ -699,7 +727,7 @@ mobs:register_mob("goblins:goblin_copper", {
     {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3}
+      chance = 10, min = 1, max = 3}
   },
   follow = {"default:diamond", "default:apple", "default:bread"},
   owner = "",
@@ -754,8 +782,10 @@ mobs:register_mob("goblins:goblin_gold", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -764,8 +794,8 @@ mobs:register_mob("goblins:goblin_gold", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    {"goblins_goblin_gold1.png"},
-    {"goblins_goblin_gold2.png"},
+    {"default_tool_steelpick.png","goblins_goblin_gold1.png"},
+    {"default_tool_steelsword.png","goblins_goblin_gold2.png"},
   },
   drops = {
     {name = "default:gold_lump",
@@ -785,7 +815,7 @@ mobs:register_mob("goblins:goblin_gold", {
     {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3}
+      chance = 10, min = 1, max = 3}
   },
   follow = {"default:diamond", "default:apple", "farming:bread"},
   owner = "",
@@ -843,8 +873,10 @@ mobs:register_mob("goblins:goblin_diamond", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -853,8 +885,8 @@ mobs:register_mob("goblins:goblin_diamond", {
   view_range = goblins.defaults.viewrange,
   animation = goblins.defaults.animation, 
   textures = {
-    {"goblins_goblin_diamond1.png"},
-    {"goblins_goblin_diamond2.png"},
+    {"default_tool_diamondpick.png","goblins_goblin_diamond1.png"},
+    {"default_tool_diamondsword.png","goblins_goblin_diamond2.png"},
   },
   drops = {
     {name = "default:pick_diamond",
@@ -920,8 +952,10 @@ mobs:register_mob("goblins:goblin_king", {
   makes_footstep_sound = goblins.defaults.makes_footstep_sound,
   sounds = goblins.defaults.sounds,
   walk_velocity = goblins.defaults.walk_velocity,
+  step_height = goblins.defaults.step_height,
   run_velocity = goblins.defaults.run_velocity,
   jump = goblins.defaults.jump,
+  jump_height = goblins.defaults.jump_height,
   fear_height = goblins.defaults.fear_height,
   water_damage = goblins.defaults.water_damage,
   lava_damage = goblins.defaults.lava_damage,
@@ -931,7 +965,7 @@ mobs:register_mob("goblins:goblin_king", {
   animation = goblins.defaults.animation, 
   drawtype = "front",
   textures = {
-    {"goblins_goblin_king.png"},
+    {"default_tool_mesepick","goblins_goblin_king.png"},
   },
   drops = {
     {name = "default:pick_mese",
@@ -951,7 +985,7 @@ mobs:register_mob("goblins:goblin_king", {
     {name = "goblins:goblins_goblin_bone_meaty",
       chance = 10, min = 1, max = 1}, 
     {name = "goblins:goblins_goblin_bone",
-     chance = 10, min = 1, max = 3}
+      chance = 10, min = 1, max = 3}
   },
   follow = {"default:diamond", "default:apple", "farming:bread"},
   view_range = 10,
@@ -1013,4 +1047,5 @@ mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "de
 mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble","default:chest"},"air",                       0, 50, 90, 2000, 1, -30000, -300)
 --goblin kings may come near the surface of there is a chest near by
 mobs:spawn_specific("goblins:goblin_king", {"default:chest"},"air",                                             0, 50, 90, 2000, 1, -30000, -25) 
-minetest.log("action", "[MOD] goblins 20200423 is lodids!")
+minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lodids!")
+

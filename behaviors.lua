@@ -5,7 +5,6 @@ local debugging_goblins_replace = false
 local debugging_goblins_replace2 = false
 local debugging_goblins_tunneling = false
 
-
 goblins.search_replace = function(
   self,
   search_rate,
@@ -123,7 +122,7 @@ goblins.tunneling = function(self, type)
   local pos = self.object:getpos()
 
   if self.state == "tunnel" then
-      self:set_animation("walk")
+    self:set_animation("walk")
     self:set_velocity(self.walk_velocity)
     -- Yaw is stored as one of the four cardinal directions.
     if not self.digging_dir then
@@ -136,9 +135,9 @@ goblins.tunneling = function(self, type)
 
     -- Get a pair of coordinates that should cover what's in front of him.
     local p = vector.add(pos, cardinals[self.digging_dir+1])
-    --nah too flat! p.y = p.y - 0.5  -- What's this about?
-    local p1 = vector.add(p, -0.3)
-    local p2 = vector.add(p, 0.3)
+    -- p.y = p.y - 1  -- What's this about?
+    local p1 = vector.add(p, .1) 
+    local p2 = vector.add(p, 1.5)
 
     -- Get any diggable nodes in that area.
     local np_list = minetest.find_nodes_in_area(p1, p2, diggable_nodes)
@@ -163,66 +162,66 @@ goblins.tunneling = function(self, type)
 
     self:set_animation("walk")
     self:set_velocity(self.walk_velocity)
-    
+
   elseif self.state == "room" then  -- Dig a room.
-  --[[first make sure player is not near by! (not quite ready yet)
+    --[[first make sure player is not near by! (not quite ready yet)
         goblins.must_hide = function() 
         end --]]
-     if not self.room_radius then
+    if not self.room_radius then
       self.room_radius = 1
-      end
-      
-    self:set_velocity(0)
-    self:set_animation("stand")
+  end
 
-    -- Work from the inside, out.
-     for r = 1,self.room_radius do
-      -- Get a pair of coordinates that form a room.
-      local p1 = vector.add(pos, -r)
-      local p2 = vector.add(pos, r)
-      -- But not below him.
-      p1.y = pos.y
+  self:set_velocity(0)
+  self:set_animation("stand")
 
-      local np_list = minetest.find_nodes_in_area(p1, p2, diggable_nodes)
+  -- Work from the inside, out.
+  for r = 1,self.room_radius do
+    -- Get a pair of coordinates that form a room.
+    local p1 = vector.add(pos, -r)
+    local p2 = vector.add(pos, r)
+    -- But not below him.
+    p1.y = pos.y
 
---FLG prefers a smaller room with a rougher look for goblin warrens.  Maybe this should be a setting for users preference?
-      if r >= self.room_radius and #np_list == 0 then
-        --self.room_radius = math.random(1,2) + math.random(0,1)
-        self.room_radius = math.random(1,1.5) + math.random(0,0.5)
-        self.state = "stand"
-            self:set_velocity(0)
-            self:set_animation("stand")
-        break
-      end
+    local np_list = minetest.find_nodes_in_area(p1, p2, diggable_nodes)
 
-      if #np_list > 0 then -- dig it
-        
-        minetest.remove_node(np_list[math.random(#np_list)])
-        minetest.sound_play(self.sounds.replace, {
-            object = self.object, gain = self.sounds.gain,
-            max_hear_distance = self.sounds.distance
-          })
-        break
-      end
+    --FLG prefers a smaller room with a rougher look for goblin warrens.  Maybe this should be a setting for users preference?
+    if r >= self.room_radius and #np_list == 0 then
+      --self.room_radius = math.random(1,2) + math.random(0,1)
+      self.room_radius = math.random(1,1.5) + math.random(0,0.5)
+      self.state = "stand"
+      self:set_velocity(0)
+      self:set_animation("stand")
+      break
+    end
+
+    if #np_list > 0 then -- dig it
+
+      minetest.remove_node(np_list[math.random(#np_list)])
+      minetest.sound_play(self.sounds.replace, {
+        object = self.object, gain = self.sounds.gain,
+        max_hear_distance = self.sounds.distance
+      })
+      break
     end
   end
----the following values should be vars for settings...
-  if self.state == "stand" and math.random() < 0.01 then
+  end
+  ---the following values should be vars for settings...
+  --if we are standing, maybe make a tunnel or 
+  --if we are tunneling, maybe make a room or 
+  --if we are tunneling stand or maybe just end this function
+  -- 
+  if self.state == "stand" and math.random() < 0.1 then
     self.state = "tunnel"
     if debugging_goblins_tunneling then print("goblineer is now tunneling") end
-  elseif self.state == "tunnel" and math.random() < 0.01 then
+  elseif self.state == "tunnel" and math.random() < 0.1 then
     self.state = "room"
     if debugging_goblins_tunneling then print("goblineer is now making a room") end
-  elseif self.state == "tunnel" and math.random() < 0.001 then
+  elseif self.state == "tunnel" and math.random() < 0.1 then
     self.state = "stand"
     if debugging_goblins_tunneling then print(dump(vector.round(self.object:getpos())).. "goblineer is thinking...") end
   end
 end
 
-
-
 --To Be Implemented someday:
 --Goblin Chest gen based on Minetest Game mod: dungeon_loot Originally by sfan5 (MIT)
-
-
 

@@ -14,7 +14,6 @@ for name, mat in pairs(craft_ingreds) do
   })
 end
 
-
 minetest.register_tool("goblins:pick_mossycobble", {
   description = "Mossycobble Pickaxe",
   inventory_image = "default_tool_stonepick.png",
@@ -29,3 +28,4 @@ minetest.register_tool("goblins:pick_mossycobble", {
   sound = {breaks = "default_tool_breaks"},
   groups = {pickaxe = 1}
 })
+

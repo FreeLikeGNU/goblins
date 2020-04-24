@@ -43,7 +43,7 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
   walk_velocity = 2,
   run_velocity = 4,
   jump = true,
-  jump_height = 3,
+  jump_height = 6,
   pushable = true,
   knock_back = true,
   follow = {"goblins:goblins_goblin_bone","goblins:goblins_goblin_bone_meaty","group:meat"},
@@ -54,12 +54,12 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
   water_damage = 0,
   lava_damage = 5,
   light_damage = 0,
-  fear_height = 2,
+  fear_height = 4,
   stay_near = {"group:water", 20,
-               "group:sand", 20,
-               "group:soil", 20,
-               "default:mossycobble", 10,
-               "group:meat" ,2},
+    "group:sand", 20,
+    "group:soil", 20,
+    "default:mossycobble", 10,
+    "group:meat" ,2},
   floats = 1,
   glow = 3,
   animation = {
@@ -83,25 +83,25 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
     die_speed = 30,
     die_loop = false,
   },
-  
+
   on_spawn = function(self)
-  minetest.sound_play("goblins_goblin_dog_warcry_cave", {
+    minetest.sound_play("goblins_goblin_dog_warcry_cave", {
       object = self.object,
       gain = .5,
       max_hear_distance =30
     })
     announce_goblin_spawn(self)
   end,
-  
+
   on_rightclick = function(self, clicker)
     if mobs:feed_tame(self, clicker, 8, true, true) then return end
     if mobs:protect(self, clicker) then return end
     if mobs:capture_mob(self, clicker, 0, 5, 50, false, nil) then return end
   end,
- ---dog behaviors or not... 
+  ---dog behaviors or not... 
   do_custom = function(self)
     if math.random() < 0.5 then
-    --consume meaty bones"
+      --consume meaty bones"
       goblins.search_replace(
         self,
         100, --search_rate
@@ -116,10 +116,10 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
         10, --replace_rate_secondary
         "air", --replace_with_secondary --very hungry
         nil, --decorate
-        true --debug_me if debugging also enabled in behaviors.lua
-        )
+        false --debug_me if debugging also enabled in behaviors.lua
+      )
     elseif math.random() < 0.5 then
-    --consume dry bones"
+      --consume dry bones"
       goblins.search_replace(
         self,
         100, --search_rate
@@ -134,11 +134,11 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
         nil, --replace_rate_secondary
         nil, --replace_with_secondary
         nil, --decorate
-        true --debug_me if debugging also enabled in behaviors.lua
-        )
-        
+        false--debug_me if debugging also enabled in behaviors.lua
+      )
+
     else if math.random() < 0.8 then
-  --dig and maybe bury bones if theres suitable terrain around
+      --dig and maybe bury bones if theres suitable terrain around
       goblins.search_replace(
         self,
         100, --search_rate
@@ -155,11 +155,11 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
         2, --replace_rate_secondary
         "default:dirt", --replace_with_secondary
         nil, --decorate
-        true --debug_me if debugging also enabled in behaviors.lua
-        )
+        false --debug_me if debugging also enabled in behaviors.lua
+      )
     else 
-  --or maybe bury something more useful
-        goblins.search_replace(
+      --or maybe bury something more useful
+      goblins.search_replace(
         self,
         100, --search_rate
         100000, --search_rate_above
@@ -175,11 +175,11 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
         2, --replace_rate_secondary
         "default:dirt", --replace_with_secondary
         nil, --decorate
-        true --debug_me if debugging also enabled in behaviors.lua
-        )
+        false --debug_me if debugging also enabled in behaviors.lua
+      )
+    end
     end
   end
-end
 })
 
 mobs:register_egg("goblins:goblins_goblin_dog", "Goblin Gobdog Egg", "default_mossycobble.png", 1)
@@ -252,10 +252,10 @@ minetest.register_node("goblins:dirt_with_bone", {
   drop = {
     max_items = 1, -- Only one set of item will be dropped.
     items = {
-        {
+      {
         items = {"default:flint 1", "goblins:goblins_goblin_bone 2","default:stick"},
         rarity = 2, -- has 1 chance over 2 to be picked
-        }, 
+      }, 
       {items = {"goblins:goblins_goblin_bone"}}
     }
   },
@@ -275,10 +275,10 @@ minetest.register_node("goblins:dirt_with_stuff", {
   drop = {
     max_items = 2, -- Only one set of item will be dropped.
     items = {
-        {
+      {
         items = {"default:pick_steel", "default:meselamp"},
         rarity = 16, -- has 1 chance over 16 to be picked
-        }, 
+      }, 
       {items = {"goblins:goblins_goblin_bone","default:shovel_steel"}}
     }
   },
