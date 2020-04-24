@@ -21,7 +21,7 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
     * https://notabug.org/TenPlus1/ambience	
     
     
-##Licenses of Source Media Files:
+## Licenses of Source Media Files:
 ---------------------------------------
 * goblins_goblin.b3d and goblins_goblin.blend 
     * Copyright 2015 by Francisco "FreeLikeGNU" Athens Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
