@@ -1,16 +1,5 @@
-local announce_spawning_goblins = true 
 
-local announce_goblin_spawn = function(self)
-  if announce_spawning_goblins == true then
-    local pos = vector.round(self.object:getpos())
-    if not pos then return end
-    print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
-  end
-end
-
-mobs:register_mob("goblins:goblins_goblin_dog", {
-  description ="Gobdog",
-  lore = "Gobdogs are not canids but goblins that have mutated somehow, fortunately they do not share the hunger and size of the mythical werewolf.",
+local goblin_dog_defaults = {
   stepheight = 1.2,
   type = "animal",
   passive =false,
@@ -82,7 +71,51 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
     die_stop = 145,
     die_speed = 30,
     die_loop = false,
+  }
+}
+
+mobs:register_mob("goblins:goblins_goblin_dog", {
+  description ="Gobdog",
+  lore = "Gobdogs are not canids but goblins that have mutated somehow, fortunately they do not share the hunger and size of the mythical werewolf.",
+  stepheight = 1.2,
+  type = "npc",
+  attack_type = "dogfight",
+  group_attack = true,
+  attack_npcs = false,
+  attack_monsters = false,
+  owner_loyal = true,
+  reach = 2,
+  damage = 1,
+  hp_min = 2,
+  hp_max = 5,
+  armor = 100,
+  collisionbox = {-0.45, -0.01, -0.45, 0.45, 0.85, 0.45},
+  visual = "mesh",
+  mesh = goblin_dog_defaults.mesh,
+  textures = {
+    {"goblins_goblin_dog.png"},
   },
+  makes_footstep_sound = true,
+  sounds = goblin_dog_defaults.sounds,
+  walk_velocity = 2,
+  run_velocity = 4,
+  jump = true,
+  jump_height = 6,
+  pushable = true,
+  knock_back = true,
+  follow = {"goblins:goblins_goblin_bone","goblins:goblins_goblin_bone_meaty","group:meat"},
+  view_range = 15,
+  drops = {
+    {name = "goblins:goblins_goblin_bone", chance = 1, min = 1, max = 3},
+  },
+  water_damage = goblin_dog_defaults.water_damage,
+  lava_damage = goblin_dog_defaults.lava_damage,
+  light_damage = goblin_dog_defaults.light_damage,
+  fear_height = goblin_dog_defaults.fear_height,
+  stay_near = goblin_dog_defaults.stay_near,
+  floats = goblin_dog_defaults.floats,
+  glow = goblin_dog_defaults.glow,
+  animation = goblin_dog_defaults.animation,
 
   on_spawn = function(self)
     minetest.sound_play("goblins_goblin_dog_warcry_cave", {
@@ -90,7 +123,7 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
       gain = .5,
       max_hear_distance =30
     })
-    announce_goblin_spawn(self)
+    goblins.announce_spawn(self)
   end,
 
   on_rightclick = function(self, clicker)
@@ -100,89 +133,81 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
   end,
   ---dog behaviors or not... 
   do_custom = function(self)
-    if math.random() < 0.5 then
-      --consume meaty bones"
-      goblins.search_replace(
-        self,
-        100, --search_rate
-        100000, --search_rate_above
-        100000, --search_rate_below
-        1, --search_offset
-        1, --search_offset_above
-        1, --search_offset_below
-        5, --replace_rate
-        {"group:meat","group:food_meat","group:food_meat_raw"}, --replace_what
-        "goblins:goblins_goblin_bone", --replace_with
-        10, --replace_rate_secondary
-        "air", --replace_with_secondary --very hungry
-        nil, --decorate
-        false --debug_me if debugging also enabled in behaviors.lua
-      )
-    elseif math.random() < 0.5 then
-      --consume dry bones"
-      goblins.search_replace(
-        self,
-        100, --search_rate
-        100000, --search_rate_above
-        100000, --search_rate_below
-        1, --search_offset
-        1, --search_offset_above
-        1, --search_offset_below
-        5, --replace_rate
-        "goblins:goblins_goblin_bone", --replace_what
-        "air", --replace_with
-        nil, --replace_rate_secondary
-        nil, --replace_with_secondary
-        nil, --decorate
-        false--debug_me if debugging also enabled in behaviors.lua
-      )
-
-    else if math.random() < 0.8 then
-      --dig and maybe bury bones if theres suitable terrain around
-      goblins.search_replace(
-        self,
-        100, --search_rate
-        100000, --search_rate_above
-        100, --search_rate_below
-        1, --search_offset
-        1, --search_offset_above
-        2, --search_offset_below
-        10, --replace_rate
-        {"group:soil",
-          "group:sand",
-          "default:gravel"}, --replace_what
-        "goblins:dirt_with_bone",
-        2, --replace_rate_secondary
-        "default:dirt", --replace_with_secondary
-        nil, --decorate
-        false --debug_me if debugging also enabled in behaviors.lua
-      )
-    else 
-      --or maybe bury something more useful
-      goblins.search_replace(
-        self,
-        100, --search_rate
-        100000, --search_rate_above
-        100, --search_rate_below
-        1, --search_offset
-        1, --search_offset_above
-        2, --search_offset_below
-        10, --replace_rate
-        {"group:soil",
-          "group:sand",
-          "default:gravel"}, --replace_what
-        "goblins:dirt_with_stuff",
-        2, --replace_rate_secondary
-        "default:dirt", --replace_with_secondary
-        nil, --decorate
-        false --debug_me if debugging also enabled in behaviors.lua
-      )
-    end
-    end
+    goblins.goblin_dog_behaviors(self)
   end
-})
 
+})
 mobs:register_egg("goblins:goblins_goblin_dog", "Goblin Gobdog Egg", "default_mossycobble.png", 1)
+
+
+mobs:register_mob("goblins:goblins_goblin_dog_aggro", {
+  description ="Dire Gobdog",
+  lore = "Dire Gobdogs are sensitive to light and are very territorial",
+  stepheight = 1.2,
+  type = "monster",
+  --passive = false,
+  attack_type = "dogfight",
+  group_attack = true,
+  owner_loyal = true,
+  attack_npcs = false,
+  --attack_players = true,
+  --specific_attack = "players",
+  reach = 2,
+  damage = 1,
+  hp_min = 2,
+  hp_max = 5,
+  armor = 100,
+  collisionbox = goblin_dog_defaults.collisionbox,
+  visual = "mesh",
+  mesh = goblin_dog_defaults.mesh,
+  textures = {
+    {"goblins_goblin_dog.png"},
+  },
+  makes_footstep_sound = true,
+  sounds = goblin_dog_defaults.sounds,
+  walk_velocity = 2,
+  run_velocity = 4,
+  jump = true,
+  jump_height = 6,
+  pushable = goblin_dog_defaults.pushable,
+  knock_back = goblin_dog_defaults.knockback,
+  follow = {"goblins:goblins_goblin_bone","goblins:goblins_goblin_bone_meaty","group:meat"},
+  view_range = goblin_dog_defaults.view_range,
+  drops = {
+    {name = "goblins:goblins_goblin_bone", chance = 1, min = 1, max = 3},
+  },
+  water_damage = goblin_dog_defaults.water_damage,
+  lava_damage = goblin_dog_defaults.lava_damage,
+  light_damage = 1,
+  light_damage_min = 7,
+  light_damage_max = 15,
+  fear_height = goblin_dog_defaults.fear_height,
+  stay_near = goblin_dog_defaults.staynear,
+  floats = goblin_dog_defaults.floats,
+  glow = 1,
+  animation = goblin_dog_defaults.animation,
+
+  on_spawn = function(self)
+    minetest.sound_play("goblins_goblin_dog_warcry_cave", {
+      object = self.object,
+      gain = .5,
+      max_hear_distance =30
+    })
+    goblins.announce_spawn(self)
+  end,
+
+  on_rightclick = function(self, clicker)
+    if mobs:feed_tame(self, clicker, 8, true, true) then return end
+    if mobs:protect(self, clicker) then return end
+    if mobs:capture_mob(self, clicker, 0, 5, 50, false, nil) then return end
+  end,
+  ---dog behaviors or not... 
+  do_custom = function(self)
+    goblins.goblin_dog_behaviors(self)
+  end
+
+})
+mobs:register_egg("goblins:goblins_goblin_dog_aggro", "Dire Goblin Gobdog Egg", "default_mossycobble.png", 1)
 
 mobs:spawn({
   name = "goblins:goblins_goblin_dog",
@@ -193,6 +218,17 @@ mobs:spawn({
   active_object_count = 4,
   min_height = -31000,
   max_height = -20,
+})
+
+mobs:spawn({
+  name = "goblins:goblins_goblin_dog_aggro",
+  nodes = {"default:mossycobble", "group:sand"},
+  min_light = 0,
+  max_light = 6,
+  chance = 500,
+  active_object_count = 1,
+  min_height = -31000,
+  max_height = -100,
 })
 
 minetest.register_node("goblins:goblins_goblin_bone", {
