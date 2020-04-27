@@ -48,7 +48,7 @@ local goblin_defaults = {  --your average goblin,
   makes_footstep_sound = true,
   sounds = {
     random = "goblins_goblin_breathing",
-    warcry = "goblins_goblin_warcry",
+    war_cry = "goblins_goblin_war_cry",
     attack = "goblins_goblin_attack",
     damage = "goblins_goblin_damage",
     death = "goblins_goblin_death",
@@ -121,6 +121,7 @@ mobs:register_mob("goblins:goblin_snuffer", {
   owner = "",
   order = "follow",
   follow = {"default:diamond", "default:apple", "farming:bread"},
+  runaway_from = "player",
   drops = goblin_defaults.drops,
   type = goblin_defaults.type,
   passive = goblin_defaults.passive,
@@ -187,7 +188,7 @@ mobs:register_mob("goblins:goblin_digger", {
   hp_max = 10,
   sounds = {
     random = "goblins_goblin_breathing",
-    warcry = "goblins_goblin_attack",
+    war_cry = "goblins_goblin_attack",
     attack = "goblins_goblin_attack",
     damage = "goblins_goblin_damage",
     death = "goblins_goblin_death",
@@ -202,6 +203,7 @@ mobs:register_mob("goblins:goblin_digger", {
   follow = {"default:diamond", "default:apple", "default:bread"},
   owner = "",
   order = "follow",
+  runaway_from = "player",
   type = goblin_defaults.type,
   passive = goblin_defaults.passive,
   attack_type = goblin_defaults.attack_type,
@@ -281,7 +283,7 @@ mobs:register_mob("goblins:goblin_cobble", {
   hp_max = 10,
   sounds = {
     random = {"goblins_goblin_breathing",gain = 0.5},
-    warcry = "goblins_goblin_warcry",
+    war_cry = "goblins_goblin_war_cry",
     attack = "goblins_goblin_attack",
     damage = "goblins_goblin_damage",
     death = "goblins_goblin_death",
@@ -292,6 +294,7 @@ mobs:register_mob("goblins:goblin_cobble", {
     {"default_tool_stoneaxe.png","goblins_goblin_cobble1.png"},
     {"default_tool_stoneaxe.png","goblins_goblin_cobble2.png"},	
   },
+  runaway_from = "player",
   drops = goblin_defaults.drops,
   follow = {"default:diamond", "default:apple", "farming:bread"},
   type = goblin_defaults.type,
@@ -359,7 +362,7 @@ mobs:register_mob("goblins:goblin_fungiler", {
   hp_max = 10,
   sounds = {
     random = "goblins_goblin_breathing",
-    warcry = "goblins_goblin_warcry",
+    war_cry = "goblins_goblin_war_cry",
     attack = "goblins_goblin_attack",
     damage = "goblins_goblin_damage",
     death = "goblins_goblin_death",
@@ -391,6 +394,7 @@ mobs:register_mob("goblins:goblin_fungiler", {
       chance = 2, min = 1, max = 5},
   },
   follow = {"default:diamond", "default:apple", "farming:bread"},
+  runaway_from = "player",
   type = goblin_defaults.type,
   passive = goblin_defaults.passive,
   attack_type = goblin_defaults.attack_type,
@@ -421,11 +425,13 @@ mobs:register_mob("goblins:goblin_fungiler", {
   animation = goblin_defaults.animation, 
 
   on_spawn = function(self)
-    goblins.announce_spawn(self)          
+    goblins.announce_spawn(self)
   end,
+    
   on_rightclick = function(self, clicker)
     goblins.give_gift(self, clicker)
   end,
+  
   do_custom = function(self)
     goblins.search_replace(
       self,

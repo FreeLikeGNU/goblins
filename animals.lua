@@ -23,7 +23,7 @@ local goblin_dog_defaults = {
   makes_footstep_sound = true,
   sounds = {
     random = "goblins_goblin_dog_ambient_cave",
-    warcry = "goblins_goblin_dog_warcry_cave",
+    war_cry = "goblins_goblin_dog_war_cry_cave",
     attack = "goblins_goblin_dog_attack_cave",
     damage = "goblins_goblin_dog_damage_cave",
     death = "goblins_goblin_dog_death_cave",
@@ -118,7 +118,7 @@ mobs:register_mob("goblins:goblins_goblin_dog", {
   animation = goblin_dog_defaults.animation,
 
   on_spawn = function(self)
-    minetest.sound_play("goblins_goblin_dog_warcry_cave", {
+    minetest.sound_play("goblins_goblin_dog_war_cry_cave", {
       object = self.object,
       gain = .5,
       max_hear_distance =30
@@ -188,7 +188,7 @@ mobs:register_mob("goblins:goblins_goblin_dog_aggro", {
   animation = goblin_dog_defaults.animation,
 
   on_spawn = function(self)
-    minetest.sound_play("goblins_goblin_dog_warcry_cave", {
+    minetest.sound_play("goblins_goblin_dog_war_cry_cave", {
       object = self.object,
       gain = .5,
       max_hear_distance =30

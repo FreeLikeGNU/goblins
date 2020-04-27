@@ -7,7 +7,8 @@
 This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn near ore deposits or lairs underground.
 
 * Goblins dig caves, destroy torches, create lairs, set traps, cultivate mushrooms and some are aggressive.
-* Goblin Dogs (Gobdogs) will roam caves, bury bones and other items in soft terrain, eat meats.
+* Goblin Dogs (Gobdogs) will roam caves, bury bones and other items in soft terrain, eat meats. Some Gobdogs are aggressive!
+* Basic trading with Goblins - the more you trade with a goblin, the more likely you will get things in return! 
 
 * tested with Mintest 5.30(dev)
 
@@ -22,7 +23,6 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
     
     
 ## Licenses of Source Media Files:
----------------------------------------
 * goblins_goblin.b3d and goblins_goblin.blend 
     * Copyright 2015 by Francisco "FreeLikeGNU" Athens Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
     * http://creativecommons.org/licenses/by-sa/3.0/
@@ -43,7 +43,7 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
     * Copyright 2015 by Francisco "FreeLikeGNU" Athens  Creative Commons  Attribution-ShareAlike 3.0 Unported         (CC BY-SA 3.0) 
     * http://creativecommons.org/licenses/by-sa/3.0/
     
-Additional source and content credits:
+## Additional source and content credits:
 * goblin mushrooms from "flowers" mod source code:
     * Originally by Ironzorg (MIT) and VanessaE (MIT)
     * Various Minetest developers and contributors (MIT)
@@ -51,7 +51,7 @@ Additional source and content credits:
 * mushrooms.xcf Copyright Francisco Athens (CC BY-SA 3.0) 2020
 * goblins_mushroom_brown.png, goblins_mushroom_brown2.png goblins_mushroom_brown3.png goblins_mushroom_brown4.png Copyright Francisco Athens (CC BY-SA 3.0) 2020
 
-* Sound files by:
+## Sound files by:
  * artisticdude http://opengameart.org/content/goblins-sound-pack (CC0-license)
  * Ogrebane http://opengameart.org/content/monster-sound-pack-volume-1 (CC0-license)
  * goblins_ambient_underground: 232685__julius-galla__atmosphere-cave-loop (CC-BY-SA)
