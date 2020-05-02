@@ -10,47 +10,79 @@ local debug_goblins_trade = false
 
 local goblin_node_protect_strict = true
 
-goblins.announce_spawn = function(self)
-  if announce_spawning == true then    
+function goblins.generate_name(name_parts)
+  -- print("generating name")
+  local name_arrays = {}
+  local r_parts = {}
+  local generated_name = {}
+  for k,v in pairs(name_parts) do
+    --  name_arrays.k = mysplit(v)
+    name_arrays.k = string.split(v," ")
+    -- print(dump(name_arrays.k))
+    r_parts[k] = k
+    r_parts[k] = name_arrays.k[math.random(1,#name_arrays.k)]
+
+  end
+  --local r_parts.k = name_arrays.k[math.random(1,#name_arrays.k)] did not work
+  --print(name_a)
+  if math.random() <= 0.5 then r_parts.list_opt = "" end
+  --print(r_parts.list_a..r_parts.list_b..r_parts.list_opt)
+
+  generated_name = r_parts.list_a..r_parts.list_b..r_parts.list_opt
+  return generated_name
+end
+
+function goblins.announce_spawn(self)
+  if announce_spawning == true then
     local pos = vector.round(self.object:getpos())
     if not pos then return end
     print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
   end
 end
 
-goblins.give_gift = function(self,clicker)
+function goblins.give_gift(self,clicker)
   -- you can give a gift, they may give something(s) in return...
-  if mobs:feed_tame(self, clicker, 4, false, false) then
-    local item = clicker:get_wielded_item()
-    local name = clicker:get_player_name()
-    --establish some shrewdness if its not set
-    if not self.shrewdness then self.shrewdness = 10 end
-    local gift = item:get_name()
-    if debug_goblins_trade == true then print("you offer: " .. dump(gift)) end
-    for _,v in pairs(self.follow) do
-      if v == gift then
-        if debug_goblins_trade == true then print("you gave "..self.name.. " a " .. dump(gift)) end
-        --reduce shrewdness on gifting
-        if self.shrewdness >= 2 then self.shrewdness = self.shrewdness - 1 end
-        if self.shrewdness >= 4 and gift == self.follow[1] then
-          self.shrewdness = self.shrewdness - 3
-          if debug_goblins_trade == true then print("you gave the perfect gift!") end
+  --if mobs:feed_tame(self, clicker, 14, false, false) then
+  local item = clicker:get_wielded_item()
+  local name = clicker:get_player_name()
+  local gift_accepted = nil
+  local gift_declined = nil
+  local pname = clicker:get_player_name()
+  --establish some shrewdness if its not set
+  if not self.shrewdness then self.shrewdness = 10 end
+  local gift = item:get_name()
+  local gift_description = item:get_definition().description
+  if debug_goblins_trade == true then print("you offer: " .. dump(gift)) end
+  for _,v in pairs(self.follow) do
+    if v == gift then
+      gift_accepted = true
+      if debug_goblins_trade == true then print("you gave "..self.name.. " a " .. dump(gift)) end
+      --reduce shrewdness on gifting
+      if self.shrewdness >= 2 then self.shrewdness = self.shrewdness - 1 end
+      if self.shrewdness >= 4 and gift == self.follow[1] then
+        self.shrewdness = self.shrewdness - 3
+        if debug_goblins_trade == true then print("you gave the perfect gift!") end
+      end
+      if debug_goblins_trade == true then print("shrewdness = " ..dump(self.shrewdness)) end
+      if not minetest.settings:get_bool("creative_mode") then
+        item:take_item()
+        clicker:set_wielded_item(item)
+      end
+      --print(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))
+      if debug_goblins_trade == true  then
+        print("you may get some of "..dump(#self.drops).. " things such as: ")
+        for _,v in pairs(self.drops) do
+          print(dump(v.name).. " with 1 chance in " ..dump(v.chance).. " + " ..dump(self.shrewdness))
         end
-        if debug_goblins_trade == true then print("shrewdness = " ..dump(self.shrewdness)) end
-
-        if not minetest.settings:get_bool("creative_mode") then
-          item:take_item()
-          clicker:set_wielded_item(item)
-        end
-        --print(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))               
-        if debug_goblins_trade == true  then 
-          print("you may get some of "..dump(#self.drops).. " things such as: ")
-          for _,v in pairs(self.drops) do
-            print(dump(v.name).. " with 1 chance in " ..dump(v.chance).. " + " ..dump(self.shrewdness))
-          end
-        end
-        local pos = self.object:getpos()
-        pos.y = pos.y + 0.5
+      end
+      local pos = self.object:getpos()
+      pos.y = pos.y + 0.5
+      if self.special_gift then
+        minetest.add_item(pos, {
+          name = self.special_gift
+        })
+        self.special_gift = false
+      else
         for _,v in pairs(self.drops) do
           local trade_chance = v.chance + self.shrewdness
           if math.random(1, trade_chance) == 1 then
@@ -60,15 +92,29 @@ goblins.give_gift = function(self,clicker)
             })
           end
         end
-        return
-      else
-        if debug_goblins_trade == true  then print("you did not offer " .. dump(string.split(v,":")[2]) ) end 
       end
+      gift_accepted = true
+      if self.nametag == self.secret_name then
+        minetest.chat_send_player(pname,self.nametag.. " takes your " .. gift_description)
+      else
+        minetest.chat_send_player(pname,"Goblin takes your " .. gift_description)
+      end
+      return gift_accepted --acception of gift complete
+
+    else
+      if debug_goblins_trade == true then print("you did not offer " .. dump(string.split(v,":")[2]) ) end
     end
-  end  
+  end
+  if self.nametag == self.secret_name then
+    minetest.chat_send_player(pname,self.nametag.. " does not want your " .. gift_description)
+  else
+    minetest.chat_send_player(pname,"Goblin does not want your " .. gift_description)
+  end
+  gift_declined = true
 end
 
-goblins.search_replace = function(
+
+function goblins.search_replace(
   self,
   search_rate,
   search_rate_above,
@@ -122,7 +168,7 @@ goblins.search_replace = function(
         print(#nodelist.." nodes found by " .. self.name:split(":")[2]..":")
         for k,v in pairs(nodelist) do print(minetest.get_node(v).name:split(":")[2].. " found.") end
       end
-      for key,value in pairs(nodelist) do 
+      for key,value in pairs(nodelist) do
         -- ok we see some nodes around us, are we going to replace them?
         if minetest.is_protected(value.pos, "")  and goblin_node_protect_strict then break end
         if math.random(1, replace_rate) == 1 then
@@ -130,8 +176,8 @@ goblins.search_replace = function(
             math.random(1, replace_rate_secondary) == 1 then
             if decorate then
               value = minetest.find_node_near(value, 2, "air")
-            end   
-            if value ~= nil then 
+            end
+            if value ~= nil then
               self:set_velocity(0)
               self:set_animation("stand")
               minetest.set_node(value, {name = replace_with_secondary})
@@ -142,7 +188,7 @@ goblins.search_replace = function(
           else
             if decorate then
               value = minetest.find_node_near(value, 2, "air")
-            end   
+            end
             if value ~= nil then
               self:set_velocity(0)
               self:set_animation("stand")
@@ -173,12 +219,12 @@ mine for me."
       --Epithet from __The Luanacy of Goblins__ by Persont Bachslachdi   
 --]]
 
---the following is built from duane-r's goblin tunnel digging: 
+--the following is built from duane-r's goblin tunnel digging:
 local diggable_nodes = {"group:stone", "group:sand", "group:soil", "group:cracky", "group:crumbly"}
 -- This translates yaw into vectors.
 local cardinals = {{x=0,y=0,z=0.75}, {x=-0.75,y=0,z=0}, {x=0,y=0,z=-0.75}, {x=0.75,y=0,z=0}}
 
-goblins.tunneling = function(self, type)
+function goblins.tunneling(self, type)
   -- Types are available for fine-tuning.
   if type == nil then
     type = "digger"
@@ -201,7 +247,7 @@ goblins.tunneling = function(self, type)
       -- Get a pair of coordinates that should cover what's in front of him.
       local p = vector.add(pos, cardinals[self.digging_dir+1])
       -- p.y = p.y - 1  -- What's this about?
-      local p1 = vector.add(p, .1) 
+      local p1 = vector.add(p, .1)
       local p2 = vector.add(p, 1.5)
 
       -- Get any diggable nodes in that area.
@@ -215,7 +261,7 @@ goblins.tunneling = function(self, type)
             minetest.sound_play(self.sounds.replace, {
               object = self.object, gain = self.sounds.gain,
               max_hear_distance = self.sounds.distance
-            }) 
+            })
           end
         end
       end
@@ -224,7 +270,7 @@ goblins.tunneling = function(self, type)
         local d = {-1,1}
         self.digging_dir = (self.digging_dir + d[math.random(2)]) % 4
       end
-
+      self.state = "walk"
       self:set_animation("walk")
       self:set_velocity(self.walk_velocity)
 
@@ -237,6 +283,7 @@ goblins.tunneling = function(self, type)
     end
 
     self:set_velocity(0)
+    self.state = "stand"
     self:set_animation("stand")
 
     -- Work from the inside, out.
@@ -253,9 +300,9 @@ goblins.tunneling = function(self, type)
       if r >= self.room_radius and #np_list == 0 then
         --self.room_radius = math.random(1,2) + math.random(0,1)
         self.room_radius = math.random(1,1.5) + math.random(0,0.5)
-        self.state = "stand"
-        self:set_velocity(0)
-        self:set_animation("stand")
+        --        self.state = "stand"
+        --        self:set_velocity(0)
+        --        self:set_animation("stand")
         break
       end
 
@@ -268,13 +315,16 @@ goblins.tunneling = function(self, type)
         })
         break
       end
+      self.state = "walk"
+      self:set_animation("walk")
+      self:set_velocity(self.walk_velocity)
     end
     end
     ---the following values should be vars for settings...
-    --if we are standing, maybe make a tunnel or 
-    --if we are tunneling, maybe make a room or 
+    --if we are standing, maybe make a tunnel or
+    --if we are tunneling, maybe make a room or
     --if we are tunneling stand or maybe just end this function
-    -- 
+    --
     if self.state == "stand" and math.random() < 0.1 then
       self.state = "tunnel"
       if debug_goblins_tunneling then print("goblineer is now tunneling") end
@@ -289,7 +339,7 @@ goblins.tunneling = function(self, type)
 end
 
 
-goblins.goblin_dog_behaviors = function(self)
+function goblins.goblin_dog_behaviors(self)
   local pos = self.object:getpos()
   if not minetest.is_protected(pos, "") and math.random() < 0.5 then
     --consume meaty bones"
@@ -328,7 +378,7 @@ goblins.goblin_dog_behaviors = function(self)
       false--debug_me if debugging also enabled in behaviors.lua
     )
 
-  else 
+  else
     if not minetest.is_protected(pos, "") and math.random() < 0.8 then
       --dig and maybe bury bones if theres suitable terrain around
       goblins.search_replace(
@@ -349,7 +399,7 @@ goblins.goblin_dog_behaviors = function(self)
         nil, --decorate
         false --debug_me if debugging also enabled in behaviors.lua
       )
-    else 
+    else
       --or maybe bury something more useful
       if not minetest.is_protected(pos, "") then
         goblins.search_replace(
@@ -385,4 +435,4 @@ end
     
 --To Be Implemented someday:
 --Goblin Chest gen based on Minetest Game mod: dungeon_loot Originally by sfan5 (MIT)
-
+--All Goblins to dig downward if to close to surface level
