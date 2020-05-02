@@ -1,8 +1,8 @@
 -- goblin namegen sets from https://github.com/LukeMS/lua-namegen
 -- libtcod https://github.com/libtcod/libtcod name set format have been adapted for my Goblins gen_name function
 local gob_name_parts = {
-  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nig Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
-  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nig nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
+  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
+  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
   list_opt = "ah ay e ee gah ghy y ya"
 }
 -- this table defines the goblins with how they differ from the goblin template.
@@ -27,7 +27,7 @@ local gob_types = {
     textures = {
       "default_tool_stonepick.png","goblins_goblin_digger.png"
     },
-    follow = {"default:diamond", "default:apple", "farming:bread"},
+
     -- if either digging style is set too close to "1", then the digging will go vertical!
     -- best to set either of these less than 0.5 to give the gobs time to roam...
     do_custom = function(self)
@@ -92,8 +92,8 @@ local gob_types = {
       {"default_tool_stoneaxe.png","goblins_goblin_cobble1.png"},
       {"default_tool_stoneaxe.png","goblins_goblin_cobble2.png"},
     },
-    follow = {"default:diamond", "default:apple", "default:bread"},
     runaway_from = "player",
+
     do_custom = function(self)
       goblins.search_replace(
         self,
@@ -134,9 +134,9 @@ local gob_types = {
     textures = {
       "default_stick.png", "goblins_goblin_digger.png",
     },
-    --stay_near = "group:torch",
-    follow = {"default:diamond", "default:apple", "default:bread"},
+    stay_near = "group:torch",
     runaway_from = "player",
+
     do_custom = function(self)
       goblins.search_replace(
         self,
@@ -188,6 +188,8 @@ local gob_types = {
       {"goblins_mushroom_brown.png","goblins_goblin_cobble2.png"},
     },
     drops = {
+      {name = "default:pick_steel",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_mossycobble",
         chance = 10, min = 1, max = 1},
       {name = "default:mossycbble",
@@ -207,8 +209,8 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "farming:bread"},
     runaway_from = "player",
+
     do_custom = function(self)
       goblins.search_replace(
         self,
@@ -252,6 +254,8 @@ local gob_types = {
       {"default_tool_stonepick.png","goblins_goblin_coal2.png"},
     },
     drops = {
+      {name = "default:pick_steel",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_mossycobble",
         chance = 10, min = 1, max = 1},
       {name = "default:mossycbble",
@@ -271,7 +275,7 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "farming:bread"},
+
     do_custom = function(self)
       goblins.search_replace(
         self,
@@ -314,6 +318,8 @@ local gob_types = {
       {"default_tool_bronzesword.png","goblins_goblin_copper2.png"},
     },
     drops = {
+      {name = "default:pick_diamond",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_bronze",
         chance = 10, min = 1, max = 1},
       {name = "default:bronze_ingot",
@@ -333,7 +339,6 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "default:bread"},
 
     do_custom = function(self)
       goblins.search_replace(
@@ -354,7 +359,7 @@ local gob_types = {
       )
     end,
     spawning = {
-      nodes = {"default:stone_with_copper", "default:mossycobble"},
+      nodes = {"default:stone_with_copper", "default:mossycobble", "default:blueberries"},
       neighbors = "air",
       min_light = 0,
       max_light = 14,
@@ -377,6 +382,8 @@ local gob_types = {
       {"default_tool_stonesword.png","goblins_goblin_iron2.png"},
     },
     drops = {
+      {name = "default:pick_diamond",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_steel",
         chance = 10, min = 1, max = 1},
       {name = "default:steel_ingot",
@@ -396,8 +403,8 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "default:bread"},
     type = "monster",
+
     do_custom = function(self)
       goblins.search_replace(
         self,
@@ -440,6 +447,8 @@ local gob_types = {
       {"default_tool_steelsword.png","goblins_goblin_gold2.png"},
     },
     drops = {
+      {name = "default:pick_diamond",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_gold",
         chance = 10, min = 1, max = 1},
       {name = "default:gold_lump",
@@ -459,7 +468,6 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "farming:bread"},
     type = "monster",
 
     do_custom = function(self)
@@ -504,6 +512,8 @@ local gob_types = {
       {"default_tool_diamondsword.png","goblins_goblin_diamond2.png"},
     },
     drops = {
+      {name = "default:pick_mese",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_diamond",
         chance = 10, min = 1, max = 1},
       {name = "default:diamond",
@@ -523,7 +533,7 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "farming:bread"},
+    follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
     type = "monster",
 
     do_custom = function(self)
@@ -567,7 +577,11 @@ local gob_types = {
       {"default_tool_mesepick.png","goblins_goblin_hoarder.png"},
     },
     drops = {
+      {name = "default:meselamp",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_mese",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_mese",
         chance = 10, min = 1, max = 1},
       {name = "default:mese_crystal",
         chance = 7, min = 1, max = 1},
@@ -586,7 +600,7 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    follow = {"default:diamond", "default:apple", "farming:bread"},
+
     type = "monster",
 
     do_custom = function(self)
@@ -678,6 +692,7 @@ local goblin_template = {  --your average goblin,
   stay_near = "group:stone",
   owner = "",
   order = "follow",
+
   animation = {
     stand_speed = 30,
     stand_start = 0,
@@ -693,6 +708,8 @@ local goblin_template = {  --your average goblin,
     punch_end = 219,
   },
   drops = {
+    {name = "default:pick_steel",
+      chance = 1000, min = 1, max = 1},
     {name = "default:pick_mossycobble",
       chance = 10, min = 1, max = 1},
     {name = "default:mossycbble",
@@ -712,19 +729,19 @@ local goblin_template = {  --your average goblin,
     {name = "goblins:mushroom_goblin",
       chance = 2, min = 1, max = 5},
   },
-
+  follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
   on_spawn = function(self)
     if not self.nametag then
       self.secret_name = goblins.generate_name(gob_name_parts)
     end
     --print (dump(self.secret_name))
     goblins.announce_spawn(self)
-    self.special_gifts = {"default:mese","default:meselamp","default:pick_mese", }
-    --print(dump(self))
+    if not self.special_gifts then self.special_gifts = goblins.special_gifts(self) end
+    --print (dump(self.special_gifts).. " are precious to "..dump(self.secret_name).. "!")
   end,
+
   --By default the Goblins are willing to trade, this can be overridden in the table for any goblin
   on_rightclick = function(self,clicker)
-
     if self.shrewdness and self.shrewdness <= 3 then
       self.nametag = self.secret_name
       if not self.secret_name_told then --The goblin is willing to share something special!
@@ -733,11 +750,9 @@ local goblin_template = {  --your average goblin,
         self.nametag = self.secret_name
         if self.special_gifts then
           self.special_gift = self.special_gifts[math.random(1,#self.special_gifts)]
-          --print(self.special_gift.. " dropped!")
-
+          --print(self.special_gift.. "activated!")
         end
       end
-      --print("You have learned the secret name of " ..self.nametag)
     end
     goblins.give_gift(self,clicker)
   end,

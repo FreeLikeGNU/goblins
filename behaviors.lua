@@ -21,7 +21,6 @@ function goblins.generate_name(name_parts)
     -- print(dump(name_arrays.k))
     r_parts[k] = k
     r_parts[k] = name_arrays.k[math.random(1,#name_arrays.k)]
-
   end
   --local r_parts.k = name_arrays.k[math.random(1,#name_arrays.k)] did not work
   --print(name_a)
@@ -30,6 +29,43 @@ function goblins.generate_name(name_parts)
 
   generated_name = r_parts.list_a..r_parts.list_b..r_parts.list_opt
   return generated_name
+end
+
+--returns a list of special gifts based on goblin follow and drops defs
+function goblins.special_gifts(self)
+  local special_gifts = {}
+  --first item in follow list is special to the goblin!
+  local from_follow = {self.follow[1]}
+  --special things from goblins drops table can be defined with a very rare drop chance
+  local from_drops = {}
+  for _,v in pairs(self.drops) do
+    if v.chance >= 1000 then
+    --print(dump(v.name).. " with 1 chance in " ..dump(v.chance))
+    end
+    if v.chance >= 1000 then
+      table.insert(from_drops, v.name)
+    end
+  end
+  --print(dump(from_follow).." and " ..dump(from_drops).." are possible gifts")
+  if from_follow then
+    for _,v in pairs(from_follow) do
+      table.insert(special_gifts, v)
+    end
+  end
+  if from_drops then
+    for _,v in pairs(from_drops) do
+      table.insert(special_gifts, v)
+    end
+  end
+  if special_gifts then
+    --print(dump(special_gifts).." have been generated")
+    return special_gifts
+  else
+    special_gifts = {"default:mese"}
+    --print(dump(special_gifts).." have been generated due to lack of definition")
+    return special_gifts
+  end
+
 end
 
 function goblins.announce_spawn(self)
@@ -59,9 +95,10 @@ function goblins.give_gift(self,clicker)
       if debug_goblins_trade == true then print("you gave "..self.name.. " a " .. dump(gift)) end
       --reduce shrewdness on gifting
       if self.shrewdness >= 2 then self.shrewdness = self.shrewdness - 1 end
-      if self.shrewdness >= 4 and gift == self.follow[1] then
-        self.shrewdness = self.shrewdness - 3
+      if gift == self.follow[1] then
+        if self.shrewdness >= 4 then self.shrewdness = self.shrewdness - 3 end
         if debug_goblins_trade == true then print("you gave the perfect gift!") end
+        minetest.chat_send_player(pname,"Yessss! " .. gift_description.."!")
       end
       if debug_goblins_trade == true then print("shrewdness = " ..dump(self.shrewdness)) end
       if not minetest.settings:get_bool("creative_mode") then
@@ -81,12 +118,19 @@ function goblins.give_gift(self,clicker)
         minetest.add_item(pos, {
           name = self.special_gift
         })
+        minetest.chat_send_player(pname, self.secret_name.. " gives you a precious thing")
         self.special_gift = false
       else
         for _,v in pairs(self.drops) do
           local trade_chance = v.chance + self.shrewdness
+          if self.shrewdness and self.shrewdness <= 2 and gift == self.follow[1] then trade_chance = 2 end
           if math.random(1, trade_chance) == 1 then
             if debug_goblins_trade == true then print(dump(v.name.. " dropped by "..self.name.. " at a chance of 1 in " ..trade_chance)) end
+            pos.y = pos.y + math.random()
+            pos.x = pos.x + math.random()
+            pos.x = pos.x - math.random()
+            pos.z = pos.z + math.random()
+            pos.z = pos.z - math.random()
             minetest.add_item(pos, {
               name = v.name
             })
