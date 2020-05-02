@@ -10,6 +10,8 @@ local debug_goblins_trade = false
 
 local goblin_node_protect_strict = true
 
+local mobs_griefing = minetest.settings:get_bool("mobs_griefing") ~= false
+
 function goblins.generate_name(name_parts)
   -- print("generating name")
   local name_arrays = {}
@@ -174,7 +176,7 @@ function goblins.search_replace(
   decorate,
   debug_me) --this is for placing attached nodes like goblin mushrooms and torches
   local pos  = self.object:getpos()
-  if not minetest.is_protected(pos, "") and math.random(1, search_rate) == 1 then
+  if mobs_griefing and not minetest.is_protected(pos, "") and math.random(1, search_rate) == 1 then
     -- look for nodes
     local pos  = self.object:getpos() --
     local pos1 = self.object:getpos()
@@ -275,7 +277,7 @@ function goblins.tunneling(self, type)
   end
 
   local pos = self.object:getpos()
-  if not minetest.is_protected(pos, "") then
+  if mobs_griefing and not minetest.is_protected(pos, "") then
     if self.state == "tunnel" then
       self:set_animation("walk")
       self:set_velocity(self.walk_velocity)
@@ -385,45 +387,44 @@ end
 
 function goblins.goblin_dog_behaviors(self)
   local pos = self.object:getpos()
-  if not minetest.is_protected(pos, "") and math.random() < 0.5 then
-    --consume meaty bones"
-    goblins.search_replace(
-      self,
-      100, --search_rate
-      100000, --search_rate_above
-      100000, --search_rate_below
-      1, --search_offset
-      1, --search_offset_above
-      1, --search_offset_below
-      5, --replace_rate
-      {"group:meat","group:food_meat","group:food_meat_raw"}, --replace_what
-      "goblins:goblins_goblin_bone", --replace_with
-      10, --replace_rate_secondary
-      "air", --replace_with_secondary --very hungry
-      nil, --decorate
-      false --debug_me if debugging also enabled in behaviors.lua
-    )
-  elseif not minetest.is_protected(pos, "") and math.random() < 0.5 then
-    --consume dry bones"
-    goblins.search_replace(
-      self,
-      100, --search_rate
-      100000, --search_rate_above
-      100000, --search_rate_below
-      1, --search_offset
-      1, --search_offset_above
-      1, --search_offset_below
-      5, --replace_rate
-      "goblins:goblins_goblin_bone", --replace_what
-      "air", --replace_with
-      nil, --replace_rate_secondary
-      nil, --replace_with_secondary
-      nil, --decorate
-      false--debug_me if debugging also enabled in behaviors.lua
-    )
-
-  else
-    if not minetest.is_protected(pos, "") and math.random() < 0.8 then
+  if mobs_griefing and not minetest.is_protected(pos, "") then
+    if math.random() < 0.5 then
+      --consume meaty bones"
+      goblins.search_replace(
+        self,
+        100, --search_rate
+        100000, --search_rate_above
+        100000, --search_rate_below
+        1, --search_offset
+        1, --search_offset_above
+        1, --search_offset_below
+        5, --replace_rate
+        {"group:meat","group:food_meat","group:food_meat_raw"}, --replace_what
+        "goblins:goblins_goblin_bone", --replace_with
+        10, --replace_rate_secondary
+        "air", --replace_with_secondary --very hungry
+        nil, --decorate
+        false --debug_me if debugging also enabled in behaviors.lua
+      )
+    elseif math.random() < 0.5 then
+      --consume dry bones"
+      goblins.search_replace(
+        self,
+        100, --search_rate
+        100000, --search_rate_above
+        100000, --search_rate_below
+        1, --search_offset
+        1, --search_offset_above
+        1, --search_offset_below
+        5, --replace_rate
+        "goblins:goblins_goblin_bone", --replace_what
+        "air", --replace_with
+        nil, --replace_rate_secondary
+        nil, --replace_with_secondary
+        nil, --decorate
+        false--debug_me if debugging also enabled in behaviors.lua
+      )
+    elseif math.random() < 0.8 then
       --dig and maybe bury bones if theres suitable terrain around
       goblins.search_replace(
         self,
@@ -445,26 +446,24 @@ function goblins.goblin_dog_behaviors(self)
       )
     else
       --or maybe bury something more useful
-      if not minetest.is_protected(pos, "") then
-        goblins.search_replace(
-          self,
-          100, --search_rate
-          100000, --search_rate_above
-          100, --search_rate_below
-          1, --search_offset
-          1, --search_offset_above
-          2, --search_offset_below
-          10, --replace_rate
-          {"group:soil",
-            "group:sand",
-            "default:gravel"}, --replace_what
-          "goblins:dirt_with_stuff",
-          2, --replace_rate_secondary
-          "default:dirt", --replace_with_secondary
-          nil, --decorate
-          false --debug_me if debugging also enabled in behaviors.lua
-        )
-      end
+      goblins.search_replace(
+        self,
+        100, --search_rate
+        100000, --search_rate_above
+        100, --search_rate_below
+        1, --search_offset
+        1, --search_offset_above
+        2, --search_offset_below
+        10, --replace_rate
+        {"group:soil",
+          "group:sand",
+          "default:gravel"}, --replace_what
+        "goblins:dirt_with_stuff",
+        2, --replace_rate_secondary
+        "default:dirt", --replace_with_secondary
+        nil, --decorate
+        false --debug_me if debugging also enabled in behaviors.lua
+      )
     end
   end
   --[[not quite ready yet...
