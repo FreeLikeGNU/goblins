@@ -168,7 +168,7 @@ local gob_types = {
       on_spawn = nil,
     }
   },
-  fungler = {
+  fungiler = {
     description = "Goblin Fungiler",
     lore = "Fungilers keep the warren full of tasty mushrooms which are also fuel for pyromancy",
     damage = 1,
