@@ -6,6 +6,7 @@ dofile(path .. "/soundsets.lua")
 dofile(path .. "/behaviors.lua")
 dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
+dofile(path .. "/hunger.lua")
 
 goblins.version="20200502"
 minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
