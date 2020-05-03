@@ -7,7 +7,7 @@ dofile(path .. "/behaviors.lua")
 dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
 
-goblins.version="20200501"
+goblins.version="20200502"
 minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
 print("Please report issues at https://github.com/FreeLikeGNU/goblins/issues ")
 
@@ -58,3 +58,4 @@ mobs:register_mob("goblins:goblin_monster_test", {
 mobs:register_egg("goblins:goblin_npc_test", "Goblin Egg (test NPC)", "default_mossycobble.png", 1)
 mobs:register_egg("goblins:goblin_monster_test", "Goblin Egg (test MONSTER)", "default_mossycobble.png", 1)
 --]]
+

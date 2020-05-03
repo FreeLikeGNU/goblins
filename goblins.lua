@@ -790,26 +790,7 @@ local goblin_template = {  --your average goblin,
 -------------
 --ASSEMBLE THE GOBLIN HORDES!!!!
 --------------
-
---local g_types = gob_types
-for k, v in pairs(gob_types) do
-  -- we need to get a fresh template to modify for every type or we get some carryover values:-P
-  local g_template = table.copy(goblin_template)
-  -- g_type should be different every time so no need to freshen
-  local g_type = v
-  for x, y in pairs(g_type) do
-    -- print("found template modifiers " ..dump(x).." = "..dump(y))
-    g_template[x] = g_type[x]
-  end
-  print ("Assembling the "..g_template.description..":")
-  if g_template.lore then print("  "..g_template.lore) end
-  --print("resulting template: " ..dump(g_template))
-  mobs:register_mob("goblins:goblin_"..k, g_template)
-  mobs:register_egg("goblins:goblin_"..k,g_template.description.. " Goblin Egg","default_mossycobble.png", 1)
-  g_template.spawning.name = "goblins:goblin_"..k --spawn in the name of the key!
-  mobs:spawn(g_template.spawning)
-  g_template = {}
-end
+goblins.generate(gob_types,goblin_template)
 
 local function ggn(gob_name_parts)
   return goblins.generate_name(gob_name_parts)

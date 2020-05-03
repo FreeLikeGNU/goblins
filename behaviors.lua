@@ -12,6 +12,27 @@ local goblin_node_protect_strict = true
 
 local mobs_griefing = minetest.settings:get_bool("mobs_griefing") ~= false
 
+function goblins.generate(gob_types,goblin_template)
+  for k, v in pairs(gob_types) do
+    -- we need to get a fresh template to modify for every type or we get some carryover values:-P
+    local g_template = table.copy(goblin_template)
+    -- g_type should be different every time so no need to freshen
+    local g_type = v
+    for x, y in pairs(g_type) do
+      -- print("found template modifiers " ..dump(x).." = "..dump(y))
+      g_template[x] = g_type[x]
+    end
+    print ("Assembling the "..g_template.description..":")
+    if g_template.lore then print("  "..g_template.lore) end
+    --print("resulting template: " ..dump(g_template))
+    mobs:register_mob("goblins:goblin_"..k, g_template)
+    mobs:register_egg("goblins:goblin_"..k,g_template.description.. " Goblin Egg","default_mossycobble.png", 1)
+    g_template.spawning.name = "goblins:goblin_"..k --spawn in the name of the key!
+    mobs:spawn(g_template.spawning)
+    g_template = {}
+  end
+end
+
 function goblins.generate_name(name_parts)
   -- print("generating name")
   local name_arrays = {}
@@ -74,7 +95,6 @@ function goblins.announce_spawn(self)
   if announce_spawning == true then
     local pos = vector.round(self.object:getpos())
     if not pos then return end
-    print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
     if self.secret_name then
       print( self.name:split(":")[2].. ", "..self.secret_name.." spawned at: " .. minetest.pos_to_string(pos))
     else
