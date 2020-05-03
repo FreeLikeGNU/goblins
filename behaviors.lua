@@ -75,6 +75,11 @@ function goblins.announce_spawn(self)
     local pos = vector.round(self.object:getpos())
     if not pos then return end
     print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
+    if self.secret_name then
+      print( self.name:split(":")[2].. ", "..self.secret_name.." spawned at: " .. minetest.pos_to_string(pos))
+    else
+      print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
+    end
   end
 end
 

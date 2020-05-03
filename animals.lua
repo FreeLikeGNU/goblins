@@ -232,7 +232,7 @@ mobs:spawn({
 })
 
 minetest.register_node("goblins:goblins_goblin_bone", {
-  description = "bone",
+  description = "gnawed bone",
   tiles = {"goblins_goblin_bone.png"},
   inventory_image  = "goblins_goblin_bone.png",
   visual_scale = 0.7,
