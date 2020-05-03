@@ -147,7 +147,7 @@ minetest.register_node("goblins:goblins_goblin_bone", {
     type = "fixed",
     fixed = {-0.2, -0.5, -0.2, 0.2, 0, 0.2}
   },
-  groups = {meat = 1, snappy = 2, fleshy =1, dig_immediate = 3},
+  groups = {bone = 1, meat = 1, snappy = 2, fleshy =1, dig_immediate = 3},
   after_place_node = function(pos, placer, itemstack)
     if placer:is_player() then
       minetest.set_node(pos, {name = "goblins:goblins_goblin_bone", param2 = 1})
