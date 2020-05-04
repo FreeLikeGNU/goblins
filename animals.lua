@@ -163,3 +163,8 @@ local gobdog_template = {
 -------------------------
 goblins.generate(gobdog_types,gobdog_template)
 
+mobs:alias_mob("goblins:goblins_goblin_dog", "goblins:goblin_gobdog")
+mobs:alias_mob("goblins:goblin_goblin_dog", "goblins:goblin_gobdog")
+
+mobs:alias_mob("goblins:goblins_goblin_dog_aggro", "goblins:goblin_gobdog_aggro")
+mobs:alias_mob("goblins:goblin_goblin_dog_aggro", "goblins:goblin_gobdog_aggro")
