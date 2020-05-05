@@ -21,7 +21,9 @@ dofile(path .. "/soundsets.lua")
 dofile(path .. "/behaviors.lua")
 dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
+dofile(path .. "/hunger.lua")
 goblins.version = goblins_version
+
 minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
 print("Please report issues at https://github.com/FreeLikeGNU/goblins/issues ")
 
