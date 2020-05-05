@@ -1,4 +1,19 @@
 local path = minetest.get_modpath("goblins")
+goblins_db = minetest.get_mod_storage()
+goblins_db:set_string("goblins mod start time", os.date() )
+local goblins_version="20200504"  
+  -- create the table if it does not exist!
+local goblins_db_fields = goblins_db:to_table()["fields"]
+local function goblins_db_write(key, table)
+  local data = minetest.serialize(table)
+  goblins_db:set_string(key, data)
+  return key, data
+end
+  if not goblins_db_fields["territories"] then
+    print("-------------\nWe must Initialize!\n-------------")
+    goblins_db_write("territories", {test = {version = goblins_version, encode = minetest.encode_base64(os.date()), created = os.date() }})
+  end
+
 dofile(path .. "/traps.lua")
 dofile(path .. "/nodes.lua")
 dofile(path .. "/items.lua")
@@ -6,8 +21,7 @@ dofile(path .. "/soundsets.lua")
 dofile(path .. "/behaviors.lua")
 dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
-
-goblins.version="20200502"
+goblins.version = goblins_version
 minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
 print("Please report issues at https://github.com/FreeLikeGNU/goblins/issues ")
 
@@ -22,6 +36,8 @@ else
   print("This mod requires Mobs Redo 20200430 or greater!")
   print("https://notabug.org/TenPlus1/mobs_redo")
 end
+
+
   
 --[[
 mobs:register_mob("goblins:goblin_npc_test", {

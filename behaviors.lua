@@ -7,6 +7,7 @@ local debug_goblins_replace = false
 local debug_goblins_replace2 = false
 local debug_goblins_tunneling = false
 local debug_goblins_trade = false
+local debug_goblins_territories = false
 
 local goblin_node_protect_strict = true
 
@@ -33,7 +34,7 @@ function goblins.generate(gob_types,goblin_template)
   end
 end
 
-function goblins.generate_name(name_parts)
+function goblins.generate_name(name_parts, rules)
   -- print("generating name")
   local name_arrays = {}
   local r_parts = {}
@@ -47,18 +48,32 @@ function goblins.generate_name(name_parts)
   end
   --local r_parts.k = name_arrays.k[math.random(1,#name_arrays.k)] did not work
   --print(name_a)
-  if math.random() <= 0.5 then r_parts.list_opt = "" end
+  if r_parts.list_opt and math.random() <= 0.5 then r_parts.list_opt = "" end
   --print(r_parts.list_a..r_parts.list_b..r_parts.list_opt)
 
-  generated_name = r_parts.list_a..r_parts.list_b..r_parts.list_opt
-  return generated_name
+  if rules then
+    --print(dump(rules))
+    local gen_name = ""
+    for i, v in ipairs(rules) do
+      if v == "-" then
+        gen_name = gen_name.."-"
+      else
+        gen_name = gen_name..r_parts[v]
+      end
+    end
+    generated_name = gen_name
+    --print(dump(generated_name))
+    return generated_name
+  else
+
+    generated_name = r_parts.list_a..r_parts.list_b..r_parts.list_opt
+    return generated_name
+  end
 end
 
---returns a list of special gifts based on goblin follow and drops defs
+--returns a list of special gifts based on goblin drops defs
 function goblins.special_gifts(self)
   local special_gifts = {}
-  --first item in follow list is special to the goblin!
-  local from_follow = {self.follow[1]}
   --special things from goblins drops table can be defined with a very rare drop chance
   local from_drops = {}
   for _,v in pairs(self.drops) do
@@ -69,12 +84,7 @@ function goblins.special_gifts(self)
       table.insert(from_drops, v.name)
     end
   end
-  --print(dump(from_follow).." and " ..dump(from_drops).." are possible gifts")
-  if from_follow then
-    for _,v in pairs(from_follow) do
-      table.insert(special_gifts, v)
-    end
-  end
+  --print(dump(dump(from_drops).." are possible gifts")
   if from_drops then
     for _,v in pairs(from_drops) do
       table.insert(special_gifts, v)
@@ -90,16 +100,37 @@ function goblins.special_gifts(self)
   end
 
 end
-
+------------
+--(the omnicient) Announce Spawn ...summon it with care, for the floods shall come!
+-----------
 function goblins.announce_spawn(self)
   if announce_spawning == true then
     local pos = vector.round(self.object:getpos())
     if not pos then return end
+
     if self.secret_name then
       print( self.name:split(":")[2].. ", "..self.secret_name.." spawned at: " .. minetest.pos_to_string(pos))
     else
       print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
     end
+
+    --goblins.territory(pos)
+
+    if self.secret_territory then
+      if self.secret_name then
+        print(self.secret_name.. " dwells in "..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
+      else
+        print("A nameless creature inhabits"..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
+      end
+    else
+      local territory = {goblins.territory(pos)}
+      if self.secret_name then
+        print(territory[1].." at "..territory[2].." festers with the lurking form of "..self.secret_name.."\n")
+      else
+        print(territory[1].." at "..territory[2].." becomses the domain of a nameless one\n")
+      end
+    end
+
   end
 end
 
@@ -165,7 +196,7 @@ function goblins.give_gift(self,clicker)
         end
       end
       gift_accepted = true
-      if self.nametag == self.secret_name then
+      if self.nametag then
         minetest.chat_send_player(pname,self.nametag.. " takes your " .. gift_description)
       else
         minetest.chat_send_player(pname,"Goblin takes your " .. gift_description)
@@ -176,7 +207,7 @@ function goblins.give_gift(self,clicker)
       if debug_goblins_trade == true then print("you did not offer " .. dump(string.split(v,":")[2]) ) end
     end
   end
-  if self.nametag == self.secret_name then
+  if self.nametag then
     minetest.chat_send_player(pname,self.nametag.. " does not want your " .. gift_description)
   else
     minetest.chat_send_player(pname,"Goblin does not want your " .. gift_description)
@@ -499,8 +530,116 @@ function goblins.goblin_dog_behaviors(self)
  --]]
 end
 
+-----
+-- CREATE TERRITORIES
+-----
+local gob_name_parts = {
+  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
+  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
+  list_opt = "ah ay e ee gah ghy y ya"
+}
 
-    
---To Be Implemented someday:
---Goblin Chest gen based on Minetest Game mod: dungeon_loot Originally by sfan5 (MIT)
---All Goblins to dig downward if to close to surface level
+
+
+-- Get the Minimum of a Chunk https://forum.minetest.net/viewtopic.php?p=351592#p351592
+-- by duane » Sun Jul 14, 2019 00:20 and
+-- by TalkLounge » Sun Jul 14, 2019 11:39
+-- refer to https://rubenwardy.com/minetest_modding_book/en/map/storage.html
+
+local function mapgen_min_max(pos)
+  local pos = vector.round(pos)
+  local chunksize = tonumber(type(minetest.settings) ~= "nil" and minetest.settings:get("chunksize") or minetest.setting_get("chunksize")) or 5
+  local chunk_offset = math.floor(chunksize / 2) * 16
+  local csize = {x = chunksize * 16, y = chunksize * 16, z = chunksize * 16}
+  local chunk = vector.floor(vector.divide(vector.add(pos, chunk_offset), csize))
+  local minp = vector.add(vector.multiply(chunk, 80), -chunk_offset)
+  local maxp = vector.add(minp, (chunksize * 16) - 1)
+  return minp, maxp
+end
+
+
+local goblins_db_fields = goblins_db:to_table()["fields"]
+
+local function goblins_db_deser(table)
+  local data = minetest.deserialize(goblins_db_fields[table])
+  return data
+end
+
+local function goblins_db_read(table)
+  local data = minetest.deserialize(goblins_db:to_table()["fields"][table])
+  return data
+end
+
+local function goblins_db_write(key, table)
+  local data = minetest.serialize(table)
+
+  goblins_db:set_string(key, data)
+  return key, data
+end
+
+function goblins.territory_test(pos,territories)
+
+  local db_test = minetest.serialize({fieldtest = "initialized"})
+  print("\nBEGIN EXISTING LIST--------\n"..dump(goblins_db_read("territories")).."\n ------END LIST\n")
+end --test
+
+-- refer to https://rubenwardy.com/minetest_modding_book/en/map/storage.html
+function goblins.territory(pos,t_name,t_vol)
+  -- this should be called on spawn but before a goblin gets its secret name
+  -- a handy chunk name key generator, should create a unique name for every chunk
+  local function cat_pos(chunk)
+    return "Xa"..chunk[1].x.."_Ya"..chunk[1].y.."_Za"..chunk[1].z.."_x_Xb"..chunk[2].x.."_Yb"..chunk[2].y.."_Zb"..chunk[2].z
+  end
+
+  -- get list of known territories and thier chunks or
+  local existing_territories = {}
+  existing_territories = goblins_db_read("territories")
+  local minp_maxp = {mapgen_min_max(pos)}
+  local this_territory = {}
+  local volume_cat_pos = cat_pos(minp_maxp)
+  --print(dump(volume_cat_pos).." cat paws!")
+  if debug_goblins_territories then
+    print("\n----Known territories")
+    for k,v in pairs(existing_territories) do
+      print(dump(k).." is known as "..dump(existing_territories[k].name))
+    end
+    print("----End Known territories\n")
+  end
+  local territories_table = table.copy(existing_territories)
+  -- print(dump(territories_table).."copied territories")
+  -- print("\nTERRITORY TEST TABLE READ:\n" ..dump(goblins_db_read("territories")).."\n")
+  if territories_table[volume_cat_pos]  then
+    local t_vol = volume_cat_pos
+    local t_name = territories_table[volume_cat_pos]["name"]
+    if debug_goblins_territories then
+      print(dump(t_name).." at "..dump(t_vol).." is already known!")
+    end
+    -- print(dump(territories_table[volume_cat_pos]).. "\n ---end details \n")
+    return t_name, t_vol
+  else
+    -- generate a name for this territory
+    local name_rules = {"list_a","list_opt","-","list_b"}
+    local territory_name = goblins.generate_name(gob_name_parts,name_rules)
+    -- print(dump(territory_name).." is a name whispered among those who dwell here")
+    -- set concatenated minp_maxp as the key for this territory and populate data
+    -- print(dump(volume_cat_pos)))
+    this_territory[(volume_cat_pos)] = {
+      ["name"] = territory_name,
+      ["flag"] = pos,
+    }
+    if debug_goblins_territories then
+      print("The territory of "..dump(this_territory[volume_cat_pos]["name"]).. " at "..volume_cat_pos.." will be recorded.")
+    end
+    territories_table[volume_cat_pos] = this_territory[volume_cat_pos]
+    -- print(dump(territories_table).. " is the new table \n")
+    -- print("\nTERRITORY TESTING SERIALIZED WRITE:\n"..dump(this_territory_ser).."\n")
+    -- prepare the territories_table for storage
+    local territories_table_ser = minetest.serialize(territories_table)
+    goblins_db:set_string("territories", territories_table_ser )
+    local t_name = territory_name
+    local t_vol = volume_cat_pos
+    return t_name, t_vol
+  end
+  --print("\nTERRITORY TEST:\n"..dump(this_territory.name).."\n")
+end
+

@@ -1,12 +1,18 @@
-local gob_dog_types = {
-  goblin_dog = {
+local gob_name_parts = {
+  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
+  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
+  list_opt = "ah ay e ee gah ghy y ya"
+}
+
+local gobdog_types = {
+  gobdog = {
     owner_loyal = true,
     attack_npcs = false,
     attack_monsters = false,
     group_attack = true,
     attack_players = true,
   },
-  goblin_dog_aggro = {
+  gobdog_aggro = {
     description ="Dire Gobdog",
     lore = "Dire Gobdogs are sensitive to light and are very territorial",
     type = "monster",
@@ -32,7 +38,7 @@ local gob_dog_types = {
 -------------
 -- Gobdog Template
 ------------
-local goblin_dog_template = {
+local gobdog_template = {
   description ="Gobdog",
   lore = "Gobdogs are not canids but goblins that have mutated somehow, fortunately they do not share the hunger and size of the mythical werewolf.",
   type = "npc",
@@ -112,6 +118,20 @@ local goblin_dog_template = {
       gain = .5,
       max_hear_distance =30
     })
+    if not self.secret_name then
+    local name_rules = {"list_a", "list_opt"}
+      self.secret_name = goblins.generate_name(gob_name_parts, name_rules)
+    end
+    --print (dump(self.secret_name))
+    local pos = vector.round(self.object:getpos())
+    if not pos then return end
+    if not self.secret_territory then
+      local territory = {goblins.territory(pos)}
+      self.secret_territory = {name = territory[1], vol = territory[2]}
+     --print(dump(self.secret_territory.name).." secret_territory assigned")
+    else
+      --print(dump(self.secret_territory.name).." secret_territory already assigned")
+    end
     goblins.announce_spawn(self)
   end,
 
@@ -141,5 +161,5 @@ local goblin_dog_template = {
 ------------------------
 --generate gobdogs
 -------------------------
-goblins.generate(gob_dog_types,goblin_dog_template)
+goblins.generate(gobdog_types,gobdog_template)
 

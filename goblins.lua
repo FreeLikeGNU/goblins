@@ -730,23 +730,32 @@ local goblin_template = {  --your average goblin,
   },
   follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
   on_spawn = function(self)
-    if not self.nametag then
+    if not self.secret_name then
       self.secret_name = goblins.generate_name(gob_name_parts)
     end
     --print (dump(self.secret_name))
     goblins.announce_spawn(self)
     if not self.special_gifts then self.special_gifts = goblins.special_gifts(self) end
     --print (dump(self.special_gifts).. " are precious to "..dump(self.secret_name).. "!")
+    local pos = vector.round(self.object:getpos())
+    if not pos then return end
+    if not self.secret_territory then
+      local territory = {goblins.territory(pos)}
+      self.secret_territory = {name = territory[1], vol = territory[2]}
+      --print(dump(self.secret_territory.name).." secret_territory assigned")
+    else
+      --print(dump(self.secret_territory.name).." secret_territory already assigned")
+    end
   end,
 
   --By default the Goblins are willing to trade, this can be overridden in the table for any goblin
   on_rightclick = function(self,clicker)
     if self.shrewdness and self.shrewdness <= 3 then
-      self.nametag = self.secret_name
+      self.nametag = self.secret_name.." of "..self.secret_territory.name
       if not self.secret_name_told then --The goblin is willing to share something special!
         minetest.chat_send_player(clicker:get_player_name(), "You have learned the secret name of " ..self.nametag)
         self.secret_name_told = true
-        self.nametag = self.secret_name
+        self.nametag = self.secret_name.."\n of \n"..self.secret_territory.name
         if self.special_gifts then
           self.special_gift = self.special_gifts[math.random(1,#self.special_gifts)]
           --print(self.special_gift.. "activated!")

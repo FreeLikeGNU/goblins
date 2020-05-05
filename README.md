@@ -9,6 +9,7 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
 * Goblins dig caves, destroy torches, create lairs, set traps, cultivate mushrooms and some are aggressive.
 * Goblin Dogs (Gobdogs) will roam caves, bury bones and other items in soft terrain, eat meats. Some Gobdogs are aggressive!
 * Basic trading with Goblins - the more you trade with a goblin, the more likely you will get things in return! 
+* Goblins have a territorial framework 
 
 * tested with Mintest 5.30(dev)
 
