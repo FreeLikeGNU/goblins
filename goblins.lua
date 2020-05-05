@@ -1,10 +1,6 @@
 -- goblin namegen sets from https://github.com/LukeMS/lua-namegen
 -- libtcod https://github.com/libtcod/libtcod name set format have been adapted for my Goblins gen_name function
-local gob_name_parts = {
-  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
-  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
-  list_opt = "ah ay e ee gah ghy y ya"
-}
+local gob_name_parts = goblins.gob_name_parts
 -- this table defines the goblins with how they differ from the goblin template.
 local gob_types = {
   digger = {
@@ -744,23 +740,17 @@ local goblin_template = {  --your average goblin,
       self.secret_territory = {name = territory[1], vol = territory[2]}
       --print(dump(self.secret_territory.name).." secret_territory assigned")
     else
-      --print(dump(self.secret_territory.name).." secret_territory already assigned")
+    --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
   end,
 
   --By default the Goblins are willing to trade, this can be overridden in the table for any goblin
   on_rightclick = function(self,clicker)
-    if self.shrewdness and self.shrewdness <= 3 then
-      self.nametag = self.secret_name.." of "..self.secret_territory.name
-      if not self.secret_name_told then --The goblin is willing to share something special!
-        minetest.chat_send_player(clicker:get_player_name(), "You have learned the secret name of " ..self.nametag)
-        self.secret_name_told = true
-        self.nametag = self.secret_name.."\n of \n"..self.secret_territory.name
-        if self.special_gifts then
-          self.special_gift = self.special_gifts[math.random(1,#self.special_gifts)]
-          --print(self.special_gift.. "activated!")
-        end
-      end
+    local pname = clicker:get_player_name()
+    if self.shrewdness and self.shrewdness <= 5 then
+      goblins.secret_territory(self, pname)
+    elseif self.shrewdness and self.shrewdness <= 10 then
+      goblins.secret_name(self, pname)
     end
     goblins.give_gift(self,clicker)
   end,

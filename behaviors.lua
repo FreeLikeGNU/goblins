@@ -8,11 +8,15 @@ local debug_goblins_replace2 = false
 local debug_goblins_tunneling = false
 local debug_goblins_trade = false
 local debug_goblins_territories = false
+local debug_goblins_secret = false
 
 local goblin_node_protect_strict = true
 
 local mobs_griefing = minetest.settings:get_bool("mobs_griefing") ~= false
 
+local gob_name_parts = goblins.gob_name_parts
+
+-- this can build all the mobs in our mod
 function goblins.generate(gob_types,goblin_template)
   for k, v in pairs(gob_types) do
     -- we need to get a fresh template to modify for every type or we get some carryover values:-P
@@ -34,6 +38,7 @@ function goblins.generate(gob_types,goblin_template)
   end
 end
 
+-- our mobs can have randomly generated names
 function goblins.generate_name(name_parts, rules)
   -- print("generating name")
   local name_arrays = {}
@@ -71,6 +76,52 @@ function goblins.generate_name(name_parts, rules)
   end
 end
 
+-- this will store the name of a player that learns the mobs territory in the mobs table
+function goblins.secret_territory(self, player_name)
+  local pname = player_name
+  self.nametag = self.secret_name.." of "..self.secret_territory.name
+  if not self.secret_territory_told then
+    self.secret_territory_told = {[self.secret_territory.name] = os.date()}
+  end
+  if not self.secret_territory_told[pname] then
+    minetest.chat_send_player(pname,
+      "You have learned the secret territory name of "..self.secret_territory.name)
+    self.secret_territory_told[pname] = os.date()
+    self.nametag = self.secret_name.." of "..self.secret_territory.name
+    ---player could also receive some kind of functional token for this territory
+  end
+  if debug_goblins_secret then
+    for k,v in pairs(self.secret_territory_told)  do
+      print(self.secret_name.." revealed secret territories to: "..k.." "..v)
+    end
+  end
+end
+
+--this will store the name of a player that learns the mobs name in the mobs table
+function goblins.secret_name(self, player_name)
+  -- self.nametag = self.secret_name
+  local pname = player_name
+  if not self.secret_name_told then
+    self.secret_name_told = {[self.secret_name] = os.date()}
+  end
+  if not self.secret_name_told[pname] then
+    --The goblin is willing to share something special!
+    minetest.chat_send_player(pname,
+      "You have learned the secret name of " ..self.secret_name)
+    self.secret_name_told[pname] = os.date()
+    self.nametag = self.secret_name
+    if self.special_gifts then
+      self.special_gift = self.special_gifts[math.random(1,#self.special_gifts)]
+      --print(self.special_gift.. "activated!")
+    end
+  end
+  if debug_goblins_secret then
+    for k,v in pairs(self.secret_name_told)  do
+      print(self.secret_name.." revealed secret name to: "..k.." "..v)
+    end
+  end
+end
+
 --returns a list of special gifts based on goblin drops defs
 function goblins.special_gifts(self)
   local special_gifts = {}
@@ -101,8 +152,9 @@ function goblins.special_gifts(self)
 
 end
 ------------
---(the omnicient) Announce Spawn ...summon it with care, for the floods shall come!
+-- Announce Spawn ...summon it with care, for the floods shall come!
 -----------
+-- purely for debugging or curiosity it can be enabled at the top of this page
 function goblins.announce_spawn(self)
   if announce_spawning == true then
     local pos = vector.round(self.object:getpos())
@@ -113,9 +165,7 @@ function goblins.announce_spawn(self)
     else
       print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
     end
-
     --goblins.territory(pos)
-
     if self.secret_territory then
       if self.secret_name then
         print(self.secret_name.. " dwells in "..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
@@ -134,8 +184,8 @@ function goblins.announce_spawn(self)
   end
 end
 
+-- you can give a gift, they may give something(s) in return...
 function goblins.give_gift(self,clicker)
-  -- you can give a gift, they may give something(s) in return...
   --if mobs:feed_tame(self, clicker, 14, false, false) then
   local item = clicker:get_wielded_item()
   local name = clicker:get_player_name()
@@ -143,7 +193,7 @@ function goblins.give_gift(self,clicker)
   local gift_declined = nil
   local pname = clicker:get_player_name()
   --establish some shrewdness if its not set
-  if not self.shrewdness then self.shrewdness = 10 end
+  if not self.shrewdness then self.shrewdness = 20 end
   local gift = item:get_name()
   local gift_description = item:get_definition().description
   if debug_goblins_trade == true then print("you offer: " .. dump(gift)) end
@@ -325,7 +375,9 @@ mine for me."
 local diggable_nodes = {"group:stone", "group:sand", "group:soil", "group:cracky", "group:crumbly"}
 -- This translates yaw into vectors.
 local cardinals = {{x=0,y=0,z=0.75}, {x=-0.75,y=0,z=0}, {x=0,y=0,z=-0.75}, {x=0.75,y=0,z=0}}
-
+----------
+-- Goblins Tunneling
+---------
 function goblins.tunneling(self, type)
   -- Types are available for fine-tuning.
   if type == nil then
@@ -533,18 +585,9 @@ end
 -----
 -- CREATE TERRITORIES
 -----
-local gob_name_parts = {
-  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
-  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
-  list_opt = "ah ay e ee gah ghy y ya"
-}
-
-
-
 -- Get the Minimum of a Chunk https://forum.minetest.net/viewtopic.php?p=351592#p351592
 -- by duane » Sun Jul 14, 2019 00:20 and
 -- by TalkLounge » Sun Jul 14, 2019 11:39
--- refer to https://rubenwardy.com/minetest_modding_book/en/map/storage.html
 
 local function mapgen_min_max(pos)
   local pos = vector.round(pos)
@@ -557,7 +600,7 @@ local function mapgen_min_max(pos)
   return minp, maxp
 end
 
-
+-- refer to https://rubenwardy.com/minetest_modding_book/en/map/storage.html
 local goblins_db_fields = goblins_db:to_table()["fields"]
 
 local function goblins_db_deser(table)
@@ -583,7 +626,10 @@ function goblins.territory_test(pos,territories)
   print("\nBEGIN EXISTING LIST--------\n"..dump(goblins_db_read("territories")).."\n ------END LIST\n")
 end --test
 
--- refer to https://rubenwardy.com/minetest_modding_book/en/map/storage.html
+-- I have to break this beast up someday, but it does provide a way
+-- to take a chunk and use it a base for storing information in a mod
+-- it is dependant on the mapgen_min_max function above as well the goblins_db functions for storage.
+
 function goblins.territory(pos,t_name,t_vol)
   -- this should be called on spawn but before a goblin gets its secret name
   -- a handy chunk name key generator, should create a unique name for every chunk
@@ -642,4 +688,5 @@ function goblins.territory(pos,t_name,t_vol)
   end
   --print("\nTERRITORY TEST:\n"..dump(this_territory.name).."\n")
 end
+
 

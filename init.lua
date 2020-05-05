@@ -1,18 +1,27 @@
 local path = minetest.get_modpath("goblins")
 goblins_db = minetest.get_mod_storage()
 goblins_db:set_string("goblins mod start time", os.date() )
-local goblins_version="20200504"  
-  -- create the table if it does not exist!
+--set namespace for goblins functions
+goblins = {}
+goblins.version = "20200505"
+local goblins_version = goblins.version
+-- create the table if it does not exist!
 local goblins_db_fields = goblins_db:to_table()["fields"]
 local function goblins_db_write(key, table)
   local data = minetest.serialize(table)
   goblins_db:set_string(key, data)
   return key, data
 end
-  if not goblins_db_fields["territories"] then
-    print("-------------\nWe must Initialize!\n-------------")
-    goblins_db_write("territories", {test = {version = goblins_version, encode = minetest.encode_base64(os.date()), created = os.date() }})
-  end
+if not goblins_db_fields["territories"] then
+  print("-------------\nWe must Initialize!\n-------------")
+  goblins_db_write("territories", {test = {version = goblins_version, encode = minetest.encode_base64(os.date()), created = os.date() }})
+end
+
+goblins.gob_name_parts = {
+  list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
+  list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
+  list_opt = "ah ay e ee gah ghy y ya"
+}
 
 dofile(path .. "/traps.lua")
 dofile(path .. "/nodes.lua")
@@ -22,7 +31,6 @@ dofile(path .. "/behaviors.lua")
 dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
 dofile(path .. "/hunger.lua")
-goblins.version = goblins_version
 
 minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
 print("Please report issues at https://github.com/FreeLikeGNU/goblins/issues ")

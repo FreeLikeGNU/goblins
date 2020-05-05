@@ -7,9 +7,9 @@
 This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn near ore deposits or lairs underground.
 
 * Goblins dig caves, destroy torches, create lairs, set traps, cultivate mushrooms and some are aggressive.
-* Goblin Dogs (Gobdogs) will roam caves, bury bones and other items in soft terrain, eat meats. Some Gobdogs are aggressive!
+* Gobdogs will roam caves, bury bones and other items in soft terrain, eat meats. Some Gobdogs are aggressive!
 * Basic trading with Goblins - the more you trade with a goblin, the more likely you will get things in return! 
-* Goblins have a territorial framework 
+* Goblins have a territorial framework for location based interactions 
 
 * tested with Mintest 5.30(dev)
 
@@ -22,6 +22,13 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
 * Ambience Lite by TenPlus1 API
     * https://notabug.org/TenPlus1/ambience	
     
+* Hunger NG by Linuxdirk
+    * https://forum.minetest.net/viewtopic.php?t=19664
+    * https://gitlab.com/4w/hunger_ng
+
+* Bonemeal by TenPlus1
+    * https://forum.minetest.net/viewtopic.php?t=16446
+    * https://notabug.org/TenPlus1/bonemeal
     
 ## Licenses of Source Media Files:
 * goblins_goblin.b3d and goblins_goblin.blend 
@@ -73,6 +80,8 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
     * https://forum.minetest.net/viewtopic.php?f=9&t=13004#p186921
     * goblins_goblin_king.png
     * License: Creative Commons (CC-BY-SA-3.0 SummerFeilds TP
-    
+  
+  Thanks to orbea for adding Hunger NG and Bonemeal mod support and bugfixes!
+    * https://github.com/orbea
     
 GET MINETEST: https://www.minetest.net/

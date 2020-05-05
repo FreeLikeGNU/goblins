@@ -1,5 +1,3 @@
---set namespace for goblins functions
-goblins = {}
 
 minetest.register_node(":default:mossycobble", {
   description = "Mossy Cobblestone",
