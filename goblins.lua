@@ -2,6 +2,7 @@
 -- libtcod https://github.com/libtcod/libtcod name set format have been adapted for my Goblins gen_name function
 local S = minetest.get_translator("goblins")
 local gob_name_parts = goblins.gob_name_parts
+  
 -- this table defines the goblins with how they differ from the goblin template.
 local gob_types = {
   digger = {
@@ -766,6 +767,7 @@ local goblin_template = {  --your average goblin,
       local opt_data = {}
       opt_data[self.secret_name] = os.time() --add this goblin as a key member of territory
       local territory = {goblins.territory(pos,opt_data)}
+      print("territory = "..dump(territory).."opt_data = "..dump(opt_data))
       self.secret_territory = {name = territory[1], vol = territory[2]}
       --print(dump(self.secret_territory.name).." secret_territory assigned")
     else

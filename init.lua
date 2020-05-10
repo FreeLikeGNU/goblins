@@ -4,6 +4,35 @@ goblins_db:set_string("goblins mod start time", os.date() )
 --set namespace for goblins functions
 goblins = {}
 goblins.version = "20200509"
+
+-- Strips any kind of escape codes (translation, colors) from a string
+-- https://github.com/minetest/minetest/blob/53dd7819277c53954d1298dfffa5287c306db8d0/src/util/string.cpp#L777
+function goblins.strip_escapes(input)
+  local s = function(idx) return input:sub(idx, idx) end
+  local out = ""
+  local i = 1
+  while i <= #input do
+    if s(i) == "\027" then -- escape sequence
+      i = i + 1
+      if s(i) == "(" then -- enclosed
+        i = i + 1
+        while i <= #input and s(i) ~= ")" do
+          if s(i) == "\\" then
+            i = i + 2
+          else
+            i = i + 1
+          end
+        end
+      end
+    else
+      out = out .. s(i)
+    end
+    i = i + 1
+  end
+  --print(("%q -> %q"):format(input, out))
+  return out
+end
+
 local S = minetest.get_translator("goblins")
 
 local goblins_version = goblins.version

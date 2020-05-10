@@ -20,6 +20,14 @@ local S = minetest.get_translator("goblins")
 
 local gob_name_parts = goblins.gob_name_parts
 
+local function strip_escapes(input)
+  goblins.strip_escapes(input)
+end
+
+local function print_s(input)
+ print(goblins.strip_escapes(input))
+end
+
 function goblins.mixitup(pos)
   pos.y = pos.y + math.random()
   pos.x = pos.x + math.random()
@@ -38,12 +46,12 @@ function goblins.generate(gob_types,goblin_template)
     -- g_type should be different every time so no need to freshen
     local g_type = v
     for x, y in pairs(g_type) do
-      -- print("found template modifiers " ..dump(x).." = "..dump(y))
+      -- print_s("found template modifiers " ..dump(x).." = "..dump(y))
       g_template[x] = g_type[x]
     end
-    print ("Assembling the "..g_template.description..":")
-    if g_template.lore then print("  "..g_template.lore) end
-    --print("resulting template: " ..dump(g_template))
+    print_s("Assembling the "..g_template.description..":")
+    if g_template.lore then print_s("  "..g_template.lore) end
+    --print_s("resulting template: " ..dump(g_template))
     mobs:register_mob("goblins:goblin_"..k, g_template)
     mobs:register_egg("goblins:goblin_"..k, S("@1  Egg",g_template.description),"default_mossycobble.png", 1)
     g_template.spawning.name = "goblins:goblin_"..k --spawn in the name of the key!
@@ -57,24 +65,24 @@ end
 -- @rules are the list table key names in order of how they will be chosen
 -- "-" and "\'" are rules that can be used to add a hyphen or apostrophe respectively
 function goblins.generate_name(name_parts, rules)
-  -- print("generating name")
+  -- print_s("generating name")
   local name_arrays = {}
   local r_parts = {}
   local generated_name = {}
   for k,v in pairs(name_parts) do
     --  name_arrays.k = mysplit(v)
     name_arrays.k = string.split(v," ")
-    -- print(dump(name_arrays.k))
+    -- print_s(dump(name_arrays.k))
     r_parts[k] = k
     r_parts[k] = name_arrays.k[math.random(1,#name_arrays.k)]
   end
   --local r_parts.k = name_arrays.k[math.random(1,#name_arrays.k)] did not work
-  --print(name_a)
+  --print_s(name_a)
   if r_parts.list_opt and math.random() <= 0.5 then r_parts.list_opt = "" end
-  --print(r_parts.list_a..r_parts.list_b..r_parts.list_opt)
+  --print_s(r_parts.list_a..r_parts.list_b..r_parts.list_opt)
 
   if rules then
-    --print(dump(rules))
+    --print_s(dump(rules))
     local gen_name = ""
     for i, v in ipairs(rules) do
 
@@ -87,7 +95,7 @@ function goblins.generate_name(name_parts, rules)
       end
     end
     generated_name = gen_name
-    --print(dump(generated_name))
+    --print_s(dump(generated_name))
     return generated_name
   else
 
@@ -115,7 +123,7 @@ function goblins.secret_territory(self, player_name, tell)
   end
   if debug_goblins_secret then
     for k,v in pairs(self.secret_territory_told)  do
-      print(self.secret_name.." revealed secret territories to: "..k.." "..v)
+      print_s(self.secret_name.." revealed secret territories to: "..k.." "..v)
     end
   end
 end
@@ -138,7 +146,7 @@ function goblins.secret_name(self, player_name,tell)
   end
   if debug_goblins_secret then
     for k,v in pairs(self.secret_name_told)  do
-      print(self.secret_name.." revealed secret name to: "..k.." "..v)
+      print_s(self.secret_name.." revealed secret name to: "..k.." "..v)
     end
   end
 end
@@ -152,23 +160,23 @@ function goblins.announce_spawn(self)
     local pos = vector.round(self.object:getpos())
     if not pos then return end
     if self.secret_name then
-      print( self.name:split(":")[2].. ", "..self.secret_name.." spawned at: " .. minetest.pos_to_string(pos))
+      print_s( self.name:split(":")[2].. ", "..self.secret_name.." spawned at: " .. minetest.pos_to_string(pos))
     else
-      print( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
+      print_s( self.name:split(":")[2].. " spawned at: " .. minetest.pos_to_string(pos))
     end
     --goblins.territory(pos)
     if self.secret_territory then
       if self.secret_name then
-        print(self.secret_name.. " dwells in "..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
+        print_s(self.secret_name.. " dwells in "..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
       else
-        print("A nameless creature inhabits"..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
+        print_s("A nameless creature inhabits"..self.secret_territory["name"].." at " ..self.secret_territory["vol"].."!\n" )
       end
     else
       local territory = {goblins.territory(pos)}
       if self.secret_name then
-        print(territory[1].." at "..territory[2].." festers with the lurking form of "..self.secret_name.."\n")
+        print_s(territory[1].." at "..territory[2].." festers with the lurking form of "..self.secret_name.."\n")
       else
-        print(territory[1].." at "..territory[2].." becomses the domain of a nameless one\n")
+        print_s(territory[1].." at "..territory[2].." becomses the domain of a nameless one\n")
       end
     end
   end
@@ -182,13 +190,13 @@ function goblins.special_gifts(self, pname, drop_chance, max_drops)
       if not max_drops then max_drops = 1 end
       local rares = {}
       for k,v in pairs(self.drops) do
-        --print(dump(v.name).." and "..dump(v.chance))
+        --print_s(dump(v.name).." and "..dump(v.chance))
         if v.chance >= drop_chance then
           table.insert(rares,v.name)
         end
       end
       if #rares > 0 then
-        --print("rares = "..dump(rares))
+        --print_s("rares = "..dump(rares))
         local pos = self.object:getpos()
         pos.y = pos.y + 0.5
         goblins.mixitup(pos)
@@ -234,17 +242,17 @@ function goblins.give_gift(self,clicker)
   if not self.relations[pname] then
     goblins.relations(self, pname, {trade = 0})
   end
-  if debug_goblins_relations then print(dump(goblins.relations(self, pname))) end
+  if debug_goblins_relations then print_s(dump(goblins.relations(self, pname))) end
   --grel = goblins.relations(self, pname)
   local srp_trade = self.relations[pname].trade
   local gr_trade = goblins.relations_trade(self,pname)
   local gift = item:get_name()
   local gift_description = item:get_definition().description
-  if debug_goblins_trade then print("you offer: " ..dump(gift)) end
+  if debug_goblins_trade then print_s("you offer: " ..dump(gift)) end
   for _,v in pairs(self.follow) do
     if v == gift then
       gift_accepted = true
-      if debug_goblins_trade then print(self.name.. " accepts " .. dump(gift)) end
+      if debug_goblins_trade then print_s(self.name.. " accepts " .. dump(gift)) end
       --increase trade rating on gifting - first item in follow list is worth more
       srp_trade = srp_trade + 1
       if gift == self.follow[1] then
@@ -252,18 +260,18 @@ function goblins.give_gift(self,clicker)
         minetest.chat_send_player(pname,"Yessss! " .. gift_description.."!")
       end
       goblins.relations(self, pname,{trade = srp_trade})
-      if debug_goblins_trade then print("trade rating is now = " ..dump(srp_trade)) end
-      if debug_goblins_trade then print("storage written"..dump(gr_trade)) end
+      if debug_goblins_trade then print_s("trade rating is now = " ..dump(srp_trade)) end
+      if debug_goblins_trade then print_s("storage written"..dump(gr_trade)) end
       if not minetest.settings:get_bool("creative_mode") then
         item:take_item()
         clicker:set_wielded_item(item)
       end
-      --print(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))
+      --print_s(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))
       if self.drops then
         if debug_goblins_trade then
-          print("you may get some of "..dump(#self.drops).. " things such as: ")
+          print_s("you may get some of "..dump(#self.drops).. " things such as: ")
           for _,v in pairs(self.drops) do
-            print(dump(v.name).. " with a base drop chance of 1 in " ..dump(v.chance))
+            print_s(dump(v.name).. " with a base drop chance of 1 in " ..dump(v.chance))
           end
         end
         -- we can make some mobs extra stingy despite trade relations
@@ -278,7 +286,7 @@ function goblins.give_gift(self,clicker)
           d_chance = math.floor(d_chance)
           if math.random(1, d_chance) == 1 then
             if debug_goblins_trade == true then
-              print(dump(v.name.. " dropped by "..self.name.. " at an adjusted chance of 1 in " ..d_chance))
+              print_s(dump(v.name.. " dropped by "..self.name.. " at an adjusted chance of 1 in " ..d_chance))
             end
             minetest.sound_play("goblins_goblin_cackle", {
               pos = pos,
@@ -305,7 +313,7 @@ function goblins.give_gift(self,clicker)
       return gift_accepted --acception of gift complete
 
     else
-      if debug_goblins_trade == true then print("You did not offer " .. dump(string.split(v,":")[2]) ) end
+      if debug_goblins_trade == true then print_s("You did not offer " .. dump(string.split(v,":")[2]) ) end
     end
   end
   minetest.sound_play("goblins_goblin_damage", {
@@ -377,8 +385,8 @@ function goblins.search_replace(
     local nodelist = minetest.find_nodes_in_area(pos1, pos2, replace_what)
     if #nodelist > 0 then
       if debug_goblins_find and debug_me then
-        print(#nodelist.." nodes found by " .. self.name:split(":")[2]..":")
-        for k,v in pairs(nodelist) do print(minetest.get_node(v).name:split(":")[2].. " found.") end
+        print_s(#nodelist.." nodes found by " .. self.name:split(":")[2]..":")
+        for k,v in pairs(nodelist) do print_s(minetest.get_node(v).name:split(":")[2].. " found.") end
       end
       for key,value in pairs(nodelist) do
         -- ok we see some nodes around us, are we going to replace them?
@@ -395,7 +403,7 @@ function goblins.search_replace(
               minetest.set_node(value, {name = replace_with_secondary})
             end
             if debug_goblins_replace2 and debug_me then
-              print(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
+              print_s(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
             end
           else
             if decorate then
@@ -407,7 +415,7 @@ function goblins.search_replace(
               minetest.set_node(value, {name = replace_with})
             end
             if debug_goblins_replace and debug_me then
-              print(replace_with.." placed by " .. self.name:split(":")[2])
+              print_s(replace_with.." placed by " .. self.name:split(":")[2])
             end
           end
           minetest.sound_play(self.sounds.replace, {
@@ -542,13 +550,13 @@ function goblins.tunneling(self, type)
     --
     if self.state == "stand" and math.random() < 0.1 then
       self.state = "tunnel"
-      if debug_goblins_tunneling then print("goblineer is now tunneling") end
+      if debug_goblins_tunneling then print_s("goblineer is now tunneling") end
     elseif self.state == "tunnel" and math.random() < 0.1 then
       self.state = "room"
-      if debug_goblins_tunneling then print("goblineer is now making a room") end
+      if debug_goblins_tunneling then print_s("goblineer is now making a room") end
     elseif self.state == "tunnel" and math.random() < 0.1 then
       self.state = "stand"
-      if debug_goblins_tunneling then print(dump(vector.round(self.object:getpos())).. "goblineer is thinking...") end
+      if debug_goblins_tunneling then print_s(dump(vector.round(self.object:getpos())).. "goblineer is thinking...") end
     end
   end
 end
@@ -638,7 +646,7 @@ function goblins.goblin_dog_behaviors(self)
   --[[not quite ready yet...
   if math.random() < 0.01 then
      goblins.do_taunt_at(self)
-     print("are " ..dump(self.name).. " barking?" )
+     print_s("are " ..dump(self.name).. " barking?" )
   end
  --]]
 end
@@ -684,7 +692,7 @@ end
 function goblins.territory_test(pos,territories)
 
   local db_test = minetest.serialize({fieldtest = "initialized"})
-  print("\nBEGIN EXISTING LIST--------\n"..dump(goblins_db_read("territories")).."\n ------END LIST\n")
+  print_s("\nBEGIN EXISTING LIST--------\n"..dump(goblins_db_read("territories")).."\n ------END LIST\n")
 end --test
 
 -- Provides a way to take a chunks position and use it a base for storing information in a mod.
@@ -696,24 +704,24 @@ function goblins.territory(pos, opt_data)
   local function cat_pos(chunk)
     return "Xa"..chunk[1].x.."_Ya"..chunk[1].y.."_Za"..chunk[1].z.."_x_Xb"..chunk[2].x.."_Yb"..chunk[2].y.."_Zb"..chunk[2].z
   end
-
+ 
   -- get list of known territories and thier chunks or
   local existing_territories = {}
   existing_territories = goblins_db_read("territories")
   local minp_maxp = {mapgen_min_max(pos)}
   local this_territory = {}
   local volume_cat_pos = cat_pos(minp_maxp)
-  --print(dump(volume_cat_pos).." cat paws!")
+  --print_s(dump(volume_cat_pos).." cat paws!")
   if debug_goblins_territories then
-    print("\n----Known territories")
+    print_s("\n----Known territories")
     for k,v in pairs(existing_territories) do
-      print(dump(k).." is known as "..dump(existing_territories[k].name))
+      print_s(dump(k).." is known as "..dump(existing_territories[k].name))
     end
-    print("----End Known territories\n")
+    print_s("----End Known territories\n")
   end
   local territories_table = table.copy(existing_territories)
-  -- print(dump(territories_table).."copied territories")
-  -- print("\nTERRITORY TEST TABLE READ:\n" ..dump(goblins_db_read("territories")).."\n")
+  -- print_s(dump(territories_table).."copied territories")
+  -- print_s("\nTERRITORY TEST TABLE READ:\n" ..dump(goblins_db_read("territories")).."\n")
   if territories_table[volume_cat_pos]  then
     local t_vol = volume_cat_pos
     local t_name = territories_table[volume_cat_pos]["name"]
@@ -724,34 +732,34 @@ function goblins.territory(pos, opt_data)
         local territories_table_ser = minetest.serialize(territories_table)
         goblins_db:set_string("territories", territories_table_ser )
         if debug_goblins_territories then
-          print(k.." added to "..territories_table[volume_cat_pos]["name"])
+          print_s(k.." added to "..territories_table[volume_cat_pos]["name"])
         end
         --end
     end
     return t_name, t_vol
-    end
-    if debug_goblins_territories then
-      print(dump(t_name).." at "..dump(t_vol).." is already known!")
-    end
-    -- print(dump(territories_table[volume_cat_pos]).. "\n ---end details \n")
+  end
+  if debug_goblins_territories then
+      print_s(dump(t_name).." at "..dump(t_vol).." is already known!")
+  end
+    -- print_s(dump(territories_table[volume_cat_pos]).. "\n ---end details \n")
     return t_name, t_vol
   else
     -- generate a name for this territory
     local name_rules = {"list_a","list_opt","-","list_b"}
     local territory_name = goblins.generate_name(gob_name_parts,name_rules)
-    -- print(dump(territory_name).." is a name whispered among those who dwell here")
+    -- print_s(dump(territory_name).." is a name whispered among those who dwell here")
     -- set concatenated minp_maxp as the key for this territory and populate data
-    -- print(dump(volume_cat_pos)))
+    -- print_s(dump(volume_cat_pos)))
     this_territory[(volume_cat_pos)] = {
       ["name"] = territory_name,
       ["flag"] = pos,
     }
     if debug_goblins_territories then
-      print("The territory of "..dump(this_territory[volume_cat_pos]["name"]).. " at "..volume_cat_pos.." will be recorded.")
+      print_s("The territory of "..dump(this_territory[volume_cat_pos]["name"]).. " at "..volume_cat_pos.." will be recorded.")
     end
     territories_table[volume_cat_pos] = this_territory[volume_cat_pos]
-    -- print(dump(territories_table).. " is the new table \n")
-    -- print("\nTERRITORY TESTING SERIALIZED WRITE:\n"..dump(this_territory_ser).."\n")
+    -- print_s(dump(territories_table).. " is the new table \n")
+    -- print_s("\nTERRITORY TESTING SERIALIZED WRITE:\n"..dump(this_territory_ser).."\n")
     -- prepare the territories_table for storage, unless we have something else to say..
     if opt_data then  --insert a table
       for k,v in pairs(opt_data) do
@@ -760,19 +768,21 @@ function goblins.territory(pos, opt_data)
         local territories_table_ser = minetest.serialize(territories_table)
         goblins_db:set_string("territories", territories_table_ser )
         if debug_goblins_territories then
-          print(k.." added to "..territories_table[volume_cat_pos]["name"])
+          print_s(k.." added to "..territories_table[volume_cat_pos]["name"])
         end
         --end
     end
-    return t_name, t_vol
-    end
+    local t_name = territory_name
+    local t_vol = volume_cat_pos
+  return t_name, t_vol
+  end
     local territories_table_ser = minetest.serialize(territories_table)
     goblins_db:set_string("territories", territories_table_ser )
     local t_name = territory_name
     local t_vol = volume_cat_pos
     return t_name, t_vol
   end
-  --print("\nTERRITORY TEST:\n"..dump(this_territory.name).."\n")
+  --print_s("\nTERRITORY TEST:\n"..dump(this_territory.name).."\n")
 end
 
 
@@ -786,7 +796,7 @@ end
 function goblins.relations(self, target_name, target_table)
   local existing_relations = {}
   if not goblins_db_read("relations") then
-    print("relations DB not initialized from init.lua!!")
+    print_s("relations DB not initialized from init.lua!!")
     return
   end
   local existing_relations = goblins_db_read("relations")
@@ -796,13 +806,13 @@ function goblins.relations(self, target_name, target_table)
     --have we started keeping track of who we know?
     if not self["relations"] then
       self.relations = {initialized = os.time()}
-      if debug_goblins_relations then print("self table: "..dump(self)) end
+      if debug_goblins_relations then print_s("self table: "..dump(self)) end
       -- create an entry for ourselves with our territory as the value
       if self.secret_name and self.secret_territory then
         self.relations[name] = self.secret_territory.name
         existing_relations[name] = self.relations
-        if debug_goblins_relations then print("self table updated: "..dump(self.relations).."\n") end
-        if debug_goblins_relations then print("adding mob to relations table: "..dump(existing_relations[self]).."\n")end
+        if debug_goblins_relations then print_s("self table updated: "..dump(self.relations).."\n") end
+        if debug_goblins_relations then print_s("adding mob to relations table: "..dump(existing_relations[self]).."\n")end
         goblins_db_write("relations",existing_relations)
       end
     end
@@ -824,9 +834,9 @@ function goblins.relations(self, target_name, target_table)
       -- we add or modify this relationship in the mod storage "relations"
 
       --existing_relations[name][target_name] = target_value
-      --print(dump(existing_relations))
+      --print_s(dump(existing_relations))
       goblins_db_write("relations",existing_relations)
-      if debug_goblins_relations then print("updated self table: "..dump(self.relations).."\n") end
+      if debug_goblins_relations then print_s("updated self table: "..dump(self.relations).."\n") end
       return existing_relations[target_name]
     end
   end
@@ -848,12 +858,12 @@ function goblins.relations_trade(self, player_name)
     if self.secret_territory.name == relations[m_name][m_name] and
       relations[m_name][pname] and relations[m_name][pname].trade then
       t_trade = t_trade + relations[m_name][pname].trade
-      if debug_goblins_trade_relations then print(m_name.." = "..relations[m_name][pname].trade)end
+      if debug_goblins_trade_relations then print_s(m_name.." = "..relations[m_name][pname].trade)end
     end
   end
   if debug_goblins_trade_relations then
-    print("relations are "..dump(relations[self.secret_name]))
-    print("territory trade score = "..t_trade)
+    print_s("relations are "..dump(relations[self.secret_name]))
+    print_s("territory trade score = "..t_trade)
   end
   return t_trade
 end
