@@ -1,22 +1,36 @@
 
 local announce_spawning = false
 
-local debug_goblins_search = false
 local debug_goblins_find = false
+local debug_goblins_relations = false
 local debug_goblins_replace = false
 local debug_goblins_replace2 = false
+local debug_goblins_search = false
+local debug_goblins_secret = false
+local debug_goblins_territories = false
 local debug_goblins_tunneling = false
 local debug_goblins_trade = false
-local debug_goblins_territories = false
-local debug_goblins_secret = false
+local debug_goblins_trade_relations = false
 
 local goblin_node_protect_strict = true
 
 local mobs_griefing = minetest.settings:get_bool("mobs_griefing") ~= false
 
+local S = minetest.get_translator("goblins")
+
 local gob_name_parts = goblins.gob_name_parts
 
--- this can build all the mobs in our mod
+function goblins.mixitup(pos)
+  pos.y = pos.y + math.random()
+  pos.x = pos.x + math.random()
+  pos.x = pos.x - math.random()
+  pos.z = pos.z + math.random()
+  pos.z = pos.z - math.random()
+  return pos
+end
+--- This can build all the mobs in our mod.
+-- @gob_types is a table with the key used to build the subtype with values that are unique to that subtype
+-- @goblin_template is the table with all params that a mob type would have defined
 function goblins.generate(gob_types,goblin_template)
   for k, v in pairs(gob_types) do
     -- we need to get a fresh template to modify for every type or we get some carryover values:-P
@@ -31,14 +45,17 @@ function goblins.generate(gob_types,goblin_template)
     if g_template.lore then print("  "..g_template.lore) end
     --print("resulting template: " ..dump(g_template))
     mobs:register_mob("goblins:goblin_"..k, g_template)
-    mobs:register_egg("goblins:goblin_"..k,g_template.description.. " Goblin Egg","default_mossycobble.png", 1)
+    mobs:register_egg("goblins:goblin_"..k, S("@1  Egg",g_template.description),"default_mossycobble.png", 1)
     g_template.spawning.name = "goblins:goblin_"..k --spawn in the name of the key!
     mobs:spawn(g_template.spawning)
     g_template = {}
   end
 end
 
--- our mobs can have randomly generated names
+--- Our mobs, territories, etc can have randomly generated names.
+-- @name_parts is the name parts table: {list_a = "foo bar baz"}
+-- @rules are the list table key names in order of how they will be chosen
+-- "-" and "\'" are rules that can be used to add a hyphen or apostrophe respectively
 function goblins.generate_name(name_parts, rules)
   -- print("generating name")
   local name_arrays = {}
@@ -60,8 +77,11 @@ function goblins.generate_name(name_parts, rules)
     --print(dump(rules))
     local gen_name = ""
     for i, v in ipairs(rules) do
+
       if v == "-" then
         gen_name = gen_name.."-"
+      elseif v == "\'" then
+        gen_name = gen_name.."\'"
       else
         gen_name = gen_name..r_parts[v]
       end
@@ -76,19 +96,22 @@ function goblins.generate_name(name_parts, rules)
   end
 end
 
--- this will store the name of a player that learns the mobs territory in the mobs table
-function goblins.secret_territory(self, player_name)
+--- This will store the name of a player that learns the mobs territory in the mobs table.
+function goblins.secret_territory(self, player_name, tell)
   local pname = player_name
-  self.nametag = self.secret_name.." of "..self.secret_territory.name
+  --self.nametag = self.secret_name.." of "..self.secret_territory.name
   if not self.secret_territory_told then
-    self.secret_territory_told = {[self.secret_territory.name] = os.date()}
+    self.secret_territory_told = {initialized = os.time()}
   end
-  if not self.secret_territory_told[pname] then
+  if self.secret_territory_told[pname] then return self.secret_territory end
+  if not self.secret_territory_told[pname] and tell then
     minetest.chat_send_player(pname,
-      "You have learned the secret territory name of "..self.secret_territory.name)
-    self.secret_territory_told[pname] = os.date()
-    self.nametag = self.secret_name.." of "..self.secret_territory.name
+      S("   You have learned the secret territory name of @1!!",dump(self.secret_territory.name)))
+    self.secret_territory_told[pname] = os.time()
+    ---self.nametag = self.secret_name.." of "..self.secret_territory.name
+
     ---player could also receive some kind of functional token for this territory
+    return self.secret_territory
   end
   if debug_goblins_secret then
     for k,v in pairs(self.secret_territory_told)  do
@@ -97,23 +120,21 @@ function goblins.secret_territory(self, player_name)
   end
 end
 
---this will store the name of a player that learns the mobs name in the mobs table
-function goblins.secret_name(self, player_name)
+--- This will store the name of a player that learns the mobs name in the mobs table.
+function goblins.secret_name(self, player_name,tell)
   -- self.nametag = self.secret_name
   local pname = player_name
   if not self.secret_name_told then
-    self.secret_name_told = {[self.secret_name] = os.date()}
+    self.secret_name_told = {[self.secret_name] = os.time()}
   end
-  if not self.secret_name_told[pname] then
+  if self.secret_name_told[pname] then return self.secret_name end
+  if not self.secret_name_told[pname] and tell then
     --The goblin is willing to share something special!
     minetest.chat_send_player(pname,
-      "You have learned the secret name of " ..self.secret_name)
-    self.secret_name_told[pname] = os.date()
-    self.nametag = self.secret_name
-    if self.special_gifts then
-      self.special_gift = self.special_gifts[math.random(1,#self.special_gifts)]
-      --print(self.special_gift.. "activated!")
-    end
+      S("   You have learned the secret name of @1!!",self.secret_name))
+    self.secret_name_told[pname] = os.time()
+    --self.nametag = self.secret_name
+    return self.secret_name
   end
   if debug_goblins_secret then
     for k,v in pairs(self.secret_name_told)  do
@@ -122,44 +143,14 @@ function goblins.secret_name(self, player_name)
   end
 end
 
---returns a list of special gifts based on goblin drops defs
-function goblins.special_gifts(self)
-  local special_gifts = {}
-  --special things from goblins drops table can be defined with a very rare drop chance
-  local from_drops = {}
-  for _,v in pairs(self.drops) do
-    if v.chance >= 1000 then
-    --print(dump(v.name).. " with 1 chance in " ..dump(v.chance))
-    end
-    if v.chance >= 1000 then
-      table.insert(from_drops, v.name)
-    end
-  end
-  --print(dump(dump(from_drops).." are possible gifts")
-  if from_drops then
-    for _,v in pairs(from_drops) do
-      table.insert(special_gifts, v)
-    end
-  end
-  if special_gifts then
-    --print(dump(special_gifts).." have been generated")
-    return special_gifts
-  else
-    special_gifts = {"default:mese"}
-    --print(dump(special_gifts).." have been generated due to lack of definition")
-    return special_gifts
-  end
-
-end
 ------------
 -- Announce Spawn ...summon it with care, for the floods shall come!
 -----------
--- purely for debugging or curiosity it can be enabled at the top of this page
+-- Purely for debugging or curiosity it can be enabled at the top of this page
 function goblins.announce_spawn(self)
   if announce_spawning == true then
     local pos = vector.round(self.object:getpos())
     if not pos then return end
-
     if self.secret_name then
       print( self.name:split(":")[2].. ", "..self.secret_name.." spawned at: " .. minetest.pos_to_string(pos))
     else
@@ -180,11 +171,56 @@ function goblins.announce_spawn(self)
         print(territory[1].." at "..territory[2].." becomses the domain of a nameless one\n")
       end
     end
-
   end
 end
+--- Drops a special personlized item
+function goblins.special_gifts(self, pname, drop_chance, max_drops)
 
--- you can give a gift, they may give something(s) in return...
+  if pname then
+    if self.drops then
+      if not drop_chance then drop_chance = 1000 end
+      if not max_drops then max_drops = 1 end
+      local rares = {}
+      for k,v in pairs(self.drops) do
+        --print(dump(v.name).." and "..dump(v.chance))
+        if v.chance >= drop_chance then
+          table.insert(rares,v.name)
+        end
+      end
+      if #rares > 0 then
+        --print("rares = "..dump(rares))
+        local pos = self.object:getpos()
+        pos.y = pos.y + 0.5
+        goblins.mixitup(pos)
+        if #rares > max_drops then
+          rares = rares[math.random(max_drops, #rares)]
+          if type(rares) ~= table then rares = {rares} end --
+        end
+        for k,v in pairs(rares) do
+          minetest.sound_play("goblins_goblin_cackle", {
+            pos = pos,
+            gain = 1.0,
+            max_hear_distance = self.sounds.distance or 10
+          })
+          local item_wear = math.random(5000,10000)
+          local stack = ItemStack({name = v, wear = item_wear })
+          local org_desc = minetest.registered_items[v].description
+          local meta = stack:get_meta()
+          local tool_adj = goblins.generate_name(goblins.words_desc, {"tool_adj"})
+          -- special thanks here to rubenwardy for showing me how translation works!
+          meta:set_string(
+            "description", S("@1's @2 @3", self.secret_name, tool_adj, org_desc)
+          )
+          local obj = minetest.add_item(pos, stack)
+          minetest.chat_send_player(
+            pname,S("@1 drops @2",self.secret_name, meta:get_string("description"))
+          )
+        end
+      end
+    end
+  end
+end
+--- You can give a gift, they *may* give something(s) in return.
 function goblins.give_gift(self,clicker)
   --if mobs:feed_tame(self, clicker, 14, false, false) then
   local item = clicker:get_wielded_item()
@@ -192,53 +228,65 @@ function goblins.give_gift(self,clicker)
   local gift_accepted = nil
   local gift_declined = nil
   local pname = clicker:get_player_name()
-  --establish some shrewdness if its not set
-  if not self.shrewdness then self.shrewdness = 20 end
+  local name_told = goblins.secret_name(self, pname)
+  local territory_told = goblins.secret_territory(self, pname)
+  --establish trade if its not set
+  if not self.relations[pname] then
+    goblins.relations(self, pname, {trade = 0})
+  end
+  if debug_goblins_relations then print(dump(goblins.relations(self, pname))) end
+  --grel = goblins.relations(self, pname)
+  local srp_trade = self.relations[pname].trade
+  local gr_trade = goblins.relations_trade(self,pname)
   local gift = item:get_name()
   local gift_description = item:get_definition().description
-  if debug_goblins_trade == true then print("you offer: " .. dump(gift)) end
+  if debug_goblins_trade then print("you offer: " ..dump(gift)) end
   for _,v in pairs(self.follow) do
     if v == gift then
       gift_accepted = true
-      if debug_goblins_trade == true then print("you gave "..self.name.. " a " .. dump(gift)) end
-      --reduce shrewdness on gifting
-      if self.shrewdness >= 2 then self.shrewdness = self.shrewdness - 1 end
+      if debug_goblins_trade then print(self.name.. " accepts " .. dump(gift)) end
+      --increase trade rating on gifting - first item in follow list is worth more
+      srp_trade = srp_trade + 1
       if gift == self.follow[1] then
-        if self.shrewdness >= 4 then self.shrewdness = self.shrewdness - 3 end
-        if debug_goblins_trade == true then print("you gave the perfect gift!") end
+        srp_trade =  srp_trade + 4
         minetest.chat_send_player(pname,"Yessss! " .. gift_description.."!")
       end
-      if debug_goblins_trade == true then print("shrewdness = " ..dump(self.shrewdness)) end
+      goblins.relations(self, pname,{trade = srp_trade})
+      if debug_goblins_trade then print("trade rating is now = " ..dump(srp_trade)) end
+      if debug_goblins_trade then print("storage written"..dump(gr_trade)) end
       if not minetest.settings:get_bool("creative_mode") then
         item:take_item()
         clicker:set_wielded_item(item)
       end
       --print(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))
-      if debug_goblins_trade == true  then
-        print("you may get some of "..dump(#self.drops).. " things such as: ")
-        for _,v in pairs(self.drops) do
-          print(dump(v.name).. " with 1 chance in " ..dump(v.chance).. " + " ..dump(self.shrewdness))
+      if self.drops then
+        if debug_goblins_trade then
+          print("you may get some of "..dump(#self.drops).. " things such as: ")
+          for _,v in pairs(self.drops) do
+            print(dump(v.name).. " with a base drop chance of 1 in " ..dump(v.chance))
+          end
         end
-      end
-      local pos = self.object:getpos()
-      pos.y = pos.y + 0.5
-      if self.special_gift then
-        minetest.add_item(pos, {
-          name = self.special_gift
-        })
-        minetest.chat_send_player(pname, self.secret_name.. " gives you a precious thing")
-        self.special_gift = false
-      else
+        -- we can make some mobs extra stingy despite trade relations
+        if not self.shrewdness then self.shrewdness = 1 end
+        local pos = self.object:getpos()
+        pos.y = pos.y + 0.5
         for _,v in pairs(self.drops) do
-          local trade_chance = v.chance + self.shrewdness
-          if self.shrewdness and self.shrewdness <= 2 and gift == self.follow[1] then trade_chance = 2 end
-          if math.random(1, trade_chance) == 1 then
-            if debug_goblins_trade == true then print(dump(v.name.. " dropped by "..self.name.. " at a chance of 1 in " ..trade_chance)) end
-            pos.y = pos.y + math.random()
-            pos.x = pos.x + math.random()
-            pos.x = pos.x - math.random()
-            pos.z = pos.z + math.random()
-            pos.z = pos.z - math.random()
+          local d_chance = v.chance / (gr_trade + 1)
+          d_chance = d_chance + self.shrewdness
+          --more likely to get something really rare , less likely to get something common
+          if gift == self.follow[1] then d_chance = 10 end
+          d_chance = math.floor(d_chance)
+          if math.random(1, d_chance) == 1 then
+            if debug_goblins_trade == true then
+              print(dump(v.name.. " dropped by "..self.name.. " at an adjusted chance of 1 in " ..d_chance))
+            end
+            minetest.sound_play("goblins_goblin_cackle", {
+              pos = pos,
+              gain = 0.2,
+              max_hear_distance = self.sounds.distance or 10
+            })
+            --let it go already!
+            goblins.mixitup(pos)
             minetest.add_item(pos, {
               name = v.name
             })
@@ -246,26 +294,38 @@ function goblins.give_gift(self,clicker)
         end
       end
       gift_accepted = true
-      if self.nametag then
-        minetest.chat_send_player(pname,self.nametag.. " takes your " .. gift_description)
+      if name_told and territory_told then
+        minetest.chat_send_player(pname,S("@1 of @2 takes your @3!",self.secret_name,self.secret_territory.name,gift_description))
+      elseif name_told then
+        minetest.chat_send_player(pname,S("@1 takes your @2!",self.secret_name,gift_description))
+
       else
-        minetest.chat_send_player(pname,"Goblin takes your " .. gift_description)
+        minetest.chat_send_player(pname,S("Goblin takes your @1!", gift_description))
       end
       return gift_accepted --acception of gift complete
 
     else
-      if debug_goblins_trade == true then print("you did not offer " .. dump(string.split(v,":")[2]) ) end
+      if debug_goblins_trade == true then print("You did not offer " .. dump(string.split(v,":")[2]) ) end
     end
   end
-  if self.nametag then
-    minetest.chat_send_player(pname,self.nametag.. " does not want your " .. gift_description)
+  minetest.sound_play("goblins_goblin_damage", {
+    pos = pos,
+    gain = 0.2,
+    max_hear_distance = self.sounds.distance or 10
+  })
+  if name_told and territory_told then
+    minetest.chat_send_player(
+      pname,S("@1 of @2  does not want your @3",
+        self.secret_name,self.secret_territory.name,gift_description))
+  elseif name_told then
+    minetest.chat_send_player(pname,S("@1 does not want your @2",self.secret_name,gift_description))
   else
-    minetest.chat_send_player(pname,"Goblin does not want your " .. gift_description)
+    minetest.chat_send_player(pname,S("Goblin does not want your @1",gift_description))
   end
   gift_declined = true
 end
 
-
+--- Replaces nodes with many params.
 function goblins.search_replace(
   self,
   search_rate,
@@ -376,10 +436,11 @@ local diggable_nodes = {"group:stone", "group:sand", "group:soil", "group:cracky
 -- This translates yaw into vectors.
 local cardinals = {{x=0,y=0,z=0.75}, {x=-0.75,y=0,z=0}, {x=0,y=0,z=-0.75}, {x=0.75,y=0,z=0}}
 ----------
--- Goblins Tunneling
+-- Goblins Tunneling.
 ---------
+-- @type are available for fine-tuning.
 function goblins.tunneling(self, type)
-  -- Types are available for fine-tuning.
+  --
   if type == nil then
     type = "digger"
   end
@@ -626,11 +687,10 @@ function goblins.territory_test(pos,territories)
   print("\nBEGIN EXISTING LIST--------\n"..dump(goblins_db_read("territories")).."\n ------END LIST\n")
 end --test
 
--- I have to break this beast up someday, but it does provide a way
--- to take a chunk and use it a base for storing information in a mod
+-- Provides a way to take a chunks position and use it a base for storing information in a mod.
 -- it is dependant on the mapgen_min_max function above as well the goblins_db functions for storage.
-
-function goblins.territory(pos,t_name,t_vol)
+-- @opt_data is just for adding information to this territories storage it expects a table
+function goblins.territory(pos, opt_data)
   -- this should be called on spawn but before a goblin gets its secret name
   -- a handy chunk name key generator, should create a unique name for every chunk
   local function cat_pos(chunk)
@@ -657,6 +717,19 @@ function goblins.territory(pos,t_name,t_vol)
   if territories_table[volume_cat_pos]  then
     local t_vol = volume_cat_pos
     local t_name = territories_table[volume_cat_pos]["name"]
+    if opt_data then  --insert a table
+      for k,v in pairs(opt_data) do
+        --if not territories_table[volume_cat_pos][k] -- this is tricky...
+        territories_table[volume_cat_pos][k] = v
+        local territories_table_ser = minetest.serialize(territories_table)
+        goblins_db:set_string("territories", territories_table_ser )
+        if debug_goblins_territories then
+          print(k.." added to "..territories_table[volume_cat_pos]["name"])
+        end
+        --end
+    end
+    return t_name, t_vol
+    end
     if debug_goblins_territories then
       print(dump(t_name).." at "..dump(t_vol).." is already known!")
     end
@@ -679,7 +752,20 @@ function goblins.territory(pos,t_name,t_vol)
     territories_table[volume_cat_pos] = this_territory[volume_cat_pos]
     -- print(dump(territories_table).. " is the new table \n")
     -- print("\nTERRITORY TESTING SERIALIZED WRITE:\n"..dump(this_territory_ser).."\n")
-    -- prepare the territories_table for storage
+    -- prepare the territories_table for storage, unless we have something else to say..
+    if opt_data then  --insert a table
+      for k,v in pairs(opt_data) do
+        --if not territories_table[volume_cat_pos][k] -- this is tricky...
+        territories_table[volume_cat_pos][k] = v
+        local territories_table_ser = minetest.serialize(territories_table)
+        goblins_db:set_string("territories", territories_table_ser )
+        if debug_goblins_territories then
+          print(k.." added to "..territories_table[volume_cat_pos]["name"])
+        end
+        --end
+    end
+    return t_name, t_vol
+    end
     local territories_table_ser = minetest.serialize(territories_table)
     goblins_db:set_string("territories", territories_table_ser )
     local t_name = territory_name
@@ -690,3 +776,85 @@ function goblins.territory(pos,t_name,t_vol)
 end
 
 
+-- Expresses and optionally store the relationship between a mob and a player or another mob.
+-- Will return all known relationships if nothing is defined.
+-- @self will return only relations know to that mob
+-- @target_name will return the table of the self.relations (mobs) relations to the target if
+-- optional target_table is not defined.
+-- @target_table will set the value of a mobs relation to the target.
+-- THIS SCRIPT IS DEPENDANT on secret_name and secret_territory!
+function goblins.relations(self, target_name, target_table)
+  local existing_relations = {}
+  if not goblins_db_read("relations") then
+    print("relations DB not initialized from init.lua!!")
+    return
+  end
+  local existing_relations = goblins_db_read("relations")
+  -- do we want to know something in particular?
+  if self then
+    local name = self.secret_name
+    --have we started keeping track of who we know?
+    if not self["relations"] then
+      self.relations = {initialized = os.time()}
+      if debug_goblins_relations then print("self table: "..dump(self)) end
+      -- create an entry for ourselves with our territory as the value
+      if self.secret_name and self.secret_territory then
+        self.relations[name] = self.secret_territory.name
+        existing_relations[name] = self.relations
+        if debug_goblins_relations then print("self table updated: "..dump(self.relations).."\n") end
+        if debug_goblins_relations then print("adding mob to relations table: "..dump(existing_relations[self]).."\n")end
+        goblins_db_write("relations",existing_relations)
+      end
+    end
+    -- do we just want to know how we feel about the target?
+    if target_name and not target_table then
+      -- do we even know the target?
+      if not self.relations[target_name] then
+        self.relations[target_name] = {initialized = os.time()}
+        existing_relations[name] = self.relations
+        goblins_db_write("relations",existing_relations)
+      end
+      return self.relations[target_name]
+    end
+    -- we have something to say about the target!
+    if target_name and target_table then
+      -- mob adds it to their entity..
+      self.relations[target_name] = target_table
+      existing_relations[name] = self.relations
+      -- we add or modify this relationship in the mod storage "relations"
+
+      --existing_relations[name][target_name] = target_value
+      --print(dump(existing_relations))
+      goblins_db_write("relations",existing_relations)
+      if debug_goblins_relations then print("updated self table: "..dump(self.relations).."\n") end
+      return existing_relations[target_name]
+    end
+  end
+  -- we dont have a target just dump everything known about everone
+  return existing_relations
+end
+
+--Returns the trade score of a player for the mobs home territory
+function goblins.relations_trade(self, player_name)
+  local pname = player_name
+  local relations = goblins.relations(self)
+  local t_trade = 0
+  -- initialize tables if necessary
+  if not self["relations"] then self.relations = {initialized = os.time()} end
+  if not self.relations[pname] then goblins.reltions(self, pname) end
+  if not self.relations[pname]["trade"] then self.relations[pname]["trade"] = 0 end
+  --be sure that relations have been started with player before using this!
+  for m_name,prop in pairs(relations) do
+    if self.secret_territory.name == relations[m_name][m_name] and
+      relations[m_name][pname] and relations[m_name][pname].trade then
+      t_trade = t_trade + relations[m_name][pname].trade
+      if debug_goblins_trade_relations then print(m_name.." = "..relations[m_name][pname].trade)end
+    end
+  end
+  if debug_goblins_trade_relations then
+    print("relations are "..dump(relations[self.secret_name]))
+    print("territory trade score = "..t_trade)
+  end
+  return t_trade
+end
+  

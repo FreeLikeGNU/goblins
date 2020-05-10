@@ -9,7 +9,8 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
 * Goblins dig caves, destroy torches, create lairs, set traps, cultivate mushrooms and some are aggressive.
 * Gobdogs will roam caves, bury bones and other items in soft terrain, eat meats. Some Gobdogs are aggressive!
 * Basic trading with Goblins - the more you trade with a goblin, the more likely you will get things in return! 
-* Goblins have a territorial framework for location based interactions 
+* Goblins have a territorial framework for location based interactions, if you trade with more Goblins of a territory
+  your trades will be easier!
 
 * tested with Mintest 5.30(dev)
 
@@ -83,5 +84,7 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
   
   Thanks to orbea for adding Hunger NG and Bonemeal mod support and bugfixes!
     * https://github.com/orbea
-    
+  Thanks to TenPlus1 for keeping the Mobs_Redo going!
+  Thanks to rubenwardy for awesome help and the Minetest ContentDB
+  Thanks to everyone in the Minetest forums and IRC for just being great!
 GET MINETEST: https://www.minetest.net/

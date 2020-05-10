@@ -1,11 +1,12 @@
 -- goblin namegen sets from https://github.com/LukeMS/lua-namegen
 -- libtcod https://github.com/libtcod/libtcod name set format have been adapted for my Goblins gen_name function
+local S = minetest.get_translator("goblins")
 local gob_name_parts = goblins.gob_name_parts
 -- this table defines the goblins with how they differ from the goblin template.
 local gob_types = {
   digger = {
-    description = "Digger Goblin",
-    lore = "The digger burrows though stone to carve out the bowels of a goblin warren",
+    description = S("Cavedigger Goblin"),
+    lore = S("The digger burrows though stone to carve out the bowels of a goblin warren"),
     damage = 1,
     hp_min = 5,
     hp_max = 10,
@@ -69,8 +70,8 @@ local gob_types = {
     }
   },
   cobble = {
-    description = "Cobble Goblin",
-    lore = "Cobbler crumbles walls infusing them with moss to collect moisture for a fetid, mushroom friendly habitat",
+    description = S("Cobblemoss Goblin"),
+    lore = S("Cobbler crumbles walls infusing them with moss to collect moisture for a fetid, mushroom friendly habitat"),
     damage = 1,
     hp_min = 5,
     hp_max = 10,
@@ -121,8 +122,8 @@ local gob_types = {
     }
   },
   snuffer = {
-    description = "Snuffer Goblin",
-    lore = "the snuffer likes to put out pesky torches and steal them, collecting the fuel for trap makers",
+    description = S("Snuffer Goblin"),
+    lore = S("The Snuffer likes to put out pesky torches and steal them, collecting the fuel for trap makers"),
     damage = 1,
     hp_min = 5,
     hp_max = 10,
@@ -164,8 +165,8 @@ local gob_types = {
     }
   },
   fungiler = {
-    description = "Goblin Fungiler",
-    lore = "Fungilers keep the warren full of tasty mushrooms which are also fuel for pyromancy",
+    description = S("Goblin Fungiler"),
+    lore = S("Fungilers keep the warren full of tasty mushrooms which are also fuel for pyromancy"),
     damage = 1,
     hp_min = 5,
     hp_max = 10,
@@ -184,6 +185,10 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_steel",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_steel",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:axe_steel",
         chance = 1000, min = 1, max = 1},
       {name = "default:pick_mossycobble",
         chance = 10, min = 1, max = 1},
@@ -240,7 +245,7 @@ local gob_types = {
     }
   },
   coal = {
-    description = "Coal Goblin",
+    description = S("Coalbreath Goblin"),
     damage = 1,
     hp_min = 5,
     hp_max = 10,
@@ -250,6 +255,10 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_steel",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_steel",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:axe_steel",
         chance = 1000, min = 1, max = 1},
       {name = "default:pick_mossycobble",
         chance = 10, min = 1, max = 1},
@@ -304,7 +313,7 @@ local gob_types = {
     },
   },
   copper = {
-    description = "Copper Goblin",
+    description = S("Coppertooth Goblin"),
     damage = 2,
     hp_min = 10,
     hp_max = 20,
@@ -314,6 +323,10 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_diamond",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_diamond",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:axe_diamond",
         chance = 1000, min = 1, max = 1},
       {name = "default:pick_bronze",
         chance = 10, min = 1, max = 1},
@@ -368,7 +381,8 @@ local gob_types = {
     },
   },
   iron ={
-    description = "Iron Goblin",
+    description = S("Ironpick Goblin"),
+    type = "monster",
     damage = 2,
     hp_min = 10,
     hp_max = 20,
@@ -378,6 +392,10 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_diamond",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_diamond",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:axe_diamond",
         chance = 1000, min = 1, max = 1},
       {name = "default:pick_steel",
         chance = 10, min = 1, max = 1},
@@ -398,7 +416,6 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    type = "monster",
 
     do_custom = function(self)
       goblins.search_replace(
@@ -433,7 +450,8 @@ local gob_types = {
     },
   },
   gold = {
-    description = "Gold Goblin",
+    description = S("Goldshiv Goblin"),
+    type = "monster",
     damage = 3,
     hp_min = 10,
     hp_max = 30,
@@ -444,8 +462,12 @@ local gob_types = {
     drops = {
       {name = "default:pick_diamond",
         chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_diamond",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:axe_diamond",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_gold",
-        chance = 10, min = 1, max = 1},
+        chance = 100, min = 1, max = 1},
       {name = "default:gold_lump",
         chance = 7, min = 1, max = 1},
       {name = "default:pick_bronze",
@@ -463,7 +485,6 @@ local gob_types = {
       {name = "goblins:mushroom_goblin",
         chance = 2, min = 1, max = 5},
     },
-    type = "monster",
 
     do_custom = function(self)
       goblins.search_replace(
@@ -498,7 +519,8 @@ local gob_types = {
     },
   },
   diamond = {
-    description = "Diamond Goblin",
+    description = S("Diamondagger Goblin"),
+    type = "monster",
     damage = 3,
     hp_min = 20,
     hp_max = 30,
@@ -509,8 +531,12 @@ local gob_types = {
     drops = {
       {name = "default:pick_mese",
         chance = 1000, min = 1, max = 1},
+      {name = "default:shovel_mese",
+        chance = 1000, min = 1, max = 1},
+      {name = "default:axe_mese",
+        chance = 1000, min = 1, max = 1},
       {name = "default:pick_diamond",
-        chance = 10, min = 1, max = 1},
+        chance = 100, min = 1, max = 1},
       {name = "default:diamond",
         chance = 7, min = 1, max = 1},
       {name = "default:pick_bronze",
@@ -529,7 +555,6 @@ local gob_types = {
         chance = 2, min = 1, max = 5},
     },
     follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
-    type = "monster",
 
     do_custom = function(self)
       goblins.search_replace(
@@ -564,7 +589,8 @@ local gob_types = {
     },
   },
   hoarder = {
-    description = "Goblin Hoarder",
+    description = S("Goblin Hoarder"),
+    type = "monster",
     damage = 4,
     hp_min = 20,
     hp_max = 40,
@@ -596,8 +622,6 @@ local gob_types = {
         chance = 2, min = 1, max = 5},
     },
 
-    type = "monster",
-
     do_custom = function(self)
       goblins.search_replace(
         self,
@@ -615,6 +639,7 @@ local gob_types = {
         "goblins:mossycobble_trap" --replace_with_secondary
       )
     end,
+
     spawning = {
       nodes = {"default:mossycobble","default:chest"},
       neighbors = "air",
@@ -705,6 +730,10 @@ local goblin_template = {  --your average goblin,
   drops = {
     {name = "default:pick_steel",
       chance = 1000, min = 1, max = 1},
+    {name = "default:shovel_steel",
+      chance = 1000, min = 1, max = 1},
+    {name = "default:axe_steel",
+      chance = 1000, min = 1, max = 1},
     {name = "default:pick_mossycobble",
       chance = 10, min = 1, max = 1},
     {name = "default:mossycbble",
@@ -730,28 +759,45 @@ local goblin_template = {  --your average goblin,
       self.secret_name = goblins.generate_name(gob_name_parts)
     end
     --print (dump(self.secret_name))
-    goblins.announce_spawn(self)
-    if not self.special_gifts then self.special_gifts = goblins.special_gifts(self) end
     --print (dump(self.special_gifts).. " are precious to "..dump(self.secret_name).. "!")
     local pos = vector.round(self.object:getpos())
-    if not pos then return end
+    if not pos then print(dump(self).."\n **position error!** \n") return end --something went wrong!
     if not self.secret_territory then
-      local territory = {goblins.territory(pos)}
+      local opt_data = {}
+      opt_data[self.secret_name] = os.time() --add this goblin as a key member of territory
+      local territory = {goblins.territory(pos,opt_data)}
       self.secret_territory = {name = territory[1], vol = territory[2]}
       --print(dump(self.secret_territory.name).." secret_territory assigned")
     else
     --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
+    goblins.announce_spawn(self)
   end,
 
-  --By default the Goblins are willing to trade, this can be overridden in the table for any goblin
+  --By default the Goblins are willing to trade,
+  --this can be overridden in the table for any goblin.
   on_rightclick = function(self,clicker)
     local pname = clicker:get_player_name()
-    if self.shrewdness and self.shrewdness <= 5 then
-      goblins.secret_territory(self, pname)
-    elseif self.shrewdness and self.shrewdness <= 10 then
-      goblins.secret_name(self, pname)
+    local relations = goblins.relations(self, pname)
+
+    if not relations.trade then
+      goblins.relations(self, pname, {trade = 0})
     end
+    goblins.special_gifts(self)
+    --print(self.secret_name.." relations on click:\n"..dump(self.relations).."\n")
+
+    if self.relations[pname].trade >= 30 and not self.secret_territory_told[pname] then
+      goblins.secret_territory(self, pname, "tell")
+      goblins.special_gifts(self,pname)
+      --print("  these gifts lined up "..dump(self.special_gifts))
+    end
+
+    if self.relations[pname].trade >= 15 and not self.secret_name_told[pname] then
+      goblins.secret_name(self, pname, "tell")
+      goblins.special_gifts(self,pname)
+      --print("  these gifts lined up "..dump(self.special_gifts))
+    end
+    -- print(pname.." is about to make an offering")
     goblins.give_gift(self,clicker)
   end,
 
