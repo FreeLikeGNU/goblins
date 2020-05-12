@@ -181,6 +181,62 @@ function goblins.announce_spawn(self)
     end
   end
 end
+
+--Goblins will become aggro at range 
+--code reused from Mobs Redo by TenPlus1
+--not quite ready yet...
+
+local function match_item_list(item, list)
+  for k,v in pairs(list) do
+   local found = string.find(item, v)
+   return found 
+  end
+end   
+
+function goblins.attack(self, target, type)
+  if self.state == "runaway"
+  or self.state == "attack"
+  or self:day_docile() then
+    return
+  end
+  local pos = vector.round(self.object:getpos())
+  local s = self.object:get_pos()
+  local objs = minetest.get_objects_inside_radius(s, self.view_range)
+  if not self.aggro_wielded then
+   local aggro_wielded = {}
+  else
+   local aggro_wielded = self.aggro_wielded
+   print_s(S(dump(aggro_wielded)))
+  end 
+ -- remove entities we aren't interested in
+  for n = 1, #objs do
+    local ent = objs[n]:get_luaentity()
+    -- are we a player?
+    print_s(S(dump(ent)))
+    if objs[n]:is_player() then
+      -- if player invisible or mob not setup to attack then remove from list
+      if self.attack_players == false
+      or (self.owner and self.type ~= "monster")
+      or mobs.invis[objs[n]:get_player_name()]
+      or not specific_attack(self.specific_attack, "player") then
+        objs[n] = nil
+--print("- pla", n)
+      end
+      local wielded = objs[n]:get_wielded_item() 
+      if aggro_wielded and match_item_list(wielded, aggro_wielded) then
+      
+      print( "*** aggro triggered!!  *** at "..dump(pos))
+      self.state = "runaway"
+--        self.state = "attack"
+--        self.attack = player
+--        self:set_animation("run")
+--        self:set_velocity(self.run_velocity)
+       end
+    end
+    --what else do we see?
+  end
+end
+
 --- Drops a special personlized item
 function goblins.special_gifts(self, pname, drop_chance, max_drops)
 
