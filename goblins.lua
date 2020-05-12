@@ -1,8 +1,17 @@
 -- goblin namegen sets from https://github.com/LukeMS/lua-namegen
 -- libtcod https://github.com/libtcod/libtcod name set format have been adapted for my Goblins gen_name function
 local S = minetest.get_translator("goblins")
+
 local gob_name_parts = goblins.gob_name_parts
-  
+local gob_words = goblins.words_desc
+local function strip_escapes(input)
+  goblins.strip_escapes(input)
+end
+
+local function print_s(input)
+ print(goblins.strip_escapes(input))
+end
+
 -- this table defines the goblins with how they differ from the goblin template.
 local gob_types = {
   digger = {
@@ -774,6 +783,7 @@ local goblin_template = {  --your average goblin,
     --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
     goblins.announce_spawn(self)
+    print_s(S(dump(minetest.registered_items[self.name])))
   end,
 
   --By default the Goblins are willing to trade,
@@ -839,12 +849,11 @@ local goblin_template = {  --your average goblin,
 --------------
 goblins.generate(gob_types,goblin_template)
 
-local function ggn(gob_name_parts)
-  return goblins.generate_name(gob_name_parts)
+local function ggn(gob_name_parts,rules)
+  return goblins.generate_name(gob_name_parts,rules)
 end
 
-print("This diversion is dedicated to the memory of " ..ggn(gob_name_parts)..
-  ", " ..ggn(gob_name_parts).. " and " ..ggn(gob_name_parts)..
-  ". May their hordes be mine!")
-print("   --"..ggn(gob_name_parts).." of the "..ggn(gob_name_parts).." clan")
+print_s(S("This diversion is dedicated to the memory of @1 the @2, @3 the @4, and @5 the @6... May their hordes be mine!",
+ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"})))
+print_s(S("   --@1 of the @2 clan.",ggn(gob_name_parts),ggn(gob_name_parts,{"list_a","list_opt","-","list_b"})))
 
