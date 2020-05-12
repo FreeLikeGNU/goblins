@@ -783,7 +783,7 @@ local goblin_template = {  --your average goblin,
     --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
     goblins.announce_spawn(self)
-    print_s(S(dump(minetest.registered_items[self.name])))
+    --print_s(S(dump(minetest.registered_items[self.name])))
   end,
 
   --By default the Goblins are willing to trade,
