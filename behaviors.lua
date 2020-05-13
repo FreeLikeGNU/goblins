@@ -1,6 +1,7 @@
 
 local announce_spawning = false
 
+local debug_goblins_attack = true
 local debug_goblins_find = false
 local debug_goblins_relations = false
 local debug_goblins_replace = false
@@ -25,7 +26,7 @@ local function strip_escapes(input)
 end
 
 local function print_s(input)
- print(goblins.strip_escapes(input))
+  print(goblins.strip_escapes(input))
 end
 
 function goblins.mixitup(pos)
@@ -182,58 +183,56 @@ function goblins.announce_spawn(self)
   end
 end
 
---Goblins will become aggro at range 
+--Goblins will become aggro at range
 --code reused from Mobs Redo by TenPlus1
 --not quite ready yet...
 
 local function match_item_list(item, list)
   for k,v in pairs(list) do
-   local found = string.find(item, v)
-   return found 
+    local found = string.find(item, v)
+    return found
   end
-end   
+end
 
 function goblins.attack(self, target, type)
   if self.state == "runaway"
-  or self.state == "attack"
-  or self:day_docile() then
+    or self.state == "attack"
+    or self:day_docile() then
     return
   end
   local pos = vector.round(self.object:getpos())
   local s = self.object:get_pos()
   local objs = minetest.get_objects_inside_radius(s, self.view_range)
-  if not self.aggro_wielded then
-   local aggro_wielded = {}
-  else
-   local aggro_wielded = self.aggro_wielded
-   print_s(S(dump(aggro_wielded)))
-  end 
- -- remove entities we aren't interested in
+  local aggro_wielded = self.aggro_wielded
+  --print_s(S(dump(aggro_wielded)))
+  -- remove entities we aren't interested in
   for n = 1, #objs do
     local ent = objs[n]:get_luaentity()
     -- are we a player?
-    print_s(S(dump(ent)))
     if objs[n]:is_player() then
       -- if player invisible or mob not setup to attack then remove from list
+      local wielded = objs[n]:get_wielded_item():to_string()
+      if debug_goblins_attack then print_s( S("player has @1 in hand",dump(objs[n]:get_wielded_item():to_string())))end
       if self.attack_players == false
-      or (self.owner and self.type ~= "monster")
-      or mobs.invis[objs[n]:get_player_name()]
-      or not specific_attack(self.specific_attack, "player") then
+      --or (self.owner and self.type ~= "monster")
+      or mobs.invis[objs[n]:get_player_name()] then
+      --or not specific_attack(self.specific_attack, "player") then
+      if debug_goblins_attack then print_s(S("found players with @1",dump(objs[n]:get_wielded_item():to_string())))end
         objs[n] = nil
---print("- pla", n)
+        --print("- pla", n)
+        
+      else
+      if debug_goblins_attack then print_s(S("attackable players @1",dump(objs[n]:get_wielded_item():to_string())))end
+        if aggro_wielded and match_item_list(wielded, aggro_wielded) then
+          if debug_goblins_attack then print_s(S("*** aggro triggered by @1 at @2 !!  ***",wielded,dump(pos)))end
+          self:set_animation("run")
+          self:set_velocity(self.run_velocity)
+          self.state = "attack"
+          self.attack = (objs[n])
+        end
       end
-      local wielded = objs[n]:get_wielded_item() 
-      if aggro_wielded and match_item_list(wielded, aggro_wielded) then
-      
-      print( "*** aggro triggered!!  *** at "..dump(pos))
-      self.state = "runaway"
---        self.state = "attack"
---        self.attack = player
---        self:set_animation("run")
---        self:set_velocity(self.run_velocity)
-       end
-    end
-    --what else do we see?
+    end --end of player eval
+    --what else do we care about?
   end
 end
 
@@ -760,7 +759,7 @@ function goblins.territory(pos, opt_data)
   local function cat_pos(chunk)
     return "Xa"..chunk[1].x.."_Ya"..chunk[1].y.."_Za"..chunk[1].z.."_x_Xb"..chunk[2].x.."_Yb"..chunk[2].y.."_Zb"..chunk[2].z
   end
- 
+
   -- get list of known territories and thier chunks or
   local existing_territories = {}
   existing_territories = goblins_db_read("territories")
@@ -793,10 +792,10 @@ function goblins.territory(pos, opt_data)
         --end
     end
     return t_name, t_vol
-  end
-  if debug_goblins_territories then
+    end
+    if debug_goblins_territories then
       print_s(dump(t_name).." at "..dump(t_vol).." is already known!")
-  end
+    end
     -- print_s(dump(territories_table[volume_cat_pos]).. "\n ---end details \n")
     return t_name, t_vol
   else
@@ -830,8 +829,8 @@ function goblins.territory(pos, opt_data)
     end
     local t_name = territory_name
     local t_vol = volume_cat_pos
-  return t_name, t_vol
-  end
+    return t_name, t_vol
+    end
     local territories_table_ser = minetest.serialize(territories_table)
     goblins_db:set_string("territories", territories_table_ser )
     local t_name = territory_name

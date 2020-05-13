@@ -9,7 +9,7 @@ local function strip_escapes(input)
 end
 
 local function print_s(input)
- print(goblins.strip_escapes(input))
+  print(goblins.strip_escapes(input))
 end
 
 -- this table defines the goblins with how they differ from the goblin template.
@@ -291,6 +291,10 @@ local gob_types = {
     },
 
     do_custom = function(self)
+      if math.random() < 0.0001 then --vary rarely will attack and only if player looks like a threat
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -359,6 +363,10 @@ local gob_types = {
     },
 
     do_custom = function(self)
+      if math.random() < 0.00001 then  --may take a while to build courage
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -392,7 +400,6 @@ local gob_types = {
   },
   iron ={
     description = S("Ironpick Goblin"),
-    type = "monster",
     damage = 2,
     hp_min = 10,
     hp_max = 20,
@@ -428,6 +435,10 @@ local gob_types = {
     },
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -461,7 +472,6 @@ local gob_types = {
   },
   gold = {
     description = S("Goldshiv Goblin"),
-    type = "monster",
     damage = 3,
     hp_min = 10,
     hp_max = 30,
@@ -497,6 +507,10 @@ local gob_types = {
     },
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -530,7 +544,6 @@ local gob_types = {
   },
   diamond = {
     description = S("Diamondagger Goblin"),
-    type = "monster",
     damage = 3,
     hp_min = 20,
     hp_max = 30,
@@ -567,6 +580,10 @@ local gob_types = {
     follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -633,6 +650,10 @@ local gob_types = {
     },
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -720,7 +741,6 @@ local goblin_template = {  --your average goblin,
   lifetimer = 360,
   view_range = 10,
   stay_near = "group:stone",
-  owner = "",
   order = "follow",
 
   animation = {
@@ -765,6 +785,7 @@ local goblin_template = {  --your average goblin,
   },
   follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
   on_spawn = function(self)
+    self.aggro_wielded = {"sword","axe","bow","spear","knife"} -- some goblins are looking for a fight
     if not self.secret_name then
       self.secret_name = goblins.generate_name(gob_name_parts)
     end
@@ -783,7 +804,7 @@ local goblin_template = {  --your average goblin,
     --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
     goblins.announce_spawn(self)
-    print_s(S(dump(minetest.registered_items[self.name])))
+    --print_s(S(dump(minetest.registered_items[self.name])))
   end,
 
   --By default the Goblins are willing to trade,
@@ -854,6 +875,6 @@ local function ggn(gob_name_parts,rules)
 end
 
 print_s(S("This diversion is dedicated to the memory of @1 the @2, @3 the @4, and @5 the @6... May their hordes be mine!",
-ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"})))
+  ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"})))
 print_s(S("   --@1 of the @2 clan.",ggn(gob_name_parts),ggn(gob_name_parts,{"list_a","list_opt","-","list_b"})))
 
