@@ -3,7 +3,7 @@ goblins_db = minetest.get_mod_storage()
 goblins_db:set_string("goblins mod start time", os.date() )
 --set namespace for goblins functions
 goblins = {}
-goblins.version = "20200510"
+goblins.version = "20200514"
 
 -- Strips any kind of escape codes (translation, colors) from a string
 -- https://github.com/minetest/minetest/blob/53dd7819277c53954d1298dfffa5287c306db8d0/src/util/string.cpp#L777
