@@ -806,7 +806,20 @@ local goblin_template = {  --your average goblin,
     goblins.announce_spawn(self)
     --print_s(S(dump(minetest.registered_items[self.name])))
   end,
-
+  --[[ not quite yet
+  do_punch = function(self,hitter)
+   local pname = hitter:get_player_name()
+   
+   local t_rel = goblins.relations.trade(self, pname)
+   print("relations = "..dump(relations))
+   
+   if relations.trade > 10 then 
+      relations.trade = relations.trade - 10
+    else
+      relations.trade = 0
+    end
+  end,
+  --]]
   --By default the Goblins are willing to trade,
   --this can be overridden in the table for any goblin.
   on_rightclick = function(self,clicker)
