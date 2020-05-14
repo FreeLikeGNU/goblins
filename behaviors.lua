@@ -851,7 +851,7 @@ function goblins.relations_trade(self, player_name)
   local t_trade = 0
   -- initialize tables if necessary
   if not self["relations"] then self.relations = {initialized = os.time()} end
-  if not self.relations[pname] then goblins.reltions(self, pname) end
+  if not self.relations[pname] then goblins.relations(self, pname) end
   if not self.relations[pname]["trade"] then self.relations[pname]["trade"] = 0 end
   --be sure that relations have been started with player before using this!
   for m_name,prop in pairs(relations) do
