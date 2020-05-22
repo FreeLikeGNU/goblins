@@ -783,7 +783,11 @@ local goblin_template = {  --your average goblin,
     {name = "goblins:mushroom_goblin",
       chance = 2, min = 0, max = 5},
   },
-  follow = {"default:mese", "default:diamond", "default:gold_lump", "default:apple", "default:blueberries", "default:torch", "default:cactus", "default:stick"},
+  follow = {
+  "default:mese", "default:diamond", "default:gold_lump", "default:apple",
+  "default:blueberries", "default:torch", "default:cactus", "default:stick",
+  "flowers:mushroom_brown","flowers:mushroom_red"
+  },
   on_spawn = function(self)
     if not self.shrewdness then self.shrewdness = 20 end
     if not self.aggro_wielded then
@@ -818,7 +822,6 @@ local goblin_template = {  --your average goblin,
       relations = goblins.relations(self, pname)
    end
    --print(self.secret_name.." relations on click:\n"..dump(self.relations).."\n")
-   
    if relations.aggro  then 
       relations.aggro = relations.aggro + 1 * 2
       goblins.relations(self, pname, {aggro = relations.aggro} )
