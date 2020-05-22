@@ -3,7 +3,8 @@ goblins_db = minetest.get_mod_storage()
 goblins_db:set_string("goblins mod start time", os.date() )
 --set namespace for goblins functions
 goblins = {}
-goblins.version = "20200514"
+
+goblins.version = "20200521"
 
 -- Strips any kind of escape codes (translation, colors) from a string
 -- https://github.com/minetest/minetest/blob/53dd7819277c53954d1298dfffa5287c306db8d0/src/util/string.cpp#L777
@@ -31,6 +32,13 @@ function goblins.strip_escapes(input)
   end
   --print(("%q -> %q"):format(input, out))
   return out
+end
+local function strip_escapes(input)
+  goblins.strip_escapes(input)
+end
+
+local function print_s(input)
+  print(goblins.strip_escapes(input))
 end
 
 local S = minetest.get_translator("goblins")
@@ -80,18 +88,18 @@ dofile(path .. "/goblins.lua")
 dofile(path .. "/hunger.lua")
 
 minetest.log("action", "[MOD] goblins " ..goblins.version.. " is lowdings....")
-print("Please report issues at https://github.com/FreeLikeGNU/goblins/issues ")
+print_s(S("Please report issues at https://github.com/FreeLikeGNU/goblins/issues "))
 
 if mobs.version then
-  if tonumber(mobs.version) >= tonumber(20200430) then
-    print("Mobs Redo 20200430 or greater found!")
+  if tonumber(mobs.version) >= tonumber(20200516) then
+    print_s(S("Mobs Redo 20200516 or greater found!"))
   else
-    print("You may need a more recent version of Mobs Redo!")
-    print("https://notabug.org/TenPlus1/mobs_redo")
+    print_s(S("You should find a more recent version of Mobs Redo!"))
+    print_s(S("https://notabug.org/TenPlus1/mobs_redo"))
   end
 else
-  print("This mod requires Mobs Redo 20200430 or greater!")
-  print("https://notabug.org/TenPlus1/mobs_redo")
+  print_s(S("This mod requires Mobs Redo version 2020430 or greater!"))
+  print_s(S("https://notabug.org/TenPlus1/mobs_redo"))
 end
 
 

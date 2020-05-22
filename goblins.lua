@@ -9,7 +9,7 @@ local function strip_escapes(input)
 end
 
 local function print_s(input)
- print(goblins.strip_escapes(input))
+  print(goblins.strip_escapes(input))
 end
 
 -- this table defines the goblins with how they differ from the goblin template.
@@ -195,29 +195,29 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_steel",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_steel",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:axe_steel",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_mossycobble",
-        chance = 10, min = 1, max = 1},
+        chance = 10, min = 0, max = 1},
       {name = "default:mossycbble",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:axe_stone",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
     runaway_from = "player",
 
@@ -265,32 +265,36 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_steel",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_steel",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:axe_steel",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_mossycobble",
-        chance = 10, min = 1, max = 1},
+        chance = 10, min = 0, max = 1},
       {name = "default:mossycbble",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:axe_stone",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
+      if math.random() < 0.0001 then --vary rarely will attack and only if player looks like a threat
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -333,32 +337,36 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:axe_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_bronze",
-        chance = 10, min = 1, max = 1},
+        chance = 10, min = 0, max = 1},
       {name = "default:bronze_ingot",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:axe_bronze",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
+      if math.random() < 0.00001 then  --may take a while to build courage
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -392,7 +400,6 @@ local gob_types = {
   },
   iron ={
     description = S("Ironpick Goblin"),
-    type = "monster",
     damage = 2,
     hp_min = 10,
     hp_max = 20,
@@ -402,32 +409,36 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:axe_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_steel",
-        chance = 10, min = 1, max = 1},
+        chance = 10, min = 0, max = 1},
       {name = "default:steel_ingot",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:axe_steel",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -461,7 +472,6 @@ local gob_types = {
   },
   gold = {
     description = S("Goldshiv Goblin"),
-    type = "monster",
     damage = 3,
     hp_min = 10,
     hp_max = 30,
@@ -471,32 +481,36 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:axe_diamond",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_gold",
-        chance = 100, min = 1, max = 1},
+        chance = 100, min = 0, max = 1},
       {name = "default:gold_lump",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:pick_bronze",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -530,7 +544,6 @@ local gob_types = {
   },
   diamond = {
     description = S("Diamondagger Goblin"),
-    type = "monster",
     damage = 3,
     hp_min = 20,
     hp_max = 30,
@@ -540,33 +553,37 @@ local gob_types = {
     },
     drops = {
       {name = "default:pick_mese",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_mese",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:axe_mese",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_diamond",
-        chance = 100, min = 1, max = 1},
+        chance = 100, min = 0, max = 1},
       {name = "default:diamond",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:pick_bronze",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
     follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -609,30 +626,34 @@ local gob_types = {
     },
     drops = {
       {name = "default:meselamp",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:pick_mese",
-        chance = 1000, min = 1, max = 1},
+        chance = 1000, min = 0, max = 1},
       {name = "default:shovel_mese",
-        chance = 10, min = 1, max = 1},
+        chance = 10, min = 0, max = 1},
       {name = "default:mese_crystal",
-        chance = 7, min = 1, max = 1},
+        chance = 7, min = 0, max = 1},
       {name = "default:pick_bronze",
-        chance = 5, min = 1, max = 1},
+        chance = 5, min = 0, max = 1},
       {name = "default:torch",
-        chance = 4, min = 1, max = 10},
+        chance = 4, min = 0, max = 10},
       {name = "default:flint",
-        chance = 3, min = 1, max = 2},
+        chance = 3, min = 0, max = 2},
       {name = "default:mossycobble",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 1, max = 1},
+        chance = 3, min = 0, max = 1},
       {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 1, max = 3},
+        chance = 2, min = 0, max = 3},
       {name = "goblins:mushroom_goblin",
-        chance = 2, min = 1, max = 5},
+        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
+      if math.random() < 0.01 then
+        goblins.attack(self)
+        --print("looking for a reason to fight")
+      end
       goblins.search_replace(
         self,
         100, --search_rate
@@ -720,7 +741,6 @@ local goblin_template = {  --your average goblin,
   lifetimer = 360,
   view_range = 10,
   stay_near = "group:stone",
-  owner = "",
   order = "follow",
 
   animation = {
@@ -739,32 +759,36 @@ local goblin_template = {  --your average goblin,
   },
   drops = {
     {name = "default:pick_steel",
-      chance = 1000, min = 1, max = 1},
+      chance = 1000, min = 0, max = 1},
     {name = "default:shovel_steel",
-      chance = 1000, min = 1, max = 1},
+      chance = 1000, min = 0, max = 1},
     {name = "default:axe_steel",
-      chance = 1000, min = 1, max = 1},
+      chance = 1000, min = 0, max = 1},
     {name = "default:pick_mossycobble",
-      chance = 10, min = 1, max = 1},
+      chance = 10, min = 0, max = 1},
     {name = "default:mossycbble",
-      chance = 7, min = 1, max = 1},
+      chance = 7, min = 0, max = 1},
     {name = "default:axe_stone",
-      chance = 5, min = 1, max = 1},
+      chance = 5, min = 0, max = 1},
     {name = "default:torch",
-      chance = 4, min = 1, max = 10},
+      chance = 4, min = 0, max = 10},
     {name = "default:flint",
-      chance = 3, min = 1, max = 2},
+      chance = 3, min = 0, max = 2},
     {name = "default:mossycobble",
-      chance = 2, min = 1, max = 3},
+      chance = 2, min = 0, max = 3},
     {name = "goblins:goblins_goblin_bone_meaty",
-      chance = 3, min = 1, max = 1},
+      chance = 3, min = 0, max = 1},
     {name = "goblins:goblins_goblin_bone",
-      chance = 2, min = 1, max = 3},
+      chance = 2, min = 0, max = 3},
     {name = "goblins:mushroom_goblin",
-      chance = 2, min = 1, max = 5},
+      chance = 2, min = 0, max = 5},
   },
-  follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
+  follow = {"default:mese", "default:diamond", "default:gold_lump", "default:apple", "default:blueberries", "default:torch", "default:cactus", "default:stick"},
   on_spawn = function(self)
+    if not self.shrewdness then self.shrewdness = 20 end
+    if not self.aggro_wielded then
+      self.aggro_wielded= {"sword","axe","bow","spear","knife"}
+    end -- some goblins are looking for a fight
     if not self.secret_name then
       self.secret_name = goblins.generate_name(gob_name_parts)
     end
@@ -786,6 +810,22 @@ local goblin_template = {  --your average goblin,
     --print_s(S(dump(minetest.registered_items[self.name])))
   end,
 
+  do_punch = function(self,hitter)
+   local pname = hitter:get_player_name()
+   local relations = goblins.relations(self, pname)
+   if not relations.aggro then
+      goblins.relations(self, pname, {aggro = 0})
+      relations = goblins.relations(self, pname)
+   end
+   --print(self.secret_name.." relations on click:\n"..dump(self.relations).."\n")
+   
+   if relations.aggro  then 
+      relations.aggro = relations.aggro + 1 * 2
+      goblins.relations(self, pname, {aggro = relations.aggro} )
+   else
+   end
+  end,
+
   --By default the Goblins are willing to trade,
   --this can be overridden in the table for any goblin.
   on_rightclick = function(self,clicker)
@@ -794,6 +834,7 @@ local goblin_template = {  --your average goblin,
 
     if not relations.trade then
       goblins.relations(self, pname, {trade = 0})
+      relations = goblins.relations(self, pname)
     end
     goblins.special_gifts(self)
     --print(self.secret_name.." relations on click:\n"..dump(self.relations).."\n")
@@ -854,6 +895,6 @@ local function ggn(gob_name_parts,rules)
 end
 
 print_s(S("This diversion is dedicated to the memory of @1 the @2, @3 the @4, and @5 the @6... May their hordes be mine!",
-ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"})))
+  ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"})))
 print_s(S("   --@1 of the @2 clan.",ggn(gob_name_parts),ggn(gob_name_parts,{"list_a","list_opt","-","list_b"})))
 

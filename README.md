@@ -10,7 +10,9 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
 * Gobdogs will roam caves, bury bones and other items in soft terrain, eat meats. Some Gobdogs are aggressive!
 * Basic trading with Goblins - the more you trade with a goblin, the more likely you will get things in return! 
 * Goblins have a territorial framework for location based interactions, if you trade with more Goblins of a territory
-  your trades will be easier!
+  your trades will be easier! 
+* Harming goblins will negatively affect your trade with all gobins in a territory!  
+* If you brandish weapons (including axes) around a goblin it may decide to attack!
 
 * tested with Mintest 5.30(dev)
 
