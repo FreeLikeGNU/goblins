@@ -790,7 +790,7 @@ local goblin_template = {  --your average goblin,
   },
   on_spawn = function(self)
     self.groups = {"goblin"}
-    self.groups_defend = {"goblin","gobdog"}
+    self.groups_defend = {"goblin","gobdog","goblin_friend"}
     if not self.shrewdness then self.shrewdness = 20 end
     if not self.aggro_wielded then
       self.aggro_wielded= {"sword","axe","bow","spear","knife"}

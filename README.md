@@ -13,6 +13,14 @@ This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn ne
   your trades will be easier! 
 * Harming goblins will negatively affect your trade with all gobins in a territory!  
 * If you brandish weapons (including axes) around a goblin it may decide to attack!
+* Goblins and Gobdogs will defend each other.  You can have them defend other mobs by simply
+adding to: 
+`on_spawn = function(self)`
+the following:
+`self.groups = {"goblin_friend", "gobdog_friend"}`
+in your own mobs definition!
+
+
 
 * tested with Mintest 5.30(dev)
 

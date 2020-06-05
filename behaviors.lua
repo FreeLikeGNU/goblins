@@ -105,6 +105,7 @@ function goblins.attack(self, target, type)
         --print("- pla", n)
       else
         if debug_goblins_attack then print_s(S("attackable player, @1 holding @2",pname,wielded)) end
+        --lets check if our friends in a fight!
         for n = 1, #objs do
           local ent_other = objs[n]:get_luaentity()
           if ent_other and ent_other.groups and self.groups_defend then
@@ -117,8 +118,6 @@ function goblins.attack(self, target, type)
             end
           end
         end
-        
-        
         if aggro_wielded and match_item_list(wielded, aggro_wielded)
         then
           if debug_goblins_attack then print_s(S("*** aggro triggered by @1 at @2 !!  ***",wielded,minetest.pos_to_string(pos))) end

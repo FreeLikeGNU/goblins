@@ -115,7 +115,7 @@ local gobdog_template = {
       max_hear_distance =30
     })
     self.groups = {"gobdog", "goblin"}
-    self.groups_defend = {"goblin", "gobdog"}
+    self.groups_defend = {"goblin","gobdog","gobdog_friend"}
     if not self.secret_name then
       local name_rules = {"list_a", "list_opt"}
       self.secret_name = goblins.generate_name(gob_name_parts, name_rules)
