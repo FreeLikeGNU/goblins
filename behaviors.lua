@@ -41,8 +41,9 @@ local function match_item_list(item, list)
   end
 end
 
----Goblins will become aggro at range
--- attack code reused from Mobs Redo by TenPlus1
+---Goblins will become aggro at range due to
+-- wielded weapon, player aggression, defending defined mob groups
+-- some attack code reused from Mobs Redo by TenPlus1
 function goblins.attack(self, target, type)
   if self.state == "runaway"
     or self.state == "attack"
@@ -104,6 +105,20 @@ function goblins.attack(self, target, type)
         --print("- pla", n)
       else
         if debug_goblins_attack then print_s(S("attackable player, @1 holding @2",pname,wielded)) end
+        for n = 1, #objs do
+          local ent_other = objs[n]:get_luaentity()
+          if ent_other and ent_other.groups and self.groups_defend then
+            for k,v in pairs(self.groups_defend) do
+              if match_item_list(v, ent_other.groups) and ent_other.state == "attack" then
+                if debug_goblins_attack then print_s( S("      ****Defending group @1! from @2",v,pname)) end
+                self.state = "attack"
+                self.attack = ent_other.attack
+              end
+            end
+          end
+        end
+        
+        
         if aggro_wielded and match_item_list(wielded, aggro_wielded)
         then
           if debug_goblins_attack then print_s(S("*** aggro triggered by @1 at @2 !!  ***",wielded,minetest.pos_to_string(pos))) end
@@ -547,6 +562,10 @@ end
 
 function goblins.goblin_dog_behaviors(self)
   local pos = self.object:getpos()
+  if math.random() < 0.1 then
+    goblins.attack(self)
+    --print("looking for a reason to fight")
+  end
   if mobs_griefing and not minetest.is_protected(pos, "") then
     if math.random() < 0.5 then
       --consume meaty bones"

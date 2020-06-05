@@ -1,7 +1,7 @@
-local announce_spawning = true
+local announce_spawning = false
 local debug_goblins_relations = false
 local debug_goblins_secret = false
-local debug_goblins_territories = true
+local debug_goblins_territories = false
 local debug_goblins_territory_relations = false
 local debug_goblins_trade_relations = false
 
