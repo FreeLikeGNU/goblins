@@ -193,32 +193,7 @@ local gob_types = {
       {"goblins_mushroom_brown.png","goblins_goblin_cobble1.png"},
       {"goblins_mushroom_brown.png","goblins_goblin_cobble2.png"},
     },
-    drops = {
-      {name = "default:pick_steel",
-        chance = 1000, min = 0, max = 1},
-      {name = "default:shovel_steel",
-        chance = 1000, min = 0, max = 1},
-      {name = "default:axe_steel",
-        chance = 1000, min = 0, max = 1},
-      {name = "default:pick_mossycobble",
-        chance = 10, min = 0, max = 1},
-      {name = "default:mossycbble",
-        chance = 7, min = 0, max = 1},
-      {name = "default:axe_stone",
-        chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
-    },
+
     runaway_from = "player",
 
     do_custom = function(self)
@@ -262,32 +237,6 @@ local gob_types = {
     textures = {
       {"default_tool_stonepick.png","goblins_goblin_coal1.png"},
       {"default_tool_stonepick.png","goblins_goblin_coal2.png"},
-    },
-    drops = {
-      {name = "default:pick_steel",
-        chance = 1000, min = 0, max = 1},
-      {name = "default:shovel_steel",
-        chance = 1000, min = 0, max = 1},
-      {name = "default:axe_steel",
-        chance = 1000, min = 0, max = 1},
-      {name = "default:pick_mossycobble",
-        chance = 10, min = 0, max = 1},
-      {name = "default:mossycbble",
-        chance = 7, min = 0, max = 1},
-      {name = "default:axe_stone",
-        chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
@@ -348,18 +297,7 @@ local gob_types = {
         chance = 7, min = 0, max = 1},
       {name = "default:axe_bronze",
         chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
+
     },
 
     do_custom = function(self)
@@ -420,18 +358,6 @@ local gob_types = {
         chance = 7, min = 0, max = 1},
       {name = "default:axe_steel",
         chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
@@ -492,18 +418,6 @@ local gob_types = {
         chance = 7, min = 0, max = 1},
       {name = "default:pick_bronze",
         chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
@@ -564,18 +478,6 @@ local gob_types = {
         chance = 7, min = 0, max = 1},
       {name = "default:pick_bronze",
         chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
     },
     follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
 
@@ -635,18 +537,6 @@ local gob_types = {
         chance = 7, min = 0, max = 1},
       {name = "default:pick_bronze",
         chance = 5, min = 0, max = 1},
-      {name = "default:torch",
-        chance = 4, min = 0, max = 10},
-      {name = "default:flint",
-        chance = 3, min = 0, max = 2},
-      {name = "default:mossycobble",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:goblins_goblin_bone_meaty",
-        chance = 3, min = 0, max = 1},
-      {name = "goblins:goblins_goblin_bone",
-        chance = 2, min = 0, max = 3},
-      {name = "goblins:mushroom_goblin",
-        chance = 2, min = 0, max = 5},
     },
 
     do_custom = function(self)
@@ -691,8 +581,24 @@ local gob_types = {
 mobs:alias_mob("goblins:goblin_king", "goblins:goblin_hoarder")
 
 ----------------------------------
---DEFAULT GOBLIN TEMPLATE
+--DEFAULT GOBLIN TEMPLATES
 ----------------------------------
+
+-- these are drops all goblins will have
+local gob_drops = {
+  {name = "default:torch",
+    chance = 4, min = 0, max = 10},
+  {name = "default:flint",
+    chance = 3, min = 0, max = 2},
+  {name = "default:mossycobble",
+    chance = 3, min = 0, max = 3},
+  {name = "goblins:goblins_goblin_bone_meaty",
+    chance = 3, min = 0, max = 1},
+  {name = "goblins:goblins_goblin_bone",
+    chance = 2, min = 0, max = 3},
+  {name = "goblins:mushroom_goblin",
+    chance = 2, min = 0, max = 5},
+}
 
 local goblin_template = {  --your average goblin,
   description = "Basic Goblin",
@@ -766,22 +672,8 @@ local goblin_template = {  --your average goblin,
       chance = 1000, min = 0, max = 1},
     {name = "default:pick_mossycobble",
       chance = 10, min = 0, max = 1},
-    {name = "default:mossycbble",
-      chance = 7, min = 0, max = 1},
     {name = "default:axe_stone",
       chance = 5, min = 0, max = 1},
-    {name = "default:torch",
-      chance = 4, min = 0, max = 10},
-    {name = "default:flint",
-      chance = 3, min = 0, max = 2},
-    {name = "default:mossycobble",
-      chance = 2, min = 0, max = 3},
-    {name = "goblins:goblins_goblin_bone_meaty",
-      chance = 3, min = 0, max = 1},
-    {name = "goblins:goblins_goblin_bone",
-      chance = 2, min = 0, max = 3},
-    {name = "goblins:mushroom_goblin",
-      chance = 2, min = 0, max = 5},
   },
   follow = {
   "default:mese", "default:diamond", "default:gold_lump", "default:apple",
@@ -812,6 +704,17 @@ local goblin_template = {  --your average goblin,
     else
     --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
+
+    local drop_list = {}
+    if not self.drops_set then
+      drop_list = table.copy(self.drops)
+      for _,v in ipairs(gob_drops) do
+          table.insert(drop_list,v)
+      end
+      self.drops = drop_list
+      self.drops_set = true
+    end
+    --print_s(S(self.secret_name.." has "..dump(self.drops)))
     goblins.announce_spawn(self)
     --print_s(S(dump(minetest.registered_items[self.name])))
   end,

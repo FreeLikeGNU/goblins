@@ -94,10 +94,12 @@ function goblins.attack(self, target, type)
       end
       -- if player invisible or mob not setup to attack then remove from list
       local wielded = objs[n]:get_wielded_item():to_string()
+      --print(self.secret_name.." is loyal to " ..self.owner)
       if debug_goblins_attack then print_s( S("player has @1 in hand",dump(objs[n]:get_wielded_item():to_string())))end
       if self.attack_players == false
         or relations_adj >= 100
         or not self.owner == pname
+        --or not self.tamed
         or mobs.invis[pname]
         or self.specific_attack == "player" then
         if debug_goblins_attack then print_s(S("found exempt player with score of @1 holding @2",relations_adj,dump(objs[n]:get_wielded_item():to_string()))) end
@@ -112,6 +114,13 @@ function goblins.attack(self, target, type)
             for k,v in pairs(self.groups_defend) do
               if match_item_list(v, ent_other.groups) and ent_other.state == "attack" then
                 if debug_goblins_attack then print_s( S("      ****Defending group @1! from @2",v,pname)) end
+                minetest.sound_play("goblins_goblin_war_cry", {
+                  pos = pos,
+                  gain = 1.0,
+                  max_hear_distance = self.sounds.distance or 10
+                })
+                self:set_animation("run")
+                self:set_velocity(self.run_velocity)
                 self.state = "attack"
                 self.attack = ent_other.attack
               end
@@ -121,6 +130,11 @@ function goblins.attack(self, target, type)
         if aggro_wielded and match_item_list(wielded, aggro_wielded)
         then
           if debug_goblins_attack then print_s(S("*** aggro triggered by @1 at @2 !!  ***",wielded,minetest.pos_to_string(pos))) end
+          minetest.sound_play("goblins_goblin_war_cry", {
+            pos = pos,
+            gain = 1.0,
+            max_hear_distance = self.sounds.distance or 10
+          })
           self:set_animation("run")
           self:set_velocity(self.run_velocity)
           self.state = "attack"
@@ -313,6 +327,7 @@ function goblins.give_gift(self,clicker)
       if debug_goblins_trade == true then print_s("You did not offer " .. dump(string.split(v,":")[2]) ) end
     end
   end
+  local pos = self.object:getpos()
   minetest.sound_play("goblins_goblin_damage", {
     pos = pos,
     gain = 0.2,
@@ -557,7 +572,6 @@ function goblins.tunneling(self, type)
     end
   end
 end
-
 
 function goblins.goblin_dog_behaviors(self)
   local pos = self.object:getpos()
