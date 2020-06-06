@@ -1,16 +1,22 @@
 
-local debug_goblins_attack = false
-local debug_goblins_find = false
-local debug_goblins_replace = false
-local debug_goblins_replace2 = false
-local debug_goblins_search = false
-local debug_goblins_tunneling = false
-local debug_goblins_trade = false
+local debug_goblins_attack = minetest.settings:get_bool("debug_goblins_attack") or false
+local debug_goblins_find = minetest.settings:get_bool("debug_goblins_find") or false
+local debug_goblins_replace = minetest.settings:get_bool("debug_goblins_replace") or false
+local debug_goblins_replace2 = minetest.settings:get_bool("debug_goblins_replace2") or false
+local debug_goblins_search = minetest.settings:get_bool("debug_goblins_search") or false
+local debug_goblins_tunneling = minetest.settings:get_bool("debug_goblins_tunneling") or false
+local debug_goblins_trade = minetest.settings:get_bool("debug_goblins_trade") or false
 
-local goblin_node_protect_strict = true
 --@trade_shrewdness increases trade difficulty
-local trade_shrewdness = tonumber(minetest.settings:get("trade_shrewdness") or 20)
+local goblins_trade_shrewdness = tonumber(minetest.settings:get("goblins_trade_shrewdness")) or 20
+
+--@aggro_on_wield will goblins attack when a weapon is wielded?
+local goblins_aggro_on_wield = minetest.settings:get_bool("goblins_aggro_on_wield") ~= false
+--@goblins_defend_groups will goblins and gobdogs defend other mobs?
+local goblins_defend_groups = minetest.settings:get_bool("goblins_defend_groups") ~= false
+
 local mobs_griefing = minetest.settings:get_bool("mobs_griefing") ~= false
+local goblins_node_protect_strict = minetest.settings:get_bool("goblins_node_protect_strict") ~= false
 local peaceful_only = minetest.settings:get_bool("only_peaceful_mobs")
 
 local S = minetest.get_translator("goblins")
@@ -57,7 +63,11 @@ function goblins.attack(self, target, type)
   local pos = vector.round(self.object:getpos())
   local s = self.object:get_pos()
   local objs = minetest.get_objects_inside_radius(s, self.view_range)
-  local aggro_wielded = self.aggro_wielded
+  local aggro_wielded = {}
+  if goblins_aggro_on_wield then
+    aggro_wielded = self.aggro_wielded
+  end
+  local defend_groups = goblins_defend_groups
   --print_s(S(dump(aggro_wielded)))
   -- remove entities we aren't interested in
   for n = 1, #objs do
@@ -110,7 +120,7 @@ function goblins.attack(self, target, type)
         --lets check if our friends in a fight!
         for n = 1, #objs do
           local ent_other = objs[n]:get_luaentity()
-          if ent_other and ent_other.groups and self.groups_defend then
+          if defend_groups and ent_other and ent_other.groups and self.groups_defend then
             for k,v in pairs(self.groups_defend) do
               if match_item_list(v, ent_other.groups) and ent_other.state == "attack" then
                 if debug_goblins_attack then print_s( S("      ****Defending group @1! from @2",v,pname)) end
@@ -194,7 +204,7 @@ function goblins.special_gifts(self, pname, drop_chance, max_drops)
   end
 end
 
----grab the score for a territory 
+---grab the score for a territory
 --@rel_names are a table of relations to reference
 local function get_scores(self,player_name,rel_names)
   local t_scores = {}
@@ -248,6 +258,7 @@ function goblins.give_gift(self,clicker)
   local pname = clicker:get_player_name()
   local name_told = goblins.secret_name(self, pname)
   local territory_told = goblins.secret_territory(self, pname)
+  local trade_shrewdness = goblins_trade_shrewdness
   --establish trade if its not set
   if not self.relations[pname] then
     goblins.relations(self, pname, {trade = 0})
@@ -259,10 +270,9 @@ function goblins.give_gift(self,clicker)
   if debug_goblins_trade then print_s("you offer: " ..dump(gift)) end
   for k,v in pairs(self.follow) do
     if v == gift then
-      local gift_value = 10  --higher number is less wanted gift, otherwise 10
-      gift_value = k
+      local gift_value = k or 5  --higher number is less wanted gift, otherwise 10
       gift_accepted = true
-      if debug_goblins_trade then print_s(self.name.. " accepts " .. dump(gift)) end
+      if debug_goblins_trade then print_s(S("@1 accepts @2 (@3)",self.name,dump(gift),k)) end
       --increase trade rating on gifting - first item in follow list is worth more
       srp_trade = srp_trade + math.ceil(5/k)
       if gift == self.follow[1] then
@@ -272,7 +282,7 @@ function goblins.give_gift(self,clicker)
       goblins.relations(self, pname,{trade = srp_trade})
       if debug_goblins_trade then print_s("this goblins trade rating is now = " ..dump(srp_trade)) end
       local gr_trade = trade_score(self, pname)
-      if debug_goblins_trade then print_s("Goblin relations for territory is = "..dump(gr_trade)) end
+      if debug_goblins_trade then print_s("Goblin adjusted (trade - aggro) relations for territory is = "..dump(gr_trade)) end
       if not minetest.settings:get_bool("creative_mode") then
         item:take_item()
         clicker:set_wielded_item(item)
@@ -402,7 +412,7 @@ function goblins.search_replace(
       end
       for key,value in pairs(nodelist) do
         -- ok we see some nodes around us, are we going to replace them?
-        if minetest.is_protected(value.pos, "")  and goblin_node_protect_strict then break end
+        if minetest.is_protected(value.pos, "") and goblins_node_protect_strict then break end
         if math.random(1, replace_rate) == 1 then
           if replace_rate_secondary and
             math.random(1, replace_rate_secondary) == 1 then
@@ -443,12 +453,12 @@ end
 --[[
 "He destroys everything diggable in his path. It's too much trouble
 to fudge around with particulars. Besides, I don't want them to
-mine for me." 
+mine for me."
       --From the tome __Of Goblinkind__ by duane-r
-  
- "The domain of stone is the Goblins home, 
+
+ "The domain of stone is the Goblins home,
   by metals might one thwart them from invasion."
-      --Epithet from __The Luanacy of Goblins__ by Persont Bachslachdi   
+      --Epithet from __The Luanacy of Goblins__ by Persont Bachslachdi
 --]]
 
 --the following is built from duane-r's goblin tunnel digging:
@@ -490,7 +500,7 @@ function goblins.tunneling(self, type)
       if #np_list > 0 then
         -- Dig it.
         for _, np in pairs(np_list) do
-          if minetest.is_protected(np.pos, "")  and goblin_node_protect_strict then break end
+          if minetest.is_protected(np.pos, "")  and goblins_node_protect_strict then break end
           if np.name ~= "default:mossycobble" and np.name ~= "default:chest" then
             minetest.remove_node(np)
             minetest.sound_play(self.sounds.replace, {
@@ -511,7 +521,7 @@ function goblins.tunneling(self, type)
 
     elseif self.state == "room" then  -- Dig a room.
       --[[first make sure player is not near by! (not quite ready yet)
-          goblins.must_hide = function() 
+          goblins.must_hide = function()
           end --]]
       if not self.room_radius then
         self.room_radius = 1
@@ -542,7 +552,7 @@ function goblins.tunneling(self, type)
       end
 
       if #np_list > 0 then -- dig it
-        if goblin_node_protect_strict then break end
+        if goblins_node_protect_strict then break end
         minetest.remove_node(np_list[math.random(#np_list)])
         minetest.sound_play(self.sounds.replace, {
           object = self.object, gain = self.sounds.gain,

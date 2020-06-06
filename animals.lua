@@ -59,6 +59,7 @@ local gobdog_template = {
   fear_height = 4,
   floats = 1,
   glow = 3,
+  pathfinding = 1,
   stay_near = {
     "group:water", 20,
     "group:sand", 20,

@@ -1,9 +1,11 @@
-local announce_spawning = false
-local debug_goblins_relations = false
-local debug_goblins_secret = false
-local debug_goblins_territories = false
-local debug_goblins_territory_relations = false
-local debug_goblins_trade_relations = false
+local debug_goblins_announce_spawning = minetest.settings:get_bool("debug_goblins_announce_spawning") or false
+local debug_goblins_relations = minetest.settings:get_bool("debug_goblins_relations") or false
+local debug_goblins_secret = minetest.settings:get_bool("debug_goblins_secret") or false
+local debug_goblins_territories = minetest.settings:get_bool("debug_goblins_territories") or false
+local debug_goblins_territory_relations = minetest.settings:get_bool("debug_goblins_territory_relations") or false
+local debug_goblins_trade_relations = minetest.settings:get_bool("debug_goblins_trade_relations") or false
+
+local announce_spawning = debug_goblins_announce_spawning
 
 local S = minetest.get_translator("goblins")
 local function strip_escapes(input)
@@ -383,12 +385,13 @@ function goblins.relations_territory(self, player_name, rel_name)
   if not self.relations[pname] then goblins.relations(self, pname) end
   if not self.relations[pname][rel_name] then self.relations[pname][rel_name] = 0 end
   --be sure that relations have been started with player before using this!
+  if debug_goblins_trade_relations then print_s(S("Individual mob trade relations: ")) end
   for m_name,prop in pairs(relations) do
     if self.secret_territory.name == relations[m_name][m_name] and
       relations[m_name][pname] and relations[m_name][pname][rel_name] then
       --add up the trade relations between the player and all goblins in this goblins territory
       t_relation = t_relation + relations[m_name][pname][rel_name]
-      if debug_goblins_trade_relations then print_s(m_name.." = "..relations[m_name][pname][rel_name])end
+      if debug_goblins_trade_relations then print_s(S("@1 = @2",m_name,relations[m_name][pname][rel_name]))end
     end
   end
   if debug_goblins_territory_relations then
