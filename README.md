@@ -21,7 +21,7 @@ the following:
 in your own mobs definition!
 * There are many settings now accessible from the minetest menu -> "settings" tab -> "all settings" -> "mods" -> "goblins" list!
 these can also be defined in the settingtypes.txt
-* tested with Mintest 5.30(dev)
+* tested with Minetest 5.2 and 5.30(dev)
 
 ## Required Mods:
 * Mobs Redo by TenPlus1 API as of version 20200411: to run

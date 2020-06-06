@@ -138,7 +138,7 @@ local gob_types = {
     hp_min = 5,
     hp_max = 10,
     textures = {
-      "default_stick.png", "goblins_goblin_digger.png",
+      "default_stick.png", "goblins_goblin_snuffer.png",
     },
     stay_near = "group:torch",
     runaway_from = "player",
@@ -190,8 +190,8 @@ local gob_types = {
       distance = 15
     },
     textures = {
-      {"goblins_mushroom_brown.png","goblins_goblin_cobble1.png"},
-      {"goblins_mushroom_brown.png","goblins_goblin_cobble2.png"},
+      {"goblins_mushroom_brown.png","goblins_goblin_fungler1.png"},
+      {"goblins_mushroom_brown.png","goblins_goblin_fungler2.png"},
     },
 
     runaway_from = "player",
