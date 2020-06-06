@@ -19,9 +19,8 @@ adding to:
 the following:
 `self.groups = {"goblin_friend", "gobdog_friend"}`
 in your own mobs definition!
-
-
-
+* There are many settings now accessible from the minetest menu -> "settings" tab -> "all settings" -> "mods" -> "goblins" list!
+these can also be defined in the settingtypes.txt
 * tested with Mintest 5.30(dev)
 
 ## Required Mods:
