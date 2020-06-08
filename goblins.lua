@@ -12,6 +12,9 @@ local function print_s(input)
   print(goblins.strip_escapes(input))
 end
 
+-- you can use the goblins
+local goblins_spawning = goblins.spawning
+
 -- this table defines the goblins with how they differ from the goblin template.
 local gob_types = {
   digger = {
@@ -65,19 +68,7 @@ local gob_types = {
       else
       end
     end,
-    spawning = {
-      nodes = {"group:stone"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 30,
-      chance = 1000,
-      active_object_count = 2,
-      min_height = -31000,
-      max_height = -15,
-      day_toggle = nil,
-      on_spawn = nil,
-    }
+    spawning = goblins_spawning.digger
   },
   cobble = {
     description = S("Cobblemoss Goblin"),
@@ -117,19 +108,7 @@ local gob_types = {
         "goblins:mossycobble_trap" --replace_with_secondary
       )
     end,
-    spawning = {
-      nodes = {"group:stone"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 30,
-      chance = 1000,
-      active_object_count = 2,
-      min_height = -31000,
-      max_height = -15,
-      day_toggle = nil,
-      on_spawn = nil,
-    }
+    spawning = goblins_spawning.cobble
   },
   snuffer = {
     description = S("Snuffer Goblin"),
@@ -160,19 +139,7 @@ local gob_types = {
       )
     end,
 
-    spawning = {
-      nodes = {"default:mossycobble"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 30,
-      chance = 1000,
-      active_object_count = 2,
-      min_height = -31000,
-      max_height = -15,
-      day_toggle = nil,
-      on_spawn = nil,
-    }
+    spawning = goblins_spawning.snuffer
   },
   fungiler = {
     description = S("Goblin Fungiler"),
@@ -215,19 +182,7 @@ local gob_types = {
       )
     end,
 
-    spawning = {
-      nodes = {"default:mossycobble"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 30,
-      chance = 1500,
-      active_object_count = 1,
-      min_height = -31000,
-      max_height = -15,
-      day_toggle = nil,
-      on_spawn = nil,
-    }
+    spawning = goblins_spawning.fungiler
   },
   coal = {
     description = S("Coalbreath Goblin"),
@@ -261,19 +216,7 @@ local gob_types = {
         "goblins:stone_with_coal_trap" --replace_with_secondary
       )
     end,
-    spawning = {
-      nodes = {"default:stone_with_coal", "default:mossycobble"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 20,
-      chance = 500,
-      active_object_count = 3,
-      min_height = -31000,
-      max_height = -25,
-      day_toggle = nil,
-      on_spawn = nil,
-    },
+    spawning = goblins_spawning.coal
   },
   copper = {
     description = S("Coppertooth Goblin"),
@@ -322,19 +265,7 @@ local gob_types = {
         "goblins:stone_with_copper_trap" --replace_with_secondary
       )
     end,
-    spawning = {
-      nodes = {"default:stone_with_copper", "default:mossycobble", "default:blueberries"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 30,
-      chance = 500,
-      active_object_count = 2,
-      min_height = -31000,
-      max_height = -35,
-      day_toggle = nil,
-      on_spawn = nil,
-    },
+    spawning = goblins_spawning.copper
   },
   iron ={
     description = S("Ironpick Goblin"),
@@ -382,19 +313,7 @@ local gob_types = {
         "goblins:stone_with_iron_trap" --replace_with_secondary
       )
     end,
-    spawning = {
-      nodes = {"default:stone_with_iron", "default:mossycobble"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 20,
-      chance = 500,
-      active_object_count = 3,
-      min_height = -31000,
-      max_height = -35,
-      day_toggle = nil,
-      on_spawn = nil,
-    },
+    spawning = goblins_spawning.iron
   },
   gold = {
     description = S("Goldshiv Goblin"),
@@ -442,19 +361,7 @@ local gob_types = {
         "goblins:stone_with_gold_trap" --replace_with_secondary
       )
     end,
-    spawning = {
-      nodes = {"default:stone_with_gold", "default:mossycobble"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 30,
-      chance = 500,
-      active_object_count = 2,
-      min_height = -31000,
-      max_height = -100,
-      day_toggle = nil,
-      on_spawn = nil,
-    },
+    spawning = goblins_spawning.gold
   },
   diamond = {
     description = S("Diamondagger Goblin"),
@@ -503,19 +410,7 @@ local gob_types = {
         "goblins:stone_with_diamond_trap" --replace_with_secondary
       )
     end,
-    spawning = {
-      nodes = {"default:stone_with_diamond", "default:mossycobble"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 60,
-      chance = 1000,
-      active_object_count = 2,
-      min_height = -31000,
-      max_height = -200,
-      day_toggle = nil,
-      on_spawn = nil,
-    },
+    spawning = goblins_spawning.diamond
   },
   hoarder = {
     description = S("Goblin Hoarder"),
@@ -561,19 +456,7 @@ local gob_types = {
       )
     end,
 
-    spawning = {
-      nodes = {"default:mossycobble","default:chest"},
-      neighbors = "air",
-      min_light = 0,
-      max_light = 10,
-      interval = 90,
-      chance = 2000,
-      active_object_count = 1,
-      min_height = -31000,
-      max_height = -20,
-      day_toggle = nil,
-      on_spawn = nil,
-    },
+    spawning = goblins_spawning.hoarder
   },
 }
 

@@ -4,7 +4,7 @@ goblins_db:set_string("goblins mod start time", os.date() )
 --set namespace for goblins functions
 goblins = {}
 
-goblins.version = "20200606"
+goblins.version = "20200608"
 
 -- Strips any kind of escape codes (translation, colors) from a string
 -- https://github.com/minetest/minetest/blob/53dd7819277c53954d1298dfffa5287c306db8d0/src/util/string.cpp#L777
@@ -72,6 +72,7 @@ dofile(path .. "/nodes.lua")
 dofile(path .. "/items.lua")
 dofile(path .. "/soundsets.lua")
 dofile(path .. "/behaviors.lua")
+dofile(path .. "/goblins_spawning.lua")
 dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
 dofile(path .. "/hunger.lua")

@@ -1,5 +1,5 @@
 local gob_name_parts = goblins.gob_name_parts
-
+local goblins_spawning = goblins.spawning
 local gobdog_types = {
   gobdog = {
     owner_loyal = true,
@@ -18,17 +18,7 @@ local gobdog_types = {
     attack_monsters = false,
     attack_players = true,
 
-    spawning = {
-      nodes = {"default:mossycobble", "group:sand"},
-      min_light = 0,
-      max_light = 6,
-      chance = 500,
-      active_object_count = 1,
-      min_height = -31000,
-      max_height = -100,
-      day_toggle = nil,
-      on_spawn = nil,
-    }
+    spawning = goblins_spawning.gobdog_aggro
   },
 }
 -------------
@@ -144,17 +134,7 @@ local gobdog_template = {
     goblins.goblin_dog_behaviors(self)
   end,
 
-  spawning = {
-    nodes = {"default:mossycobble", "group:sand"},
-    min_light = 0,
-    max_light = 14,
-    chance = 500,
-    active_object_count = 4,
-    min_height = -31000,
-    max_height = -20,
-    day_toggle = nil,
-    on_spawn = nil,
-  },
+  spawning = goblins_spawning.gobdog
 }
 
 ------------------------

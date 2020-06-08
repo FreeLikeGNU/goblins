@@ -47,6 +47,14 @@ local function match_item_list(item, list)
   end
 end
 
+local function match_only_list(item, list)
+  for k,v in pairs(list) do
+    if item == v then
+      return v
+    end
+  end
+end
+
 ---Goblins will become aggro at range due to
 -- wielded weapon, player aggression, defending defined mob groups
 -- some attack code reused from Mobs Redo by TenPlus1
@@ -117,22 +125,26 @@ function goblins.attack(self, target, type)
         --print("- pla", n)
       else
         if debug_goblins_attack then print_s(S("attackable player, @1 holding @2",pname,wielded)) end
-        --lets check if our friends in a fight!
+        --lets check if our friends in a fight with the player!
         for n = 1, #objs do
           local ent_other = objs[n]:get_luaentity()
           if defend_groups and ent_other and ent_other.groups and self.groups_defend then
             for k,v in pairs(self.groups_defend) do
-              if match_item_list(v, ent_other.groups) and ent_other.state == "attack" then
-                if debug_goblins_attack then print_s( S("      ****Defending group @1! from @2",v,pname)) end
-                minetest.sound_play("goblins_goblin_war_cry", {
-                  pos = pos,
-                  gain = 1.0,
-                  max_hear_distance = self.sounds.distance or 10
-                })
-                self:set_animation("run")
-                self:set_velocity(self.run_velocity)
-                self.state = "attack"
-                self.attack = ent_other.attack
+              if match_only_list(v, ent_other.groups) and
+                  ent_other.state == "attack" and
+                  ent_other.attack:is_player() and
+                  ent_other.attack:get_player_name() == pname then
+                    local xname = ent_other.attack:get_player_name()
+                    if debug_goblins_attack then print_s( S("      ****Defending @1 from @2!",v,xname)) end
+                    minetest.sound_play("goblins_goblin_war_cry", {
+                      pos = pos,
+                      gain = 1.0,
+                      max_hear_distance = self.sounds.distance or 10
+                    })
+                    self:set_animation("run")
+                    self:set_velocity(self.run_velocity)
+                    self.state = "attack"
+                    self.attack = ent_other.attack
               end
             end
           end
