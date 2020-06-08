@@ -70,12 +70,10 @@ function goblins.generate_name(name_parts, rules)
   --print_s(name_a)
   if r_parts.list_opt and math.random() <= 0.5 then r_parts.list_opt = "" end
   --print_s(r_parts.list_a..r_parts.list_b..r_parts.list_opt)
-
   if rules then
     --print_s(dump(rules))
     local gen_name = ""
     for i, v in ipairs(rules) do
-
       if v == "-" then
         gen_name = gen_name.."-"
       elseif v == "\'" then
@@ -88,10 +86,32 @@ function goblins.generate_name(name_parts, rules)
     --print_s(dump(generated_name))
     return generated_name
   else
-
     generated_name = r_parts.list_a..r_parts.list_b..r_parts.list_opt
     return generated_name
   end
+end
+
+local function territory_list_update(player_name, territory_name)
+  local known_territories = {}
+  local recorded = false
+  local player = minetest.get_player_by_name(player_name)
+  local meta = player:get_meta()
+  known_territories = minetest.deserialize(meta:get_string("territory_list"))
+  if known_territories then
+    for k,v in known_territories do
+      if territory_name == v then
+        recorded = true
+      end
+    end
+  else
+    known_territories = {}
+    --known_territories[1] = territory_name
+  end
+  if not recorded then
+    table.insert(known_territories,territory_name)
+    meta:set_string("territory_list", minetest.serialize(known_territories))
+  end
+  goblins.update_hud(player)
 end
 
 --- This will store the name of a player that learns the mobs territory in the mobs table.
@@ -107,8 +127,8 @@ function goblins.secret_territory(self, player_name, tell)
       S("   You have learned the secret territory name of @1!!",dump(self.secret_territory.name)))
     self.secret_territory_told[pname] = os.time()
     ---self.nametag = self.secret_name.." of "..self.secret_territory.name
-
     ---player could also receive some kind of functional token for this territory
+    territory_list_update(pname, self.secret_territory.name)
     return self.secret_territory
   end
   if debug_goblins_secret then
@@ -372,7 +392,7 @@ end
 
 --- Returns the status of a players relation throughout a territory
 -- will initialize any new relation if required
--- at some point to support an array of relations to return 
+-- at some point to support an array of relations to return
 function goblins.relations_territory(self, player_name, rel_name)
   local pname = player_name
   local relations = goblins.relations(self)
@@ -397,3 +417,7 @@ function goblins.relations_territory(self, player_name, rel_name)
   end
   return t_relation
 end
+
+function goblins.player_relations_territory(player,territory)
+end
+

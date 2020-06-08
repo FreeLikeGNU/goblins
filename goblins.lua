@@ -617,6 +617,8 @@ goblins.goblin_template = {  --your average goblin,
       self.relations[pname].aggro = math.floor(adj)
       goblins.relations(self, pname, {aggro = self.relations[pname].aggro} )
    end
+   local rel_names = {"trade", "aggro"}
+   goblins.get_scores(self,pname,rel_names)
   end,
 
   --By default the Goblins are willing to trade,

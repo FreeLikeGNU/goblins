@@ -219,14 +219,26 @@ end
 
 ---grab the score for a territory
 --@rel_names are a table of relations to reference
-local function get_scores(self,player_name,rel_names)
+function goblins.get_scores(self,player_name,rel_names)
   local t_scores = {}
+  local player = minetest.get_player_by_name(player_name)
+  local meta = player:get_meta()
+  local pdata = {}
+  --local pdata[self.secret_territory] = {}
   for k,v in pairs(rel_names) do
     t_scores[v] = goblins.relations_territory(self, player_name, v)
+    
+    pdata[k] = v 
   end
   --print_s(S("t_scores = @1",dump(t_scores)))
+  --write player data
+  meta:set_string(self.secret_territory.name, minetest.serialize(t_scores))
+  print("***    player meta = "..meta:get_string(self.secret_territory.name))
+  meta:set_string("territory_current", self.secret_territory.name)
+  goblins.update_hud(player)
   return t_scores
 end
+
 --calculate tables of scores and get results
 local function score_calc(add, sub)
   local adds = 0
@@ -254,7 +266,7 @@ local function trade_score(self, player_name)
   local add = {}
   local sub = {}
   local rel_names = {"trade", "aggro"}
-  local rel_scores = get_scores(self,player_name,rel_names)
+  local rel_scores = goblins.get_scores(self,player_name,rel_names)
   add[1] = rel_scores.trade
   sub[1] = rel_scores.aggro
   local result = score_calc(add, sub)

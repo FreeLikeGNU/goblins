@@ -21,8 +21,8 @@ the following:
 in your own mobs definition!
 * There are many settings now accessible from the minetest menu -> "settings" tab -> "all settings" -> "mods" -> "goblins" list!
 these can also be defined in the settingtypes.txt
-* Goblin and Gobdog spawning can be configured from goblins_spawning.lua 
-* Custom Goblins and Gobdogs can be defined in goblins_custom.lua
+* Goblin and Gobdog spawning is now configured from goblins_spawning.lua (at least until there is a way to easily change these with the setting menu :P )
+* An optional HUD has been added for more insight  
 * tested with Minetest 5.2 and 5.30(dev)
 
 ## Required Mods:
