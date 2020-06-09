@@ -8,9 +8,6 @@ local debug_goblins_trade_relations = minetest.settings:get_bool("debug_goblins_
 local announce_spawning = debug_goblins_announce_spawning
 
 local S = minetest.get_translator("goblins")
-local function strip_escapes(input)
-  goblins.strip_escapes(input)
-end
 
 local function print_s(input)
   print(goblins.strip_escapes(input))

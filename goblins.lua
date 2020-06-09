@@ -12,11 +12,11 @@ local function print_s(input)
   print(goblins.strip_escapes(input))
 end
 
--- you can use the goblins
+-- you can use the goblins_spawning.lua or goblins_custom.lua to change spawning behavior
 local goblins_spawning = goblins.spawning
 
 -- this table defines the goblins with how they differ from the goblin template.
-local gob_types = {
+goblins.gob_types = {
   digger = {
     description = S("Cavedigger Goblin"),
     lore = S("The digger burrows though stone to carve out the bowels of a goblin warren"),
@@ -483,7 +483,7 @@ local gob_drops = {
     chance = 2, min = 0, max = 5},
 }
 
-local goblin_template = {  --your average goblin,
+goblins.goblin_template = {  --your average goblin,
   description = "Basic Goblin",
   lore = "This goblin has a story yet to be...",
   type = "npc",
@@ -564,6 +564,7 @@ local goblin_template = {  --your average goblin,
   "default:blueberries", "default:torch", "default:cactus", "default:stick",
   "flowers:mushroom_brown","flowers:mushroom_red"
   },
+  
   on_spawn = function(self)
     self.groups = {"goblin"}
     self.groups_defend = {"goblin","gobdog","goblin_friend"}
@@ -611,10 +612,10 @@ local goblin_template = {  --your average goblin,
       relations = goblins.relations(self, pname)
    end
    --print(self.secret_name.." relations on click:\n"..dump(self.relations).."\n")
-   if relations.aggro  then 
-      relations.aggro = relations.aggro + 1 * 2
-      goblins.relations(self, pname, {aggro = relations.aggro} )
-   else
+   if self.relations[pname].aggro  then
+      local adj = (self.relations[pname].aggro + 1) * 1.5
+      self.relations[pname].aggro = math.floor(adj)
+      goblins.relations(self, pname, {aggro = self.relations[pname].aggro} )
    end
   end,
 
@@ -677,16 +678,4 @@ local goblin_template = {  --your average goblin,
   }
 
 }
--------------
---ASSEMBLE THE GOBLIN HORDES!!!!
---------------
-goblins.generate(gob_types,goblin_template)
-
-local function ggn(gob_name_parts,rules)
-  return goblins.generate_name(gob_name_parts,rules)
-end
-
-print_s(S("This diversion is dedicated to the memory of @1 the @2, @3 the @4, and @5 the @6... May their hordes be mine!",
-  ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"}),ggn(gob_name_parts),ggn(gob_words, {"tool_adj"})))
-print_s(S("   --@1 of the @2 clan.",ggn(gob_name_parts),ggn(gob_name_parts,{"list_a","list_opt","-","list_b"})))
 

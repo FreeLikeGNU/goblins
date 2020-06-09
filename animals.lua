@@ -1,6 +1,6 @@
 local gob_name_parts = goblins.gob_name_parts
 local goblins_spawning = goblins.spawning
-local gobdog_types = {
+goblins.gobdog_types = {
   gobdog = {
     owner_loyal = true,
     attack_npcs = false,
@@ -24,7 +24,7 @@ local gobdog_types = {
 -------------
 -- Gobdog Template
 ------------
-local gobdog_template = {
+goblins.gobdog_template = {
   description ="Gobdog",
   lore = "Gobdogs are not canids but goblins that have mutated somehow, fortunately they do not share the hunger and size of the mythical werewolf.",
   type = "npc",
@@ -99,6 +99,7 @@ local gobdog_template = {
     die_speed = 30,
     die_loop = false,
   },
+
   on_spawn = function(self)
     minetest.sound_play("goblins_goblin_dog_war_cry_cave", {
       object = self.object,
@@ -134,13 +135,23 @@ local gobdog_template = {
     goblins.goblin_dog_behaviors(self)
   end,
 
+  do_punch = function(self,hitter)
+    local pname = hitter:get_player_name()
+    local relations = goblins.relations(self, pname)
+    if not relations.aggro then
+       goblins.relations(self, pname, {aggro = 0})
+       relations = goblins.relations(self, pname)
+    end
+    --print(self.secret_name.." relations on click:\n"..dump(self.relations).."\n")
+    if self.relations[pname].aggro  then
+       local adj = (self.relations[pname].aggro + 1) * 1.5
+       self.relations[pname].aggro = math.floor(adj)
+       goblins.relations(self, pname, {aggro = self.relations[pname].aggro} )
+    end
+  end,
+
   spawning = goblins_spawning.gobdog
 }
-
-------------------------
---generate gobdogs
--------------------------
-goblins.generate(gobdog_types,gobdog_template)
 
 mobs:alias_mob("goblins:goblins_goblin_dog", "goblins:goblin_gobdog")
 mobs:alias_mob("goblins:goblin_goblin_dog", "goblins:goblin_gobdog")

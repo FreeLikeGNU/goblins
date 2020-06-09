@@ -21,11 +21,12 @@ the following:
 in your own mobs definition!
 * There are many settings now accessible from the minetest menu -> "settings" tab -> "all settings" -> "mods" -> "goblins" list!
 these can also be defined in the settingtypes.txt
-* Goblin and Gobdog spawning is now configured from goblins_spawning.lua (at least until there is a way to easily change these with the setting menu :P )
+* Goblin and Gobdog spawning can be configured from goblins_spawning.lua 
+* Custom Goblins and Gobdogs can be defined in goblins_custom.lua
 * tested with Minetest 5.2 and 5.30(dev)
 
 ## Required Mods:
-* Mobs Redo by TenPlus1 API as of version 20200411: to run
+* Mobs Redo by TenPlus1 API as of version 20200516: to run
     * https://forum.minetest.net/viewtopic.php?f=9&t=9917
     * Mobs Redo git repository  https://notabug.org/TenPlus1/mobs_redo
 	
