@@ -95,8 +95,9 @@ function goblins.attack(self, target, type)
       relations.aggro = goblins.relations_territory(self, pname, "aggro")
       relations.trade = goblins.relations_territory(self, pname, "trade")
       if debug_goblins_attack then
-        print_s(S("relations = @1",dump(goblins.relations(self, pname))))
-        print_s(S("comparing trade @1 and aggro @2",dump(relations.trade),dump(relations.aggro)))
+        print_s(S("@1 of @2: ", self.secret_name, self.secret_territory.name))
+        print_s(S("mob relations = @1",dump(goblins.relations(self, pname))))
+        print_s(S("comparing territory trade @1 and aggro @2",dump(relations.trade),dump(relations.aggro)))
       end
 
       if relations.trade >= relations.aggro then
@@ -298,6 +299,19 @@ function goblins.give_gift(self,clicker)
       if not minetest.settings:get_bool("creative_mode") then
         item:take_item()
         clicker:set_wielded_item(item)
+      end
+    ---appease an attacking goblin
+      if self.state == "attack" and self.attack == clicker then
+        if (self.relations[pname].aggro * 2) < self.relations[pname].trade then
+          self.state = "stand"
+          self:set_velocity(0)
+          self:set_animation("stand")
+          self.attack = nil
+          self.v_start = false
+          self.timer = 0
+          self.blinktimer = 0
+          self.path.way = nil
+        end
       end
       --print_s(dump(self.object:get_luaentity()).. " at " ..dump(self.object:getpos()).. " takes: " ..dump(item:get_name()))
       if self.drops then
