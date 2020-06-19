@@ -221,20 +221,26 @@ end
 --@rel_names are a table of relations to reference
 function goblins.get_scores(self,player_name,rel_names)
   local t_scores = {}
-  local player = minetest.get_player_by_name(player_name)
+local player = minetest.get_player_by_name(player_name)
   local meta = player:get_meta()
   local pdata = {}
-  --local pdata[self.secret_territory] = {}
+    --local pdata[self.secret_territory] = {}
   for k,v in pairs(rel_names) do
     t_scores[v] = goblins.relations_territory(self, player_name, v)
-    
-    pdata[k] = v 
+    pdata[k] = v
   end
   --print_s(S("t_scores = @1",dump(t_scores)))
   --write player data
   meta:set_string(self.secret_territory.name, minetest.serialize(t_scores))
-  print("***    player meta = "..meta:get_string(self.secret_territory.name))
+  --print("***    player meta = "..meta:get_string(self.secret_territory.name))
   meta:set_string("territory_current", self.secret_territory.name)
+  if self.secret_name_told[player_name] then
+    meta:set_string("goblin_current", self.secret_name)
+    print("***    player meta = "..meta:get_string("goblin_current"))
+  else
+    meta:set_string("goblin_current", "unknown goblin")
+  end
+
   goblins.update_hud(player)
   return t_scores
 end

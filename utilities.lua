@@ -13,6 +13,28 @@ local function print_s(input)
   print(goblins.strip_escapes(input))
 end
 
+function goblins.timer(target,timer_name,timeout)
+  local start = os.time()
+  local t_name = timer_name
+  if not t_name then t_name = default end
+  if target and minetest.is_player(target) then
+    local player = target
+    local meta = player:get_meta()
+    local timer = "timer_"..t_name
+      if not meta:get_int(timer) then
+        meta:set_int(timer,start)
+      elseif meta:get_int(timer) and
+        os.time() > (meta:get_int(timer) + timeout) then
+          meta:set_int(timer,0)
+      return timeout
+    end
+  end
+end
+
+
+       
+
+
 goblins.gob_name_parts = {
   list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
   list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
@@ -97,7 +119,7 @@ local function territory_list_update(player_name, territory_name)
   local player = minetest.get_player_by_name(player_name)
   local meta = player:get_meta()
   known_territories = minetest.deserialize(meta:get_string("territory_list"))
-  if known_territories then
+  if type(known_territories) == table then
     for k,v in known_territories do
       if territory_name == v then
         recorded = true

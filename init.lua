@@ -4,7 +4,7 @@ goblins_db:set_string("goblins mod start time", os.date() )
 --set namespace for goblins functions
 goblins = {}
 
-goblins.version = "20200611"
+goblins.version = "20200618"
 
 -- Strips any kind of escape codes (translation, colors) from a string
 -- https://github.com/minetest/minetest/blob/53dd7819277c53954d1298dfffa5287c306db8d0/src/util/string.cpp#L777
@@ -88,7 +88,7 @@ dofile(path .. "/animals.lua")
 dofile(path .. "/goblins.lua")
 dofile(path .. "/hunger.lua")
 dofile(path .. "/goblins_custom.lua") --allow for additional/replacement goblins created by user
-
+dofile(path .. "/hud.lua")
 -------------
 --ASSEMBLE THE GOBLIN HORDES!!!!
 -------------
