@@ -31,10 +31,6 @@ function goblins.timer(target,timer_name,timeout)
   end
 end
 
-
-       
-
-
 goblins.gob_name_parts = {
   list_a = "Ach Adz Ak Ark Az Balg Bilg Blid Blig Blok Blot Bolg Boor Bot Bug Burk Chu Dokh Drik Driz Drub Duf Flug Gaw Gad Gag Gah Gak Gar Gat Gaz Ghag Ghak Ghor Git Glag Glak Glat Glig Gliz Glok Gnat Gog Grak Grat Guk Hig Irk Kak Kav Khad Krig Lag Lak Lig Likk Loz Luk Lun Mak Maz Miz Mog Mub Mur Nad Nag Naz Nilg Nikk Nogg Nok Nukk Nur Pog Rag Rak Rat Rok Ronk Rot Shrig Shuk Skrag Skug Slai Slig Slog Sna Snag Snark Snat Snig Snik Snit Sog Spik Stogg Tog Unk Urf Vark Vog Yad Yagg Yak Yark Yarp Yig Yip Zat Zib Zit Ziz Zob Zord",
   list_b = "ach adz ak ark awg az balg bilg blid blig blok blot bolg bot bug burk bus dokh drik driz duf ffy flug g ga gad gag gah gak gar gat gaz ghag ghak git glag glak glat glig gliz glok gnat gog grak grat gub guk hig irk kak khad krig lag lak lig likk loz luk mak maz miz mub murch nad nag naz nilg nikk nogg nok nukk og plus rag rak rat rkus rok shrig shuk skrag skug slai slig slog sna snag snark snat snig snik snit sog spik stogg thus tog un urf us vark yad yagg yak yark yarp yig yip zat zib zit ziz",
@@ -63,6 +59,10 @@ function goblins.generate(gob_types,goblin_template)
     end
     print_s("Assembling the "..g_template.description..":")
     if g_template.lore then print_s("  "..g_template.lore) end
+    if g_template.goblin_tool then
+      --print("found in template:"..g_template.goblin_tool)
+      goblins.tool_gen(g_template.goblin_tool)
+    end
     --print_s("resulting template: " ..dump(g_template))
     mobs:register_mob("goblins:goblin_"..k, g_template)
     mobs:register_egg("goblins:goblin_"..k, S("@1  Egg",g_template.description),"default_mossycobble.png", 1)

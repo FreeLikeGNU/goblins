@@ -234,7 +234,7 @@ local player = minetest.get_player_by_name(player_name)
   meta:set_string(self.secret_territory.name, minetest.serialize(t_scores))
   --print("***    player meta = "..meta:get_string(self.secret_territory.name))
   meta:set_string("territory_current", self.secret_territory.name)
-  if self.secret_name_told[player_name] then
+  if self.secret_name_told and self.secret_name_told[player_name] then
     meta:set_string("goblin_current", self.secret_name)
     print("***    player meta = "..meta:get_string("goblin_current"))
   else

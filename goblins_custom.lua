@@ -1,7 +1,7 @@
 
 local S = minetest.get_translator("goblins")
 
--- Create new goblins here (or override existing ones). 
+-- Create new goblins here (or override existing ones).
 -- This example just overrides the existing Cobble, feel to remove it
 
 goblins.gob_types.cobble = {
@@ -20,8 +20,8 @@ goblins.gob_types.cobble = {
     distance = 15
   },
   textures = {
-    {"default_tool_stoneaxe.png","goblins_goblin_cobble1.png"},
-    {"default_tool_stoneaxe.png","goblins_goblin_cobble2.png"},
+    {"goblins_goblin_cobble1.png"},
+    {"goblins_goblin_cobble2.png"},
   },
   runaway_from = "player",
 
@@ -41,6 +41,10 @@ goblins.gob_types.cobble = {
       50, --replace_rate_secondary
       "goblins:mossycobble_trap" --replace_with_secondary
     )
+  end,
+  goblin_tool = "default:axe_stone",
+  after_activate = function (self)
+    goblins.tool_attach(self,"default:axe_stone")
   end,
   spawning = goblins.spawning.cobble
 }

@@ -18,6 +18,7 @@ local goblins_spawning = goblins.spawning
 -- this table defines the goblins with how they differ from the goblin template.
 goblins.gob_types = {
   digger = {
+
     description = S("Cavedigger Goblin"),
     lore = S("The digger burrows though stone to carve out the bowels of a goblin warren"),
     damage = 1,
@@ -35,7 +36,7 @@ goblins.gob_types = {
       distance = 15
     },
     textures = {
-      "default_tool_stonepick.png","goblins_goblin_digger.png"
+      "goblins_goblin_digger.png"
     },
 
     -- if either digging style is set too close to "1", then the digging will go vertical!
@@ -68,7 +69,11 @@ goblins.gob_types = {
       else
       end
     end,
-    spawning = goblins_spawning.digger
+    spawning = goblins_spawning.digger,
+    goblin_tool = "goblins:pick_mossycobble",
+    after_activate = function (self)
+      goblins.tool_attach(self,"goblins:pick_mossycobble")
+    end
   },
   cobble = {
     description = S("Cobblemoss Goblin"),
@@ -86,10 +91,10 @@ goblins.gob_types = {
       distance = 15
     },
     textures = {
-      {"default_tool_stoneaxe.png","goblins_goblin_cobble1.png"},
-      {"default_tool_stoneaxe.png","goblins_goblin_cobble2.png"},
+      {"goblins_goblin_cobble1.png"},
+      {"goblins_goblin_cobble2.png"},
     },
-    runaway_from = "player",
+    --runaway_from = "player",
 
     do_custom = function(self)
       goblins.search_replace(
@@ -108,6 +113,10 @@ goblins.gob_types = {
         "goblins:mossycobble_trap" --replace_with_secondary
       )
     end,
+    goblin_tool = "default:axe_stone",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:axe_stone")
+    end,
     spawning = goblins_spawning.cobble
   },
   snuffer = {
@@ -117,7 +126,7 @@ goblins.gob_types = {
     hp_min = 5,
     hp_max = 10,
     textures = {
-      "default_stick.png", "goblins_goblin_snuffer.png",
+       {"goblins_goblin_snuffer.png"}
     },
     stay_near = "group:torch",
     runaway_from = "player",
@@ -138,7 +147,10 @@ goblins.gob_types = {
         "goblins:mossycobble_trap" --replace_with_secondary
       )
     end,
-
+    goblin_tool = "default:stick",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:stick")
+    end,
     spawning = goblins_spawning.snuffer
   },
   fungiler = {
@@ -157,8 +169,8 @@ goblins.gob_types = {
       distance = 15
     },
     textures = {
-      {"goblins_mushroom_brown.png","goblins_goblin_fungler1.png"},
-      {"goblins_mushroom_brown.png","goblins_goblin_fungler2.png"},
+      {"goblins_goblin_fungler1.png"},
+      {"goblins_goblin_fungler2.png"},
     },
 
     runaway_from = "player",
@@ -181,7 +193,10 @@ goblins.gob_types = {
         true  --debug if replace
       )
     end,
-
+    goblin_tool = "goblins:mushroom_goblin",
+    after_activate = function (self)
+      goblins.tool_attach(self,"goblins:mushroom_goblin")
+    end,
     spawning = goblins_spawning.fungiler
   },
   coal = {
@@ -190,8 +205,8 @@ goblins.gob_types = {
     hp_min = 5,
     hp_max = 10,
     textures = {
-      {"default_tool_stonepick.png","goblins_goblin_coal1.png"},
-      {"default_tool_stonepick.png","goblins_goblin_coal2.png"},
+      {"goblins_goblin_coal1.png"},
+      {"goblins_goblin_coal2.png"},
     },
 
     do_custom = function(self)
@@ -216,6 +231,10 @@ goblins.gob_types = {
         "goblins:stone_with_coal_trap" --replace_with_secondary
       )
     end,
+    goblin_tool = "default:pick_bronze",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:pick_bronze")
+    end,
     spawning = goblins_spawning.coal
   },
   copper = {
@@ -224,8 +243,8 @@ goblins.gob_types = {
     hp_min = 10,
     hp_max = 20,
     textures = {
-      {"default_tool_bronzepick.png","goblins_goblin_copper1.png"},
-      {"default_tool_bronzesword.png","goblins_goblin_copper2.png"},
+      {"goblins_goblin_copper1.png"},
+      {"goblins_goblin_copper2.png"},
     },
     drops = {
       {name = "default:pick_diamond",
@@ -265,6 +284,10 @@ goblins.gob_types = {
         "goblins:stone_with_copper_trap" --replace_with_secondary
       )
     end,
+    goblin_tool = "default:pick_bronze",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:pick_bronze")
+    end,
     spawning = goblins_spawning.copper
   },
   iron ={
@@ -273,8 +296,8 @@ goblins.gob_types = {
     hp_min = 10,
     hp_max = 20,
     textures = {
-      {"default_tool_stonepick.png","goblins_goblin_iron1.png"},
-      {"default_tool_stonesword.png","goblins_goblin_iron2.png"},
+      {"goblins_goblin_iron1.png"},
+      {"goblins_goblin_iron2.png"},
     },
     drops = {
       {name = "default:pick_diamond",
@@ -313,6 +336,10 @@ goblins.gob_types = {
         "goblins:stone_with_iron_trap" --replace_with_secondary
       )
     end,
+    goblin_tool = "default:pick_steel",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:pick_steel")
+    end,
     spawning = goblins_spawning.iron
   },
   gold = {
@@ -321,8 +348,8 @@ goblins.gob_types = {
     hp_min = 10,
     hp_max = 30,
     textures = {
-      {"default_tool_steelpick.png","goblins_goblin_gold1.png"},
-      {"default_tool_steelsword.png","goblins_goblin_gold2.png"},
+      {"goblins_goblin_gold1.png"},
+      {"goblins_goblin_gold2.png"},
     },
     drops = {
       {name = "default:pick_diamond",
@@ -361,6 +388,10 @@ goblins.gob_types = {
         "goblins:stone_with_gold_trap" --replace_with_secondary
       )
     end,
+    goblin_tool = "default:sword_steel",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:sword_steel")
+    end,
     spawning = goblins_spawning.gold
   },
   diamond = {
@@ -369,8 +400,8 @@ goblins.gob_types = {
     hp_min = 20,
     hp_max = 30,
     textures = {
-      {"default_tool_diamondpick.png","goblins_goblin_diamond1.png"},
-      {"default_tool_diamondsword.png","goblins_goblin_diamond2.png"},
+      {"goblins_goblin_diamond1.png"},
+      {"goblins_goblin_diamond2.png"},
     },
     drops = {
       {name = "default:pick_mese",
@@ -410,6 +441,10 @@ goblins.gob_types = {
         "goblins:stone_with_diamond_trap" --replace_with_secondary
       )
     end,
+    goblin_tool = "default:sword_diamond",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:sword_diamond")
+    end,
     spawning = goblins_spawning.diamond
   },
   hoarder = {
@@ -419,7 +454,7 @@ goblins.gob_types = {
     hp_min = 20,
     hp_max = 40,
     textures = {
-      {"default_tool_mesepick.png","goblins_goblin_hoarder.png"},
+      {"goblins_goblin_hoarder.png"},
     },
     drops = {
       {name = "default:meselamp",
@@ -455,7 +490,10 @@ goblins.gob_types = {
         "goblins:mossycobble_trap" --replace_with_secondary
       )
     end,
-
+    goblin_tool = "default:sword_mese",
+    after_activate = function (self)
+      goblins.tool_attach(self,"default:sword_mese")
+    end,
     spawning = goblins_spawning.hoarder
   },
 }
@@ -537,10 +575,10 @@ goblins.goblin_template = {  --your average goblin,
     stand_speed = 30,
     stand_start = 0,
     stand_end = 79,
-    walk_speed = 30,
+    walk_speed = 40,
     walk_start = 168,
     walk_end = 187,
-    run_speed = 45,
+    run_speed = 55,
     run_start = 168,
     run_end = 187,
     punch_speed = 30,
@@ -564,7 +602,7 @@ goblins.goblin_template = {  --your average goblin,
   "default:blueberries", "default:torch", "default:cactus", "default:stick",
   "flowers:mushroom_brown","flowers:mushroom_red"
   },
-  
+
   on_spawn = function(self)
     self.groups = {"goblin"}
     self.groups_defend = {"goblin","gobdog","goblin_friend"}
@@ -599,6 +637,10 @@ goblins.goblin_template = {  --your average goblin,
       self.drops = drop_list
       self.drops_set = true
     end
+    local color_var = "#"..math.random(10,50)..math.random(10,50)..math.random(10,50)
+    --print("COLOR_VAR: "..color_var)
+    self.object:set_texture_mod("^[colorize:"..color_var..":70")
+
     --print_s(S(self.secret_name.." has "..dump(self.drops)))
     goblins.announce_spawn(self)
     --print_s(S(dump(minetest.registered_items[self.name])))

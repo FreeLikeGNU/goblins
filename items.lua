@@ -29,3 +29,58 @@ minetest.register_tool("goblins:pick_mossycobble", {
   groups = {pickaxe = 1}
 })
 
+local goblin_tool = {}
+goblin_tool = {
+  initial_properties = {
+      --physical = true,
+      pointable = false,
+      collisionbox = {0,0,0,0,0,0},
+      visual = "wielditem",
+      visual_size = {x = 0.15, y = 0.15},
+      wield_item = "default:stick",
+  },
+  message = "Default message",
+  on_step = function(self)
+    if not self.owner or not self.owner:get_luaentity() then
+      self.object:remove()
+    end
+  end
+}
+
+function goblins.tool_gen(tool)
+  if not tool then
+  tool = "default:stick"
+  end
+  local tool_table = string.split(tool,":")
+  local tool_string = tool_table[1].."_"..tool_table[2]
+  print("tool string 1: "..tool_string)
+  local gen_tool = table.copy(goblin_tool)
+  gen_tool.initial_properties.wield_item = tool
+  --print("goblin tool "..dump(goblin_tool))
+  --tool_string = "default_stick"
+  local ent_name = "goblins:goblin_tool_"..tool_string
+  --print("trying "..ent_name )
+  if not minetest.registered_entities[ent_name] then
+    minetest.register_entity(ent_name,gen_tool)
+  --  print("registered "..ent_name )
+  else
+  --  print("***   goblin tool: "..ent_name.." already registered!   ***")
+  end
+  --return tool_string
+
+
+end
+
+function goblins.tool_attach(self,tool)
+
+  local tool_table = string.split(tool,":")
+  local tool_string = tool_table[1].."_"..tool_table[2]
+  --print("tool string 2: "..tool_string)
+  --print("testing attach: "..dump(tool_gen(tool)))
+  local tool_name = "goblins:goblin_tool_"..tool_string
+  --..tool_gen(tool)
+  --print("tool name:"..tool_name)
+  local item = minetest.add_entity(self.object:get_pos(), tool_name)
+  item:set_attach(self.object, "Arm_Right", {x=0.15, y=2.0, z=1.75}, {x=-90, y=180, z=90})
+  item:get_luaentity().owner = self.object
+end
