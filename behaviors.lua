@@ -455,8 +455,9 @@ function goblins.search_replace(
         for k,v in pairs(nodelist) do print_s(minetest.get_node(v).name:split(":")[2].. " found.") end
       end
       for key,value in pairs(nodelist) do
+        value = vector.round(value)
         -- ok we see some nodes around us, are we going to replace them?
-        if minetest.is_protected(value.pos, "") and goblins_node_protect_strict then break end
+        if minetest.is_protected(value, "") and goblins_node_protect_strict then break end
         if math.random(1, replace_rate) == 1 then
           if replace_rate_secondary and
             math.random(1, replace_rate_secondary) == 1 then
@@ -543,9 +544,12 @@ function goblins.tunneling(self, type)
       local np_list = minetest.find_nodes_in_area(p1, p2, diggable_nodes)
       if #np_list > 0 then
         -- Dig it.
+        --print("  NP_LIST: ".. dump(np_list))
         for _, np in pairs(np_list) do
-          if minetest.is_protected(np.pos, "")  and goblins_node_protect_strict then break end
-          if np.name ~= "default:mossycobble" and np.name ~= "default:chest" then
+          if minetest.is_protected(np, "")  and goblins_node_protect_strict then break end
+          local np_info = minetest.get_node(np)
+          --print("     np_name: "..np_info.name)
+          if np_info.name ~= "default:mossycobble" and np_info.name ~= "default:chest" then
             minetest.remove_node(np)
             minetest.sound_play(self.sounds.replace, {
               object = self.object, gain = self.sounds.gain,
