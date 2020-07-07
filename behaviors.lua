@@ -413,19 +413,24 @@ function goblins.search_replace(
   replace_with,
   replace_rate_secondary,
   replace_with_secondary,
-  decorate,
-  debug_me) --this is for placing attached nodes like goblin mushrooms and torches
+  decorate, --this is for placing attached nodes like goblin mushrooms and torches
+  debug_me,
+  tools) -- {primary, secondary} based on index# of self.goblin_tools
   local pos  = self.object:getpos()
   if mobs_griefing and not minetest.is_protected(pos, "") and math.random(1, search_rate) == 1 then
     -- look for nodes
-    local pos  = self.object:getpos() --
+    local pos  = self.object:getpos() 
     local pos1 = self.object:getpos()
     local pos2 = self.object:getpos()
 
     --local pos  = vector.round(self.object:getpos())  --will have to investigate these further
     --local pos1 = vector.round(self.object:getpos())
     --local pos2 = vector.round(self.object:getpos())
-
+    local tool_set = {}
+    if tools then 
+     tool_set = tools
+    end
+    
     -- if we are looking, will we look below and by how much?
     if math.random(1, search_rate_below) == 1 then
       pos1.y = pos1.y - search_offset_below
@@ -459,27 +464,48 @@ function goblins.search_replace(
         -- ok we see some nodes around us, are we going to replace them?
         if minetest.is_protected(value, "") and goblins_node_protect_strict then break end
         if math.random(1, replace_rate) == 1 then
+          local air_value = nil
           if replace_rate_secondary and
             math.random(1, replace_rate_secondary) == 1 then
             if decorate then
-              value = minetest.find_node_near(value, 2, "air")
+              value = minetest.find_node_near(value, 1, "air")
             end
             if value ~= nil then
+              -- print("decorating with "..replace_with_secondary..minetest.pos_to_string(value))
+              if tools and self.goblin_tools and type(self.goblin_tools) == "table" then
+                local replace = tools[2]
+                goblins.tool_attach(self,self.goblin_tools[replace])
+                --print("changing tool: "..self.goblin_tools[replace])
+              end
               self:set_velocity(0)
-              self:set_animation("stand")
-              minetest.set_node(value, {name = replace_with_secondary})
+              self:set_animation("punch")
+              if decorate then
+                minetest.set_node(value, {name = replace_with_secondary})
+              else
+                minetest.set_node(value, {name = replace_with_secondary})
+              end
             end
             if debug_goblins_replace2 and debug_me then
               print_s(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
             end
           else
             if decorate then
-              value = minetest.find_node_near(value, 2, "air")
+              value = minetest.find_node_near(value, 1, "air")
             end
-            if value ~= nil then
+            if value ~= nil  then
+              if tools and self.goblin_tools and type(self.goblin_tools) == "table" then
+                local replace = tools[1]
+                goblins.tool_attach(self,self.goblin_tools[replace])
+                --print("changing tool: "..self.goblin_tools[replace])
+              end
+              -- print("decorating with "..replace_with..minetest.pos_to_string(value))
               self:set_velocity(0)
-              self:set_animation("stand")
-              minetest.set_node(value, {name = replace_with})
+              self:set_animation("punch")
+              if decorate then
+                minetest.set_node(value, {name = replace_with})
+              else
+                minetest.set_node(value, {name = replace_with})
+              end
             end
             if debug_goblins_replace and debug_me then
               print_s(replace_with.." placed by " .. self.name:split(":")[2])
@@ -550,6 +576,7 @@ function goblins.tunneling(self, type)
           local np_info = minetest.get_node(np)
           --print("     np_name: "..np_info.name)
           if np_info.name ~= "default:mossycobble" and np_info.name ~= "default:chest" then
+            self:set_animation("punch")
             minetest.remove_node(np)
             minetest.sound_play(self.sounds.replace, {
               object = self.object, gain = self.sounds.gain,
@@ -601,6 +628,7 @@ function goblins.tunneling(self, type)
 
       if #np_list > 0 then -- dig it
         if goblins_node_protect_strict then break end
+        self:set_animation("punch")
         minetest.remove_node(np_list[math.random(#np_list)])
         minetest.sound_play(self.sounds.replace, {
           object = self.object, gain = self.sounds.gain,

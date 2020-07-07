@@ -59,15 +59,21 @@ function goblins.generate(gob_types,goblin_template)
     end
     print_s("Assembling the "..g_template.description..":")
     if g_template.lore then print_s("  "..g_template.lore) end
-    if g_template.goblin_tool then
+    if g_template.additional_properties and g_template.additional_properties.goblin_tools then
       --print("found in template:"..g_template.goblin_tool)
-      goblins.tool_gen(g_template.goblin_tool)
+      goblins.tool_gen(g_template.additional_properties.goblin_tools)
     end
     --print_s("resulting template: " ..dump(g_template))
     mobs:register_mob("goblins:goblin_"..k, g_template)
     mobs:register_egg("goblins:goblin_"..k, S("@1  Egg",g_template.description),"default_mossycobble.png", 1)
     g_template.spawning.name = "goblins:goblin_"..k --spawn in the name of the key!
     mobs:spawn(g_template.spawning)
+    if g_template.additional_properties then
+      for x,y in pairs(g_template.additional_properties) do
+        minetest.registered_entities["goblins:goblin_"..k][x] = y
+      end
+    end
+    --print(dump(minetest.registered_entities["goblins:goblin_"..k]))
     g_template = {}
   end
 end

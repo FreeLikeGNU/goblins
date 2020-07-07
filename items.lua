@@ -43,17 +43,32 @@ goblin_tool = {
   on_step = function(self)
     if not self.owner or not self.owner:get_luaentity() then
       self.object:remove()
+    else
+      if self.owner:get_luaentity().current_tool ~= self.tool_name then
+        --print("removing old tool: "..self.tool_name.." for "..self.owner:get_luaentity().current_tool)
+        self.object:set_detach()
+        self.object:remove()
+      end
     end
   end
 }
 
-function goblins.tool_gen(tool)
-  if not tool then
-  tool = "default:stick"
+local function tool_check(tool)
+  if not minetest.registered_entities[tool] and
+     not minetest.registered_tools[tool] and
+     not minetest.registered_items[tool] and
+     not minetest.registered_craftitems[tool] and
+     not minetest.registered_nodes[tool] then
+      return
+  else
+    return true
   end
+end
+
+local function tool_gen_engine(tool)
   local tool_table = string.split(tool,":")
   local tool_string = tool_table[1].."_"..tool_table[2]
-  print("tool string 1: "..tool_string)
+  --print("tool string 1: "..tool_string)
   local gen_tool = table.copy(goblin_tool)
   gen_tool.initial_properties.wield_item = tool
   --print("goblin tool "..dump(goblin_tool))
@@ -67,12 +82,22 @@ function goblins.tool_gen(tool)
   --  print("***   goblin tool: "..ent_name.." already registered!   ***")
   end
   --return tool_string
-
-
 end
 
-function goblins.tool_attach(self,tool)
+function goblins.tool_gen(tool)
+  -- if not tool_check(tool) then
+  --   tool = "default:stick"
+  -- end
+  if type(tool) == "table" then
+    for k,v in pairs(tool) do
+     tool_gen_engine(v)
+    end
+  else
+    tool_gen_engine(tool)
+  end
+end
 
+local function tool_attach_engine(self,tool)
   local tool_table = string.split(tool,":")
   local tool_string = tool_table[1].."_"..tool_table[2]
   --print("tool string 2: "..tool_string)
@@ -82,5 +107,37 @@ function goblins.tool_attach(self,tool)
   --print("tool name:"..tool_name)
   local item = minetest.add_entity(self.object:get_pos(), tool_name)
   item:set_attach(self.object, "Arm_Right", {x=0.15, y=2.0, z=1.75}, {x=-90, y=180, z=90})
+  --print(dump(self.goblin_tools))
   item:get_luaentity().owner = self.object
+  self.current_tool = tool
+  item:get_luaentity().tool_name = tool
+end
+
+local function wrandom(wtable)
+  local chance = #wtable
+  for _,__ in pairs(wtable) do
+    --print(chance)
+    if chance == math.random(1,chance) then
+      --print("chose: "..chance)
+      return wtable[chance]
+    else chance = chance - 1
+    end
+  end
+end
+
+
+function goblins.tool_attach(self,tool)
+  --print(dump(tool))
+  -- if not tool_check(tool) then
+  --   tool = "default:stick"
+  -- end
+  if type(tool) == "table" then
+    local rnd_tool = wrandom(tool)
+   -- print("attaching "..rnd_tool)
+    -- local rnd_tool = tool[math.random(1,#tool)]
+    tool_attach_engine(self,rnd_tool)
+    --print("attaching "..rnd_tool)
+  else
+    tool_attach_engine(self,tool)
+  end
 end

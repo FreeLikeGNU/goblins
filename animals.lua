@@ -1,3 +1,9 @@
+local function variance(min,max)
+  local target = math.random(min,max) / 100
+  --print(target)
+  return target
+ end
+
 local gob_name_parts = goblins.gob_name_parts
 local goblins_spawning = goblins.spawning
 goblins.gobdog_types = {
@@ -48,7 +54,7 @@ goblins.gobdog_template = {
   light_damage = 0,
   fear_height = 4,
   floats = 1,
-  glow = 3,
+  --glow = 1,
   pathfinding = 1,
   stay_near = {
     "group:water", 20,
@@ -122,6 +128,18 @@ goblins.gobdog_template = {
     else
     --print(dump(self.secret_territory.name).." secret_territory already assigned")
     end
+    local color_var = "#"..math.random(10,50)..math.random(10,50)..math.random(10,50)
+    --print("COLOR_VAR: "..color_var)
+    self.object:set_texture_mod("^[colorize:"..color_var..":80")
+
+    if not self.size then
+      local s_mod = variance(1,20)
+      self.size = {x = (variance(90,100) - s_mod), y = (variance(80,110) - s_mod), z = (variance(90,100) - s_mod)}
+    end
+
+    local self_properties = self.object:get_properties()
+    self_properties.visual_size = self.size
+    self.object:set_properties(self_properties)
     goblins.announce_spawn(self)
   end,
 
