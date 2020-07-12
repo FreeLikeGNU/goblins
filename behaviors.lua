@@ -222,6 +222,7 @@ end
 function goblins.get_scores(self,player_name,rel_names)
   local t_scores = {}
 local player = minetest.get_player_by_name(player_name)
+  if not player then return end
   local meta = player:get_meta()
   local pdata = {}
     --local pdata[self.secret_territory] = {}
