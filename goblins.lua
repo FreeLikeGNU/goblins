@@ -47,6 +47,7 @@ goblins.gob_types = {
     -- if either digging style is set too close to "1", then the digging will go vertical!
     -- best to set either of these less than 0.5 to give the gobs time to roam...
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.01 then -- higher values for more straight tunnels and room-like features
         goblins.tunneling(self, "digger")
       elseif math.random() < 0.5 then -- higher values more rough, tight and twisty digging
@@ -106,6 +107,7 @@ goblins.gob_types = {
     runaway_from = "player",
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < .2 then
         goblins.search_replace(
           self,
@@ -175,7 +177,8 @@ goblins.gob_types = {
     runaway_from = "player",
 
     do_custom = function(self)
-      if math.random() < 0.05 then
+      goblins.danger_dig(self)
+      if math.random() < 0.01 then
         goblins.tool_attach(self,self.goblin_tools)
       end
       goblins.search_replace(
@@ -227,6 +230,7 @@ goblins.gob_types = {
     runaway_from = "player",
     
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.01 then
         goblins.tool_attach(self,self.goblin_tools)
       end
@@ -288,6 +292,7 @@ goblins.gob_types = {
     },
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.0001 then --vary rarely will attack and only if player looks like a threat
         goblins.tool_attach(self,"default:sword_stone")
         goblins.attack(self)
@@ -350,6 +355,7 @@ goblins.gob_types = {
     },
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.00001 then  --may take a while to build courage
         goblins.tool_attach(self,"default:sword_bronze")
         goblins.attack(self)
@@ -411,6 +417,7 @@ goblins.gob_types = {
     },
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.01 then
         goblins.tool_attach(self,"default:sword_steel")
         goblins.attack(self)
@@ -472,6 +479,7 @@ goblins.gob_types = {
     },
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.01 then
         goblins.tool_attach(self,"default:sword_diamond")
         goblins.attack(self)
@@ -534,6 +542,7 @@ goblins.gob_types = {
     follow = {"default:diamond", "default:apple", "default:torch", "default:blueberries"},
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.01 then
         goblins.tool_attach(self,"default:sword_diamond")
         goblins.attack(self)
@@ -593,6 +602,7 @@ goblins.gob_types = {
     },
 
     do_custom = function(self)
+      goblins.danger_dig(self)
       if math.random() < 0.01 then
         goblins.tool_attach(self,"default:sword_mese")
         goblins.attack(self)

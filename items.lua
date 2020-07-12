@@ -116,9 +116,8 @@ end
 local function wrandom(wtable)
   local chance = #wtable
   for _,__ in pairs(wtable) do
-    --print(chance)
-    if chance == math.random(1,chance) then
-      --print("chose: "..chance)
+    local test = chance * math.random(chance)
+    if chance == math.random(test) then
       return wtable[chance]
     else chance = chance - 1
     end

@@ -659,6 +659,56 @@ function goblins.tunneling(self, type)
   end
 end
 
+function goblins.danger_dig(self,freq,depth)
+  local pos = vector.round(self.object:getpos())
+  local lol = minetest.get_node_light(pos) or 0
+  local freq = freq or 0.1
+  local depth = depth or 1
+  local target = table.copy(pos)
+  target.y = target.y - depth
+
+  if self.light_damage_min and 
+    lol >= self.light_damage_min and
+    mobs_griefing and
+    not minetest.is_protected(target, "") and
+    math.random() <= freq and 
+    minetest.get_node(target).name ~="air" then
+      local target_node = minetest.get_node(target)
+           
+      if self.state ~= "stand" then self.state = "stand" end
+
+      --find a pick among goblin tools if we can
+      if self.goblin_tools and type(self.goblin_tools) == "table" then
+        local tool = match_item_list("pick",self.goblin_tools)
+        if tool then
+          goblins.tool_attach(self,self.goblin_tools[tool])
+          --print("changing tool: "..self.goblin_tools[replace])
+        end
+      end
+
+      self:set_velocity(0)
+      self:set_animation("punch")
+      minetest.remove_node(target)
+      local node_above = vector.round(self.object:getpos())
+      node_above.y = node_above.y + 2
+      local nb_node1 = vector.round(self.object:getpos())
+      local nb_node2 = vector.round(self.object:getpos())
+      nb_node1.y = node_above.y
+      nb_node2.y = node_above.y
+      nb_node1.x = nb_node1.x - 1
+      nb_node1.z = nb_node1.z - 1
+      nb_node2.x = nb_node1.x + 1
+      nb_node2.z = nb_node1.z + 1
+      nodes = minetest.find_nodes_in_area(nb_node1,nb_node2, "air")
+      --print(#nodes)
+      if #minetest.find_nodes_in_area(nb_node1,nb_node2, "air" ) == 1 then
+        minetest.set_node(node_above, {name = target_node.name})
+      end
+  end
+  
+
+end
+
 function goblins.goblin_dog_behaviors(self)
   local pos = self.object:getpos()
   if math.random() < 0.1 then
