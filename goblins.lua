@@ -48,18 +48,45 @@ goblins.gob_types = {
     -- best to set either of these less than 0.5 to give the gobs time to roam...
     do_custom = function(self)
       goblins.danger_dig(self)
-      if math.random() < 0.01 then -- higher values for more straight tunnels and room-like features
-        goblins.tunneling(self, "digger")
-      elseif math.random() < 0.5 then -- higher values more rough, tight and twisty digging
+      if  self.time_of_day > 0.2
+      and self.time_of_day < 0.8 then
+        if math.random() < 0.01 then -- higher values for more straight tunnels and room-like features
+          goblins.tunneling(self, "digger")
+        elseif math.random() < 0.5 then -- higher values more rough, tight and twisty digging
+          goblins.search_replace(
+            self,
+            15, --search_rate how often do we search?
+            10, --search_rate_above
+            10, --search_rate_below
+            .6,--search_offset
+            1.2, --search_offset_above
+            1, --search_offset_below
+            2, --replace_rate
+            {"group:soil",
+              "group:sand",
+              "default:gravel",
+              "default:stone",
+              "default:desert_stone",
+              "group:torch"}, --replace_what
+            "air", --replace_with
+            nil, --replace_rate_secondary
+            nil, --replace_with_secondary
+            nil, --decorate
+            {1}, -- primary and secondary (if used) tool index
+            nil --debug messages
+        )
+        end
+      elseif math.random() < 0.5 then
+      --and self.object:getpos().y < 0 then
         goblins.search_replace(
           self,
-          15, --search_rate how often do we search?
-          10, --search_rate_above
-          10, --search_rate_below
+          50, --search_rate how often do we search?
+          2, --search_rate_above
+          10000, --search_rate_below
           .6,--search_offset
-          1.2, --search_offset_above
+          1.5, --search_offset_above
           1, --search_offset_below
-          2, --replace_rate
+          10, --replace_rate
           {"group:soil",
             "group:sand",
             "default:gravel",
@@ -73,7 +100,6 @@ goblins.gob_types = {
           {1}, -- primary and secondary (if used) tool index
           nil --debug messages
       )
-      else
       end
     end,
     spawning = goblins_spawning.digger,

@@ -700,9 +700,9 @@ function goblins.danger_dig(self,freq,depth)
       nb_node1.z = nb_node1.z - 1
       nb_node2.x = nb_node1.x + 1
       nb_node2.z = nb_node1.z + 1
-      nodes = minetest.find_nodes_in_area(nb_node1,nb_node2, "air")
+      local air_nodes = minetest.find_nodes_in_area(nb_node1,nb_node2, "air")
       --print(#nodes)
-      if #minetest.find_nodes_in_area(nb_node1,nb_node2, "air" ) == 1 then
+      if #air_nodes == 1 then
         minetest.set_node(node_above, {name = target_node.name})
       end
   end
