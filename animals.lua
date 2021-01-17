@@ -119,7 +119,7 @@ goblins.gobdog_template = {
       self.secret_name = goblins.generate_name(gob_name_parts, name_rules)
     end
     --print (dump(self.secret_name))
-    local pos = vector.round(self.object:getpos())
+    local pos = vector.round(self.object:get_pos())
     if not pos then return end
     if not self.secret_territory then
       local territory = {goblins.territory(pos)}

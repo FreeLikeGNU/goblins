@@ -77,7 +77,7 @@ goblins.gob_types = {
         )
         end
       elseif math.random() < 0.5 then
-      --and self.object:getpos().y < 0 then
+      --and self.object:get_pos().y < 0 then
         goblins.search_replace(
           self,
           50, --search_rate how often do we search?
@@ -782,7 +782,7 @@ goblins.goblin_template = {  --your average goblin,
     end
     --print (dump(self.secret_name))
     --print (dump(self.special_gifts).. " are precious to "..dump(self.secret_name).. "!")
-    local pos = vector.round(self.object:getpos())
+    local pos = vector.round(self.object:get_pos())
     if not pos then print(dump(self).."\n **position error!** \n") return end --something went wrong!
     if not self.secret_territory then
       local opt_data = {}
