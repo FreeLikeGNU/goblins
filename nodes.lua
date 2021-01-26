@@ -173,7 +173,7 @@ function goblins.moss_spread(pos, node)
   --print("moss spread abm"..minetest.pos_to_string(pos))
   if math.random() < 0.1 then
 
-    minetest.place_node(pos,{name = "goblins:mushroom_goblin"})
+    minetest.set_node(pos,{name = "goblins:mushroom_goblin"})
   else
     local positions = minetest.find_nodes_in_area_under_air(
       {x = pos.x - 1, y = pos.y - 2, z = pos.z - 1},
