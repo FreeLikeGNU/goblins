@@ -669,8 +669,9 @@ function goblins.tunneling(self, type)
 end
 
 function goblins.danger_dig(self,freq,depth)
-  local pos = vector.round(self.object:get_pos())
-  if pos then
+  local gpos = self.object:get_pos()
+  if gpos then
+    pos = vector.round(gpos)
     local lol = minetest.get_node_light(pos) or 0
     local freq = freq or 0.1
     local depth = depth or 1
