@@ -1,3 +1,4 @@
+* Update 2021/03/21 Various object checks have been added to eliminate crashes.
 * Update 2020/07/12 Goblins dig to safety! Also, random tool selection weight fixes. 
 * Update 2020/07/06 added moss node and removed glow from cobblemoss node for better visuals
   more variations for goblin tools and appropriate tools/nodes are chosen for tasks
