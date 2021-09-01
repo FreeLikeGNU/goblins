@@ -3,18 +3,19 @@ local saved_huds = {}
 local ght = tonumber(minetest.settings:get("goblins_hud_timer")) or 0
 
 local function clear_hud(params)
-
   local player = minetest.get_player_by_name(params[1])
-  local meta = player:get_meta()
-  --print ("testing"..dump(params))
-  if os.time() >= (meta:get_int("hud_time_start") + ght) then
-   player:hud_remove(params[2])
-   meta:set_int("hud_cleared",1)
-   --print ("removing"..dump(params))
+  if player then
+    local meta = player:get_meta()
+    --print ("testing"..dump(params))
+    if os.time() >= (meta:get_int("hud_time_start") + ght) then
+    player:hud_remove(params[2])
+    meta:set_int("hud_cleared",1)
+    --print ("removing"..dump(params))
+    end
   end
 end
 function goblins.update_hud(player)
-  if ght > 0 then
+  if ght > 0 and player then
   --for _,player in ipairs(minetest.get_connected_players()) do
     local player_name = player:get_player_name()
     --print(player_name)
