@@ -493,6 +493,7 @@ function goblins.search_replace(
               else
                 minetest.set_node(value, {name = replace_with_secondary})
               end
+              minetest.check_for_falling(value)
             end
             if debug_goblins_replace2 and debug_me then
               print_s(replace_with_secondary.." secondary node placed by " .. self.name:split(":")[2])
@@ -515,6 +516,7 @@ function goblins.search_replace(
               else
                 minetest.set_node(value, {name = replace_with})
               end
+              minetest.check_for_falling(value)
             end
             if debug_goblins_replace and debug_me then
               print_s(replace_with.." placed by " .. self.name:split(":")[2])
@@ -587,6 +589,7 @@ function goblins.tunneling(self, type)
           if np_info.name ~= "default:mossycobble" and np_info.name ~= "default:chest" then
             self:set_animation("punch")
             minetest.remove_node(np)
+            minetest.check_for_falling(np)
             minetest.sound_play(self.sounds.replace, {
               object = self.object, gain = self.sounds.gain,
               max_hear_distance = self.sounds.distance
@@ -638,7 +641,9 @@ function goblins.tunneling(self, type)
       if #np_list > 0 then -- dig it
         if goblins_node_protect_strict then break end
         self:set_animation("punch")
-        minetest.remove_node(np_list[math.random(#np_list)])
+        local np = np_list[math.random(#np_list)]
+        minetest.remove_node(np)
+        minetest.check_for_falling(np)
         minetest.sound_play(self.sounds.replace, {
           object = self.object, gain = self.sounds.gain,
           max_hear_distance = self.sounds.distance
@@ -700,6 +705,7 @@ function goblins.danger_dig(self,freq,depth)
         self:set_velocity(0)
         self:set_animation("punch")
         minetest.remove_node(target)
+        minetest.check_for_falling(target)
         local node_above = vector.round(self.object:get_pos())
         node_above.y = node_above.y + 2
         local nb_node1 = vector.round(self.object:get_pos())
