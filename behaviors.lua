@@ -568,8 +568,8 @@ function goblins.tunneling(self, type)
       end
 
       -- Turn him roughly in the right direction.
-      -- self.object:setyaw(self.digging_dir * math.pi * 0.5 + math.random() * 0.5 - 0.25)
-      self.object:setyaw(self.digging_dir * math.pi * 0.5)
+      -- self.object:set_yaw(self.digging_dir * math.pi * 0.5 + math.random() * 0.5 - 0.25)
+      self.object:set_yaw(self.digging_dir * math.pi * 0.5)
 
       -- Get a pair of coordinates that should cover what's in front of him.
       local p = vector.add(pos, cardinals[self.digging_dir+1])
