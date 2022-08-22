@@ -1,7 +1,8 @@
 # [goblins] Goblins (Mobs Redo addon) [mod] for Minetest 
 
 * forum: https://forum.minetest.net/viewtopic.php?f=9&t=13004
-* code :https://github.com/FreeLikeGNU/goblins
+* code: https://gitlab.com/freelikegnu/goblins
+  (github repository is now deprecated to be archived!)
 * Minetest Content DB: https://content.minetest.net/packages/FreeLikeGNU/goblins/
 
 This mod adds several Goblins (and Goblin Dogs) to Minetest that should spawn near ore deposits or lairs underground.
